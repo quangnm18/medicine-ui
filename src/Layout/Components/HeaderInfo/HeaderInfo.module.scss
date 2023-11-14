@@ -1,0 +1,27 @@
+.info {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    background-image: linear-gradient(to top right, var(--white), #36c5f0);
+}
+
+.header-info {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    img {
+        width: 32px;
+        height: 32px;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
+    span {
+        margin: 0 36px 0 8px;
+    }
+}

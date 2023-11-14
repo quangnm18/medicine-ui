@@ -1,0 +1,81 @@
+.header-content {
+    margin-bottom: 16px;
+}
+
+.header-title {
+    padding: 8px 0 8px 16px;
+    font-size: 2.2rem;
+    font-weight: 500;
+}
+
+.choose-medicine {
+    display: flex;
+    align-items: center;
+}
+
+.medicine-option {
+    padding: 8px;
+
+    input,
+    select {
+        padding: 8px;
+        font-size: 1.6rem;
+        border: 1px solid #e4e4e4;
+    }
+
+    select {
+        min-width: 160px;
+    }
+
+    label {
+        padding: 0 8px;
+    }
+
+    .input-name {
+        min-width: 400px;
+    }
+}
+
+.btn-action {
+    margin-left: 12px;
+}
+
+.btn-add {
+    background-color: var(--primary);
+    color: var(--white);
+    font-size: 1.6rem;
+    padding: 12px 0;
+    border-radius: 2px;
+    min-width: 120px;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.btn-add + .btn-add {
+    margin-left: 16px;
+}
+
+//search-result
+.search-result {
+    width: 400px;
+}
+
+.result-item {
+    font-size: 1.6rem;
+    padding: 8px 12px;
+
+    &:hover {
+        cursor: pointer;
+        background-color: #e4e4e4;
+    }
+}
+
+//Main Content
+.main-content {
+    height: 100%;
+    background-color: var(--white);
+    padding: 8px 12px 0 12px;
+    height: 100vh;
+}

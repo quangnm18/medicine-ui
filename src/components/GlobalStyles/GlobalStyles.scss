@@ -1,0 +1,39 @@
+@import 'normalize.css';
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Rosario:ital,wght@0,500;0,600;0,700;1,400;1,500&display=swap');
+
+:root {
+    --primary: #36c5f0;
+    --black: #000;
+    --white: #fff;
+    --text-color: #333;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 62.5%;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.6rem;
+    color: var(--text-color);
+    line-height: 1.5;
+    text-rendering: optimizeSpeed;
+}
+
+button,
+input,
+[tabindex] {
+    outline: none;
+    border: none;
+}
+
+a[href] {
+    color: var(--text-color);
+    text-decoration: none;
+}
