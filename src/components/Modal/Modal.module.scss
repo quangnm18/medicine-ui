@@ -1,3 +1,13 @@
+//animation
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
 .modal {
     display: flex;
     position: fixed;
@@ -5,6 +15,8 @@
     right: 0;
     bottom: 0;
     left: 0;
+    z-index: 2 !important;
+    animation: fadeIn linear 0.1s;
 }
 
 .modal-overlay {

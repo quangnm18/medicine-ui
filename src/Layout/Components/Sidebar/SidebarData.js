@@ -8,6 +8,7 @@ import {
     faChevronUp,
     faFileExport,
     faHouse,
+    faList,
     faListCheck,
     faListUl,
     faPaste,
@@ -61,8 +62,13 @@ export const SidebarData = [
         subNav: [
             {
                 title: 'Nhập kho',
-                path: routesConfig.importGoods,
+                path: routesConfig.importCreate,
                 icon: <FontAwesomeIcon icon={faSquarePlus} />,
+            },
+            {
+                title: 'Danh sách nhập kho',
+                path: routesConfig.importList,
+                icon: <FontAwesomeIcon icon={faListCheck} />,
             },
             {
                 title: 'Xuất kho',
@@ -70,13 +76,13 @@ export const SidebarData = [
                 icon: <FontAwesomeIcon icon={faFileExport} />,
             },
             {
-                title: 'Kiểm kho',
-                path: routesConfig.checkInventory,
+                title: 'Danh sách xuất kho',
+                path: routesConfig.importGoods,
                 icon: <FontAwesomeIcon icon={faListCheck} />,
             },
             {
-                title: 'Tồn kho',
-                path: routesConfig.inventory,
+                title: 'Kiểm kho',
+                path: routesConfig.checkInventory,
                 icon: <FontAwesomeIcon icon={faBoxesStacked} />,
             },
         ],
@@ -103,6 +109,11 @@ export const SidebarData = [
                 title: 'Dược phẩm',
                 path: routesConfig.categoryMedicine,
                 icon: <FontAwesomeIcon icon={faCapsules} />,
+            },
+            {
+                title: 'Nhóm dược phẩm',
+                path: routesConfig.categoryMedicine,
+                icon: <FontAwesomeIcon icon={faList} />,
             },
         ],
     },

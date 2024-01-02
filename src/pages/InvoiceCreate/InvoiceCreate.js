@@ -5,48 +5,44 @@ import InvoiceCreateTb from '~/components/Table/InvoiceCreateTb';
 
 import Tippy from '@tippyjs/react/headless';
 import Popper from '~/components/Popper/Popper';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const cx = classNames.bind(style);
-const Data = [
-    {
-        id: 1,
-        name: 'Ampecilin',
-        unit: 'Hộp',
-        dueDate: '12/02/2023',
-        count: 20,
-        price: 20000,
-        totalPrice: 400000,
-    },
-    {
-        id: 2,
-        name: 'Ampecilin',
-        unit: 'Hộp',
-        dueDate: '12/02/2023',
-        count: 20,
-        price: 20000,
-        totalPrice: 400000,
-    },
-    {
-        id: 3,
-        name: 'Ampecilin',
-        unit: 'Hộp',
-        dueDate: '12/02/2023',
-        count: 20,
-        price: 20000,
-        totalPrice: 400000,
-    },
-    {
-        id: 4,
-        name: 'Ampecilin',
-        unit: 'Hộp',
-        dueDate: '12/02/2023',
-        count: 20,
-        price: 20000,
-        totalPrice: 400000,
-    },
-];
 
 function InvoiceCreate() {
+    const [nameSearchInput, setNameSearchInput] = useState('');
+    const [searchResult, setSearchResult] = useState([]);
+    const [units, setUnits] = useState([]);
+    const [unitSelected, setUnitSelected] = useState('');
+    const [price, setPrice] = useState();
+
+    const handleSelected = (e) => {
+        setUnitSelected(e.target.value);
+        const filtered = units.filter((unit) => {
+            return unit.Name === e.target.value;
+        });
+        setPrice(filtered[0].Price);
+    };
+
+    // useEffect(() => {
+    //     axios.get(`http://localhost:8081/category/medicine/search/?name=${nameSearchInput}`).then((res) => {
+    //         setSearchResult(res.data);
+    //     });
+    // }, [nameSearchInput]);
+
+    const handleSelectedMedicine = (medicine) => {
+        setNameSearchInput(medicine.Name);
+        // axios
+        //     .get(`http://localhost:8081/sell/create/medicineunit/${medicine.ID}`)
+        //     .then((res) => {
+        //         setUnits(res.data);
+        //         setPrice(res.data[0].Price);
+        //         setUnitSelected(res.data[0].Name);
+        //     })
+        //     .catch((err) => console.log(err));
+    };
+
     return (
         <div className={cx('content')}>
             <div className={cx('header-content')}>
@@ -57,28 +53,39 @@ function InvoiceCreate() {
                         <label className={cx('label-option')}>Tên dược</label>
                         <Tippy
                             interactive
-                            visible
+                            visible={nameSearchInput && searchResult.length > 0}
                             placement="bottom"
                             render={(attrs) => (
                                 <div className={cx('search-result')} tabIndex="-1" {...attrs}>
                                     <Popper>
-                                        <div className={cx('result-item')}>Ampecilin</div>
-                                        <div className={cx('result-item')}>Ampecilin</div>
-                                        <div className={cx('result-item')}>Ampecilin</div>
-                                        <div className={cx('result-item')}>Ampecilin</div>
+                                        {searchResult.map((medicine) => (
+                                            <div
+                                                key={medicine.ID}
+                                                className={cx('result-item')}
+                                                onClick={() => handleSelectedMedicine(medicine)}
+                                            >
+                                                {medicine.Name}
+                                            </div>
+                                        ))}
                                     </Popper>
                                 </div>
                             )}
                         >
-                            <input className={cx('input-name')} />
+                            <input
+                                className={cx('input-name')}
+                                value={nameSearchInput}
+                                onChange={(e) => setNameSearchInput(e.target.value)}
+                            />
                         </Tippy>
                     </div>
                     <div className={cx('medicine-option')}>
                         <label className={cx('label-option')}>Loại</label>
-                        <select>
-                            <option>Hộp</option>
-                            <option>Viên</option>
-                            <option>Vỉ</option>
+                        <select value={unitSelected} onChange={handleSelected}>
+                            {units.map((unit) => (
+                                <option value={unit.Name} key={unit.ID}>
+                                    {unit.Name}
+                                </option>
+                            ))}
                         </select>
                     </div>
                     <div className={cx('medicine-option')}>
@@ -94,7 +101,52 @@ function InvoiceCreate() {
             </div>
 
             <div className={cx('main-content')}>
-                <InvoiceCreateTb data={Data} />
+                <div className={cx('table-content')}>
+                    <InvoiceCreateTb />
+                </div>
+
+                <div className={cx('invoice-sale')}>
+                    <div className={cx('invoice-title')}>Hóa đơn</div>
+                    <div className={cx('invoice-code')}>
+                        <span>Mã HĐ: </span>
+                        <span>HDA10284567</span>
+                    </div>
+                    <div className={cx('invoice-info')}>
+                        <div className={cx('invoice-detail')}>
+                            <span>Ngày bán</span>
+                            <span>12/10/2023</span>
+                        </div>
+                        <div className={cx('invoice-detail')}>
+                            <span>Nhân viên</span>
+                            <span>Kim Anh</span>
+                        </div>
+                        <div className={cx('invoice-detail')}>
+                            <span>Tổng tiền</span>
+                            <span>0</span>
+                        </div>
+                        <div className={cx('invoice-detail')}>
+                            <span>Chiết khấu</span>
+                            <span>0</span>
+                        </div>
+                        <div className={cx('invoice-detail')}>
+                            <span>Tổng phải trả</span>
+                            <span>0</span>
+                        </div>
+                        <div className={cx('invoice-detail')}>
+                            <span>Khách trả</span>
+                            <input placeholder="00.00" />
+                        </div>
+                        <div className={cx('invoice-detail')}>
+                            <span>Tiền dư</span>
+                            <span>0</span>
+                        </div>
+                    </div>
+
+                    <div className={cx('invoice-action')}>
+                        <button className={cx('invoice-btn')}>Lưu hóa đơn</button>
+                        <button className={cx('invoice-btn')}>Xuất hóa đơn</button>
+                    </div>
+                </div>
             </div>
         </div>
     );

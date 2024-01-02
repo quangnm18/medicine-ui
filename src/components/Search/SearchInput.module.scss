@@ -1,0 +1,28 @@
+.search-resultMed {
+    width: 440px;
+}
+
+.search-resultIpt {
+    width: 1430px;
+}
+
+.result-item {
+    font-size: 1.6rem;
+    padding: 8px 12px;
+
+    &:hover {
+        cursor: pointer;
+        background-color: #e4e4e4;
+    }
+}
+
+.result-itemmore {
+    color: #8a8686;
+}
+
+.input-name {
+    width: 100%;
+    padding: 8px;
+    font-size: 1.6rem;
+    border: 1px solid #e4e4e4;
+}

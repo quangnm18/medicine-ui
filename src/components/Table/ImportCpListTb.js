@@ -6,7 +6,7 @@ import style from './Table.module.scss';
 
 const cx = classNames.bind(style);
 
-function InvoiceListTb({ data, method }) {
+function ImportCpListTb({ data, method }) {
     const tableStyle = {
         rows: {
             style: {
@@ -32,13 +32,13 @@ function InvoiceListTb({ data, method }) {
         {
             name: 'Ngày lập',
             selector: (row) => {
-                let date = new Date(row.CreateDate);
+                let date = new Date(row.CreatedDate);
                 return date.toLocaleDateString();
             },
         },
         {
             name: 'Tổng tiền',
-            selector: (row) => row.TotalPrice,
+            selector: (row) => row.thanh_tien,
         },
         {
             name: 'Nhân viên',
@@ -57,6 +57,16 @@ function InvoiceListTb({ data, method }) {
                 </div>
             ),
         },
+        {
+            name: 'Trạng thái',
+            cell: (row) => (
+                <div>
+                    {row.status === 2 && <button>Đang duyệt</button>}
+                    {row.status === 1 && <button>Đã duyệt</button>}
+                    {row.status === 0 && <button>Từ chối</button>}
+                </div>
+            ),
+        },
     ];
     return (
         <div>
@@ -65,4 +75,4 @@ function InvoiceListTb({ data, method }) {
     );
 }
 
-export default InvoiceListTb;
+export default ImportCpListTb;

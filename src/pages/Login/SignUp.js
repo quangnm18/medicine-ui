@@ -1,25 +1,40 @@
 import classNames from 'classnames/bind';
 import style from './Login.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope, faLock, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faLock, faUser, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(style);
 
-function Login() {
+function SignUp() {
+    const navigate = useNavigate();
+    const routeChange = () => {
+        let path = `/`;
+        navigate(path);
+    };
+
     const [values, setValues] = useState({
+        fullname: '',
         username: '',
         email: '',
         password: '',
+        repassword: '',
     });
 
-    const inputsLogin = [
+    const inputsSignUp = [
+        {
+            id: 1,
+            name: 'fullname',
+            type: 'text',
+            placeholder: 'Họ và tên',
+            icon: faUser,
+        },
         {
             id: 2,
             name: 'username',
             type: 'text',
-            placeholder: 'Username',
+            placeholder: 'Tài khoản',
             icon: faUser,
         },
         {
@@ -33,36 +48,39 @@ function Login() {
             id: 4,
             name: 'password',
             type: 'password',
-            placeholder: 'Password',
+            placeholder: 'Mật khẩu',
+            icon: faLock,
+        },
+        {
+            id: 5,
+            name: 'repassword',
+            type: 'password',
+            placeholder: 'Nhập lại mật khẩu',
             icon: faLock,
         },
     ];
-
-    const navigate = useNavigate();
-    const routeChange = () => {
-        let path = `/register`;
-        navigate(path);
-    };
 
     const onChange = (e) => {
         setValues({ ...values, [e.target.name]: e.target.value });
     };
 
-    const handleLogin = () => {
+    const handleSignUp = () => {
         setValues({
+            fullname: '',
             username: '',
             email: '',
             password: '',
+            repassword: '',
         });
     };
 
     return (
         <div className={cx('container')}>
             <div className={cx('header')}>
-                <div className={cx('text')}>Đăng nhập</div>
+                <div className={cx('text')}>Đăng ký</div>
             </div>
             <div className={cx('inputs')}>
-                {inputsLogin.map((input) => (
+                {inputsSignUp.map((input) => (
                     <div key={input.id} className={cx('input')}>
                         <FontAwesomeIcon icon={input.icon} className={cx('icon')} />
                         <input
@@ -77,20 +95,16 @@ function Login() {
             </div>
 
             <div className={cx('forgot-password')}>
-                Quên mật khẩu? <span>Click Here!</span>
-            </div>
-
-            <div className={cx('forgot-password')}>
-                Nếu bạn chưa có tài khoản? <span onClick={routeChange}>Đăng ký</span>
+                Nếu bạn đã có tài khoản? <span onClick={routeChange}>Click Here!</span>
             </div>
 
             <div className={cx('submit-container')}>
-                <div className={cx('submit')} onClick={handleLogin}>
-                    Login
+                <div className={cx('submit')} onClick={handleSignUp}>
+                    Đăng ký
                 </div>
             </div>
         </div>
     );
 }
 
-export default Login;
+export default SignUp;

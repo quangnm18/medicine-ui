@@ -1,5 +1,6 @@
 import style from './Modal.module.scss';
 import classNames from 'classnames/bind';
+import { memo } from 'react';
 
 const cx = classNames.bind(style);
 
@@ -12,4 +13,4 @@ function Modal({ children }) {
     );
 }
 
-export default Modal;
+export default memo(Modal);

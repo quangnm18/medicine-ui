@@ -47,6 +47,7 @@
         width: 400px;
         background-color: transparent;
         font-size: 19px;
+        outline: none;
     }
 }
 
@@ -72,7 +73,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 220px;
+    width: 320px;
     height: 59px;
     color: var(--white);
     background-color: var(--primary);

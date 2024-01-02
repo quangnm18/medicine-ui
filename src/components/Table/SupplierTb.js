@@ -6,7 +6,7 @@ import style from './Table.module.scss';
 
 const cx = classNames.bind(style);
 
-function SupplierTb({ data }) {
+function SupplierTb({ data, method }) {
     const tableStyle = {
         rows: {
             style: {
@@ -23,32 +23,32 @@ function SupplierTb({ data }) {
     const columns = [
         {
             name: 'STT',
-            selector: (row) => row.id,
+            cell: (row, index) => index + 1,
         },
         {
             name: 'Tên',
-            selector: (row) => row.name,
+            selector: (row) => row.Name,
         },
         {
             name: 'Số điện thoại',
-            selector: (row) => row.unit,
+            selector: (row) => row.PhoneNumber,
         },
         {
             name: 'Địa chỉ',
-            selector: (row) => row.dueDate,
+            selector: (row) => row.Address,
         },
         {
             name: 'Email',
-            selector: (row) => row.count,
+            selector: (row) => row.Email,
         },
         {
-            name: '#',
+            name: '',
             cell: (row) => (
                 <div>
-                    <button className={cx('btn')}>
+                    <button className={cx('btn')} onClick={() => method.toggleModalSingleDelete(row.ID)}>
                         <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
                     </button>
-                    <button className={cx('btn')}>
+                    <button className={cx('btn')} onClick={() => method.toggleModalView(row.ID)}>
                         <FontAwesomeIcon icon={faPenToSquare} className={cx('icon-view')} />
                     </button>
                 </div>
@@ -57,7 +57,7 @@ function SupplierTb({ data }) {
     ];
     return (
         <div>
-            <DataTable columns={columns} data={data} customStyles={tableStyle}></DataTable>
+            <DataTable columns={columns} data={data} customStyles={tableStyle} pagination selectableRows></DataTable>
         </div>
     );
 }

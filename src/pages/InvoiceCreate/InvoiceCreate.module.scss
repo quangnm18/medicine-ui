@@ -76,6 +76,57 @@
 .main-content {
     height: 100%;
     background-color: var(--white);
-    padding: 8px 12px 0 12px;
+    // padding: 8px 0 0 12px;
     height: 100vh;
+    display: flex;
+    justify-content: space-between;
+}
+
+.table-content {
+    padding: 8px 12px 0 12px;
+    flex: 1;
+}
+
+.invoice-sale {
+    width: 400px;
+    border-left: 6px solid #e9f1f9;
+}
+
+.invoice-title {
+    background-color: var(--primary);
+    color: var(--white);
+    text-align: center;
+    padding: 16px 0;
+}
+
+.invoice-code {
+    text-align: center;
+}
+
+.invoice-detail {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+
+    input {
+        text-align: end;
+        font-size: 1.6rem;
+    }
+}
+
+.invoice-action {
+    text-align: center;
+    margin-top: 16px;
+
+    button {
+        cursor: pointer;
+        background-color: var(--primary);
+        color: var(--white);
+        padding: 12px;
+        border-radius: 2px;
+    }
+
+    button + button {
+        margin-left: 24px;
+    }
 }

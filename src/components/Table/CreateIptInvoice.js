@@ -6,7 +6,7 @@ import style from './Table.module.scss';
 
 const cx = classNames.bind(style);
 
-function InvoiceCreateTb({ data }) {
+function CreateIptInvoice({ data }) {
     const tableStyle = {
         rows: {
             style: {
@@ -22,7 +22,7 @@ function InvoiceCreateTb({ data }) {
 
     const columns = [
         {
-            name: 'STT',
+            name: '(Số lượng)',
             cell: (row, index) => index + 1,
         },
         {
@@ -65,4 +65,4 @@ function InvoiceCreateTb({ data }) {
     );
 }
 
-export default InvoiceCreateTb;
+export default CreateIptInvoice;

@@ -3,10 +3,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DataTable from 'react-data-table-component';
 import classNames from 'classnames/bind';
 import style from './Table.module.scss';
+import { useState } from 'react';
 
 const cx = classNames.bind(style);
 
 function StaffTb({ data }) {
+    const [showScroll, setShowScroll] = useState(true);
+
     const tableStyle = {
         rows: {
             style: {
@@ -23,7 +26,7 @@ function StaffTb({ data }) {
     const columns = [
         {
             name: 'STT',
-            selector: (row) => row.id,
+            cell: (row, index) => index + 1,
         },
         {
             name: 'Mã nhân viên',
@@ -60,8 +63,15 @@ function StaffTb({ data }) {
         },
     ];
     return (
-        <div>
-            <DataTable columns={columns} data={data} customStyles={tableStyle}></DataTable>
+        <div onMouseLeave={() => setShowScroll(true)} onMouseEnter={() => setShowScroll(false)}>
+            <DataTable
+                columns={columns}
+                data={data}
+                customStyles={tableStyle}
+                fixedHeader={true}
+                fixedHeaderScrollHeight="60vh"
+                className={showScroll ? cx('table-staff', 'hideScroll') : cx('table-staff')}
+            ></DataTable>
         </div>
     );
 }

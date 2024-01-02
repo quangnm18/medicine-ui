@@ -1,0 +1,113 @@
+//modalAll
+
+.modalAll {
+    min-width: 600px;
+    text-align: center;
+}
+
+.modalAll-notif {
+    font-size: 3.2rem;
+    margin-top: 16px;
+    padding: 8px;
+}
+
+.modalAll-action {
+    margin-top: 32px;
+    padding: 8px;
+}
+
+.btn-modalAll {
+    cursor: pointer;
+    background-color: var(--primary);
+    color: var(--white);
+    margin: 8px 16px;
+    min-width: 100px;
+    padding: 12px;
+    font-size: 1.6rem;
+}
+
+//modalViewAdd
+
+.modal-view {
+    width: 1400px;
+    padding: 16px 16px 32px 16px;
+    position: relative;
+}
+
+.modal-title {
+    font-size: 2rem;
+    padding-bottom: 8px;
+    border-bottom: #f5f1f1 solid 2px;
+}
+
+.modal-form {
+    width: 100%;
+}
+
+.modal-if {
+    // padding-bottom: 32px;
+    flex-wrap: wrap;
+    display: inline-flex;
+    width: 100%;
+    margin: 16px 8px 0 8px;
+    .label {
+        min-width: 148px;
+    }
+}
+
+.if-detail {
+    width: 50%;
+    margin: 8px 0 24px 0;
+    align-items: center;
+
+    .label {
+        font-size: 1.6rem;
+    }
+
+    input {
+        font-size: 1.6rem;
+        padding: 8px;
+        color: var(--text-color);
+        outline-color: #938b8b;
+        outline-style: solid 1px;
+        border: solid 1px #938b8b;
+        width: 95%;
+    }
+}
+
+.modal-action {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding-bottom: 8px;
+}
+
+.modal-actionBtn {
+    margin-right: 28px;
+}
+
+.btn-modal {
+    min-width: 120px;
+    font-size: 1.6rem;
+    color: var(--primary);
+    background-color: #a2e1f4;
+    padding: 8px;
+    border-radius: 4px;
+    margin-left: 8px;
+    cursor: pointer;
+}
+
+//choose Unit
+.choose-unitDetail {
+    display: flex;
+    flex-direction: column;
+    margin: 0 8px;
+}
+
+.unit-select {
+    font-size: 1.6rem;
+    outline: none;
+    width: 650px;
+    height: 34px;
+    border: solid 1px #938b8b;
+}

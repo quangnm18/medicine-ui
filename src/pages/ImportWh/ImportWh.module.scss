@@ -11,6 +11,7 @@
 .choose-medicine {
     display: flex;
     align-items: center;
+    padding-top: 16px;
 }
 
 .medicine-option {
@@ -73,10 +74,77 @@
     min-width: 80px;
 }
 
+//search cpn
+.search-cpn {
+    padding: 8px 24px;
+}
+
 //Main Content
 .main-content {
     height: 100%;
     background-color: var(--white);
     padding: 8px 12px 0 12px;
     height: 100vh;
+    margin-top: 12px;
+}
+
+//new
+
+.import-if {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    align-items: center;
+}
+
+.import-input {
+    border: 1px solid #ccc;
+    font-size: 1.6rem;
+    width: 168px;
+    padding: 8px;
+}
+
+.if-details {
+    display: flex;
+    flex-direction: column;
+    margin: 8px;
+}
+
+.btn {
+    cursor: pointer;
+    background-color: var(--primary);
+    color: var(--white);
+    font-size: 1.6rem;
+    width: 160px;
+    height: 40px;
+}
+
+.import-addBtn {
+    margin-top: 24px;
+    margin-left: 12px;
+}
+
+.btn-desc {
+    // position: fixed;
+    // right: 5%;
+    // bottom: 10%;
+    text-align: end;
+    margin-top: 16px;
+}
+
+.btn-select {
+    width: 200px;
+    height: 40px;
+    font-size: 1.6rem;
+    outline: none;
+    margin-right: 24px;
+}
+
+.btn-confirm {
+    margin-left: 4px;
+    padding: 8px;
+}
+
+.error-mess {
+    color: red;
 }

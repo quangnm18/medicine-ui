@@ -1,12 +1,14 @@
 .info {
-    display: flex;
-    justify-content: flex-end;
+    width: 100%;
+    height: 56px;
     align-items: center;
     background-image: linear-gradient(to top right, var(--white), #36c5f0);
 }
 
 .header-info {
-    display: flex;
+    position: absolute;
+    right: 0;
+    display: inline-flex;
     align-items: center;
     padding: 12px 0;
 

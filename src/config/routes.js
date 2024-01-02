@@ -1,5 +1,6 @@
 const routes = {
     login: '/',
+    signUp: '/register',
     home: '/home',
     sell: '/sell',
     sellCreate: '/sell/create',
@@ -7,9 +8,10 @@ const routes = {
 
     warehouse: '/warehouse',
     importGoods: '/warehouse/import',
+    importCreate: '/warehouse/import/create',
+    importList: '/warehouse/import/list',
     exportGoods: '/warehouse/export',
     checkInventory: '/warehouse/check',
-    inventory: '/warehouse/inventory',
 
     category: '/category',
     categoryStaff: '/category/staff',
