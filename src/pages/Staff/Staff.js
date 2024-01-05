@@ -49,7 +49,7 @@ function Staff() {
     return (
         <div className={cx('content')}>
             <div className={cx('header-content')}>
-                <DirectionHeader>Danh mục</DirectionHeader>
+                <DirectionHeader>Quản lý danh mục</DirectionHeader>
                 <div className={cx('choose-medicine')}>
                     <h4 className={cx('header-title')}>Danh sách nhân viên</h4>
                     <div className={cx('header-action')}>

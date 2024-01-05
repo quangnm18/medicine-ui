@@ -37,36 +37,42 @@ function Supplier() {
     const inputsSupplier = [
         {
             id: 1,
+            label: 'Tên nhà cung cấp',
             name: 'Name',
             type: 'text',
             placeholder: 'Tên nhà cung cấp',
         },
         {
             id: 2,
+            label: 'Số điện thoại',
             name: 'PhoneNumber',
             type: 'text',
             placeholder: 'Số điện thoại',
         },
         {
             id: 3,
+            label: 'Email',
             name: 'Email',
             type: 'email',
             placeholder: 'Email',
         },
         {
             id: 4,
+            label: 'Địa chỉ',
             name: 'Address',
             type: 'text',
             placeholder: 'Địa chỉ',
         },
         {
             id: 5,
+            label: 'Người dại diện',
             name: 'personRepresent',
             type: 'text',
             placeholder: 'Người dại diện',
         },
         {
             id: 6,
+            label: 'Mã số thuế',
             name: 'TaxCode',
             type: 'text',
             placeholder: 'Mã số thuế',
@@ -95,14 +101,16 @@ function Supplier() {
     const loadData = () => {
         const fetchApi = async () => {
             const data = await supplierServices.getAll();
-            const dataCurr = data.filter((item) => item.isDeleted !== 1);
-            const dataDeleted = data.filter((item) => item.isDeleted === 1);
+            if (data) {
+                const dataCurr = data.filter((item) => item.isDeleted !== 1);
+                const dataDeleted = data.filter((item) => item.isDeleted === 1);
 
-            setDataSup(data);
-            setDataSupCurr(dataCurr);
-            setDataSupDel(dataDeleted);
-            setDataTb(dataCurr);
-            setDataTbDel(dataDeleted);
+                setDataSup(data);
+                setDataSupCurr(dataCurr);
+                setDataSupDel(dataDeleted);
+                setDataTb(dataCurr);
+                setDataTbDel(dataDeleted);
+            }
         };
         fetchApi();
     };
@@ -239,7 +247,7 @@ function Supplier() {
     return (
         <div className={cx('content')}>
             <div className={cx('header-content')}>
-                <DirectionHeader>Danh mục</DirectionHeader>
+                <DirectionHeader>Quản lý danh mục</DirectionHeader>
                 <div className={cx('choose-medicine')}>
                     <h4 className={cx('header-title')}>Danh sách nhà cung cấp</h4>
                     <div className={cx('header-action')}>

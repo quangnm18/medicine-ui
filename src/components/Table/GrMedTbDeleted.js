@@ -3,11 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DataTable from 'react-data-table-component';
 import classNames from 'classnames/bind';
 import style from './Table.module.scss';
-import { memo } from 'react';
 
 const cx = classNames.bind(style);
 
-function MedDeletedTb({ data, method }) {
+function GrMedTbDeleted({ data, method }) {
     const tableStyle = {
         rows: {
             style: {
@@ -25,37 +24,42 @@ function MedDeletedTb({ data, method }) {
         {
             name: 'STT',
             cell: (row, index) => index + 1,
+            width: '100px',
         },
         {
-            name: 'Tên dược',
-            selector: (row) => row.ten,
+            name: 'Tên nhóm thuốc',
+            selector: (row) => row.ten_nhom_thuoc,
             sortable: true,
+            width: '320px',
         },
         {
-            name: 'Thời gian xóa',
-            selector: (row) => {
-                let date = new Date(row.deletedAt);
-                return date.toLocaleDateString();
-            },
+            name: 'Mô tả',
+            selector: (row) => row.description,
+            width: '400px',
         },
         {
-            name: 'Người xóa',
-            selector: (row) => row.ham_luong,
+            name: 'Mã nhóm thuốc',
+            selector: (row) => row.group_code,
+            sortable: true,
+            width: '180px',
+            // center: true,
         },
         {
             name: '',
             cell: (row) => (
-                <div className={cx('action-item')}>
-                    <button className={cx('btn')} onClick={() => method.toggleModalHardDelete(row.id)}>
+                <div>
+                    <button className={cx('btn')} onClick={() => method.toggleModalHardDel(row.id)}>
                         <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
                     </button>
                 </div>
             ),
+            width: '200px',
+            right: true,
         },
         {
             name: '',
             cell: (row) => (
-                <div className={cx('action-item')}>
+                <div>
                     <button className={cx('btn')} onClick={() => method.toggleModalView(row)}>
                         <FontAwesomeIcon icon={faPenToSquare} className={cx('icon-view')} />
                     </button>
@@ -64,20 +68,14 @@ function MedDeletedTb({ data, method }) {
                     </button>
                 </div>
             ),
+            width: '200px',
         },
     ];
     return (
         <div>
-            <DataTable
-                columns={columns}
-                data={data}
-                customStyles={tableStyle}
-                fixedHeader={true}
-                pagination
-                selectableRows
-            ></DataTable>
+            <DataTable columns={columns} data={data} customStyles={tableStyle} pagination selectableRows></DataTable>
         </div>
     );
 }
 
-export default memo(MedDeletedTb);
+export default GrMedTbDeleted;

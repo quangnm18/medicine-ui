@@ -1,14 +1,18 @@
-import { faPenToSquare, faRotateLeft, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { faPenToSquare, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DataTable from 'react-data-table-component';
 import classNames from 'classnames/bind';
 import style from './Table.module.scss';
-import { memo } from 'react';
 
 const cx = classNames.bind(style);
 
-function MedDeletedTb({ data, method }) {
+function GroupMedTb({ data, method }) {
     const tableStyle = {
+        table: {
+            style: {
+                textAlign: 'center',
+            },
+        },
         rows: {
             style: {
                 fontSize: '16px',
@@ -25,45 +29,39 @@ function MedDeletedTb({ data, method }) {
         {
             name: 'STT',
             cell: (row, index) => index + 1,
+            width: '100px',
         },
         {
-            name: 'Tên dược',
-            selector: (row) => row.ten,
+            name: 'Tên nhóm thuốc',
+            selector: (row) => row.ten_nhom_thuoc,
             sortable: true,
+            width: '360px',
         },
         {
-            name: 'Thời gian xóa',
-            selector: (row) => {
-                let date = new Date(row.deletedAt);
-                return date.toLocaleDateString();
-            },
+            name: 'Mô tả',
+            selector: (row) => row.description,
+            width: '500px',
         },
         {
-            name: 'Người xóa',
-            selector: (row) => row.ham_luong,
+            name: 'Mã nhóm thuốc',
+            selector: (row) => row.group_code,
+            sortable: true,
+            width: '180px',
         },
         {
             name: '',
             cell: (row) => (
-                <div className={cx('action-item')}>
-                    <button className={cx('btn')} onClick={() => method.toggleModalHardDelete(row.id)}>
+                <div>
+                    <button className={cx('btn')} onClick={() => method.toggleModalSoftDel(row.id)}>
                         <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
                     </button>
-                </div>
-            ),
-        },
-        {
-            name: '',
-            cell: (row) => (
-                <div className={cx('action-item')}>
                     <button className={cx('btn')} onClick={() => method.toggleModalView(row)}>
                         <FontAwesomeIcon icon={faPenToSquare} className={cx('icon-view')} />
                     </button>
-                    <button className={cx('btn')} onClick={() => method.toggleModalRes(row.id)}>
-                        <FontAwesomeIcon icon={faRotateLeft} className={cx('icon-view')} />
-                    </button>
                 </div>
             ),
+            width: '200px',
+            right: true,
         },
     ];
     return (
@@ -72,12 +70,13 @@ function MedDeletedTb({ data, method }) {
                 columns={columns}
                 data={data}
                 customStyles={tableStyle}
-                fixedHeader={true}
                 pagination
                 selectableRows
+                fixedHeader
+                fixedHeaderScrollHeight="700px"
             ></DataTable>
         </div>
     );
 }
 
-export default memo(MedDeletedTb);
+export default GroupMedTb;

@@ -6,7 +6,7 @@ import { useState, memo } from 'react';
 
 const cx = classNames.bind(style);
 
-function SearchInput({ dataInputValue, dataSearchResult, methodOnchangeInput, methodSelectedResult, classWidth }) {
+function SearchInput({ dataInputValue, dataSearchResult = [], methodOnchangeInput, methodSelectedResult, classWidth }) {
     const [showResult, setShowResult] = useState(false);
 
     const handleShowResult = (e) => {

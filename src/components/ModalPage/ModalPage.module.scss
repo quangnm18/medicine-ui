@@ -68,14 +68,22 @@
         font-size: 1.6rem;
         padding: 8px;
         color: var(--text-color);
-        outline-color: #938b8b;
-        outline-style: solid 1px;
-        border: solid 1px #938b8b;
+        outline: none;
+        border: solid 2px #e0d9d9;
+        border-radius: 4px;
         width: 95%;
     }
 }
 
-.modal-action {
+//
+//modal add view all
+.modal-actionAll {
+    padding-bottom: 8px;
+    text-align: right;
+    margin-right: 28px;
+}
+
+.modal-actionAddMed {
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
@@ -85,6 +93,13 @@
 .modal-actionBtn {
     margin-right: 28px;
 }
+
+//modal view
+.modal-actionView {
+    text-align: right;
+    margin-right: 25px;
+}
+//
 
 .btn-modal {
     min-width: 120px;
@@ -97,17 +112,119 @@
     cursor: pointer;
 }
 
+//Modal Excel
+.wrapper-excel {
+    width: 100%;
+    max-width: 1600px;
+    margin: auto;
+    overflow-x: hidden;
+    padding: 20px;
+}
+
+.title-excel {
+    font-size: 2.8rem;
+    font-weight: 400;
+    padding: 4px 0 12px 0;
+}
+
+.custom-form {
+    width: 1600px;
+    display: flex;
+    margin-bottom: 24px;
+}
+.form-control {
+    font-size: 1.6rem;
+}
+
+.btn-excel {
+    cursor: pointer;
+    background-color: var(--primary);
+    color: var(--white);
+    font-size: 1.6rem;
+    padding: 12px;
+    border-radius: 4px;
+    width: 200px;
+    text-align: center;
+    margin-right: 8px;
+}
+
+.modalEx-action {
+    text-align: right;
+    margin-top: 16px;
+}
+
+.file-upload {
+    width: 160px;
+    background-color: rgb(42, 154, 46);
+    color: var(--white);
+    text-align: center;
+    border-radius: 4px;
+    padding: 12px;
+    cursor: pointer;
+}
+
+.viewer {
+    height: 600px;
+    margin-top: 8px;
+    width: 100%;
+    background-color: #e4e4e4;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: scroll;
+}
+
+.alert-err {
+    background-color: rgb(231, 141, 141);
+    padding: 8px;
+    font-size: 1.6rem;
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    border-radius: 4px;
+}
+
 //choose Unit
 .choose-unitDetail {
     display: flex;
     flex-direction: column;
     margin: 0 8px;
+    height: 80px;
+    position: relative;
 }
 
 .unit-select {
     font-size: 1.6rem;
     outline: none;
-    width: 650px;
+    width: 316px;
     height: 34px;
     border: solid 1px #938b8b;
+}
+
+.select-action {
+    display: flex;
+}
+
+//eror validate
+.error-validate {
+    color: rgb(240, 99, 99);
+    position: absolute;
+}
+
+.error-validateSelect {
+    color: rgb(240, 99, 99);
+    position: absolute;
+    bottom: 0;
+}
+
+.modal-formDetail {
+    text-align: center;
+    margin-bottom: 12px;
+    div {
+        padding: 8px;
+    }
+}
+.table-details {
+    padding: 0 16px;
 }

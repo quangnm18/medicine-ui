@@ -1,0 +1,81 @@
+//modalViewGr
+
+.modal-viewGr {
+    width: 800px;
+    padding: 16px 16px 32px 16px;
+    position: relative;
+}
+
+.modal-titleGr {
+    font-size: 2rem;
+    padding-bottom: 8px;
+    margin-bottom: 36px;
+    border-bottom: #f5f1f1 solid 2px;
+}
+
+.modal-formGr {
+    width: 100%;
+}
+
+.modal-ifGr {
+    width: 100%;
+    margin: 16px 8px 0 8px;
+    .label-gr {
+        min-width: 148px;
+    }
+}
+
+.modal-ifGr-wrap {
+    margin-bottom: 48px;
+    input {
+        position: relative;
+    }
+}
+
+.if-detailGr {
+    display: flex;
+    margin: 0px 14px 0px 0;
+    align-items: center;
+
+    .label-gr {
+        font-size: 1.6rem;
+    }
+
+    input,
+    textarea {
+        font-family: 'Roboto', sans-serif;
+        font-size: 1.6rem;
+        padding: 8px;
+        color: var(--text-color);
+        border: solid 1px #e0d9d9;
+        border-radius: 4px;
+        outline: none;
+        width: 100%;
+    }
+}
+
+//input err
+.error-validate {
+    margin-left: 148px;
+    color: rgb(240, 99, 99);
+    position: absolute;
+}
+
+//
+//modal add view all
+.modal-actionGr {
+    padding-bottom: 8px;
+    text-align: right;
+    margin-right: 28px;
+}
+
+.btn-modal {
+    min-width: 120px;
+    font-size: 1.6rem;
+    color: var(--primary);
+    background-color: #a2e1f4;
+    padding: 8px;
+    border-radius: 4px;
+    margin-left: 8px;
+    cursor: pointer;
+}

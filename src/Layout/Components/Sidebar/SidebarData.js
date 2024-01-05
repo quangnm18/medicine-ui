@@ -1,4 +1,4 @@
-import { faSellcast } from '@fortawesome/free-brands-svg-icons';
+import { faSellcast, faUnity } from '@fortawesome/free-brands-svg-icons';
 import {
     faBoxesStacked,
     faCapsules,
@@ -89,7 +89,7 @@ export const SidebarData = [
     },
     {
         id: 4,
-        title: 'Danh mục',
+        title: 'Quản lý danh mục',
         path: routesConfig.category,
         icon: <FontAwesomeIcon icon={faRectangleList} />,
         iconClosed: <FontAwesomeIcon icon={faChevronDown} />,
@@ -112,8 +112,13 @@ export const SidebarData = [
             },
             {
                 title: 'Nhóm dược phẩm',
-                path: routesConfig.categoryMedicine,
+                path: routesConfig.categoryGroupMedicine,
                 icon: <FontAwesomeIcon icon={faList} />,
+            },
+            {
+                title: 'Đơn vị dược',
+                path: routesConfig.categoryUnitMedicine,
+                icon: <FontAwesomeIcon icon={faUnity} />,
             },
         ],
     },

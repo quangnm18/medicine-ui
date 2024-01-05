@@ -1,0 +1,78 @@
+import { faPenToSquare, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import DataTable from 'react-data-table-component';
+import classNames from 'classnames/bind';
+import style from './Table.module.scss';
+
+const cx = classNames.bind(style);
+
+function InventoryWhTb({ data, method }) {
+    const tableStyle = {
+        rows: {
+            style: {
+                fontSize: '16px',
+            },
+        },
+        headCells: {
+            style: {
+                fontSize: '16px',
+            },
+        },
+    };
+
+    const columns = [
+        {
+            name: 'STT',
+            cell: (row, index) => index + 1,
+        },
+        {
+            name: 'Số hóa đơn',
+            selector: (row) => row.ID,
+        },
+        {
+            name: 'Ngày lập',
+            selector: (row) => {
+                let date = new Date(row.CreatedDate);
+                return date.toLocaleDateString();
+            },
+        },
+        {
+            name: 'Tổng tiền',
+            selector: (row) => row.thanh_tien,
+        },
+        {
+            name: 'Nhân viên',
+            selector: (row) => row.Name,
+        },
+        {
+            name: '#',
+            cell: (row) => (
+                <div>
+                    <button className={cx('btn')} onClick={() => method.toggleModalDelete(row.ID)}>
+                        <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
+                    </button>
+                    <button className={cx('btn')}>
+                        <FontAwesomeIcon icon={faPenToSquare} className={cx('icon-view')} />
+                    </button>
+                </div>
+            ),
+        },
+        {
+            name: 'Trạng thái',
+            cell: (row) => (
+                <div>
+                    {row.status === 2 && <button>Đang duyệt</button>}
+                    {row.status === 1 && <button>Đã duyệt</button>}
+                    {row.status === 0 && <button>Từ chối</button>}
+                </div>
+            ),
+        },
+    ];
+    return (
+        <div>
+            <DataTable columns={columns} data={data} customStyles={tableStyle}></DataTable>
+        </div>
+    );
+}
+
+export default InventoryWhTb;

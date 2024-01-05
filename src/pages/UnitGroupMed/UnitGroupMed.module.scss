@@ -1,0 +1,144 @@
+//animation
+// @keyframes fadeIn {
+//     from {
+//         opacity: 0;
+//     }
+//     to {
+//         opacity: 1;
+//     }
+// }
+
+.header-content {
+    margin-bottom: 4px;
+}
+
+.header-title {
+    padding: 12px 0 12px 16px;
+    font-size: 2.2rem;
+    font-weight: 500;
+}
+
+.choose-medicine {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-action {
+    display: flex;
+    align-items: center;
+    margin-right: 36px;
+}
+
+.header-search {
+    background-color: var(--white);
+    border: 1px solid #e4e4e4;
+
+    input {
+        padding: 8px 12px;
+        font-size: 1.6rem;
+        width: 300px;
+    }
+
+    .search-btn {
+        padding: 8px 0;
+        border-left: 1px solid #e4e4e4;
+        background-color: var(--white);
+        cursor: pointer;
+        width: 64px;
+    }
+
+    .search-icon {
+        color: var(--primary);
+    }
+}
+
+.btn-addstaff {
+    background-color: var(--primary);
+    color: var(--white);
+    font-size: 1.6rem;
+    padding: 12px 0;
+    border-radius: 2px;
+    min-width: 140px;
+    margin-left: 24px;
+    cursor: pointer;
+}
+
+//Main Content
+.main-content {
+    height: 100%;
+    background-color: var(--white);
+    padding: 8px 12px 0 12px;
+    height: 100vh;
+}
+
+// .modal {
+//     position: fixed;
+//     animation: fadeIn linear 0.1s;
+//     z-index: 2 !important;
+// }
+
+//Modal view
+
+.modal-view {
+    min-width: 560px;
+    min-height: 600px;
+    padding: 16px;
+    position: relative;
+}
+
+.modal-title {
+    font-size: 2rem;
+    padding-bottom: 8px;
+    border-bottom: #f5f1f1 solid 2px;
+}
+
+.modal-if {
+    margin-top: 16px;
+    .label {
+        min-width: 148px;
+    }
+}
+
+.if-detail {
+    display: flex;
+    margin: 8px 0 24px 0;
+    align-items: center;
+
+    .label {
+        font-size: 1.6rem;
+    }
+
+    input {
+        flex: 1;
+        font-size: 1.6rem;
+        padding: 8px;
+        color: var(--text-color);
+        outline-color: #938b8b;
+        outline-style: solid 1px;
+    }
+}
+
+.modal-action {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+}
+
+.btn-modal {
+    min-width: 120px;
+    font-size: 1.6rem;
+    color: var(--primary);
+    background-color: #a2e1f4;
+    padding: 8px;
+    border-radius: 4px;
+    margin-left: 8px;
+    cursor: pointer;
+}
+
+//modal add
+.if-add {
+    input {
+        outline: 2px solid #e4e4e4;
+    }
+}

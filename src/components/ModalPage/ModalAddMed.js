@@ -9,43 +9,62 @@ const cx = classNames.bind(style);
 
 function ModalAddMed({ dataInputs, dataValueInputs, methodOnchange, methodToggle, methodHandle }) {
     const [dataUnitMed, setDataUnitMed] = useState([]);
+    const [dataGrMed, setDataGrMed] = useState([]);
 
     const [valueUnit, setValueUnit] = useState('');
+    const [valueGroup, setValueGroup] = useState('');
+    const [error, setError] = useState({});
 
-    // const handleUpdateValuesSelect = (selectedId) => {
-    //     const arr = dataUnitMed.filter((unit) => unit.id === selectedId);
-    //     setValuesSelect({ ...valuesSelect, donvi_lon: arr[0].name });
-    // };
+    //validate
+    const validator = () => {
+        const validationError = {};
+        if (dataValueInputs.ten === '' && !dataValueInputs.ten.trim()) {
+            validationError.ten = 'Phải nhập tên dược phẩm';
+        }
 
-    // const onChangeSelectMax = (selectedObj) => {
-    //     setValuesSelect({ ...valuesSelect, donvi_lon: selectedObj.target.value });
-    // };
+        if (dataValueInputs.dang_bao_che === '' && !dataValueInputs.dang_bao_che.trim()) {
+            validationError.dang_bao_che = 'Phải nhập dạng bào chế dược phẩm';
+        }
 
-    // const onChangeSelectMedium = (selectedObj) => {
-    //     setValuesSelect({ ...valuesSelect, donvi_tb: selectedObj.target.value });
-    // };
+        if (dataValueInputs.dong_goi === '' && !dataValueInputs.dong_goi.trim()) {
+            validationError.dong_goi = 'Phải nhập quy cách đóng gói';
+        }
 
-    // const onChangeSelectMin = (selectedObj) => {
-    //     setValuesSelect({ ...valuesSelect, donvi_nho: selectedObj.target.value });
-    // };
+        if (valueUnit === '' && !valueUnit.trim()) {
+            validationError.don_vi_duoc = 'Phải chọn đơn vị dược';
+        }
 
-    //handle
+        if (valueGroup === '' && !valueGroup.trim()) {
+            validationError.nhom_thuoc = 'Phải chọn nhóm thuốc';
+        }
 
-    const handleAdd = () => {
-        axios
-            .put('http://localhost:8081/category/medicine/unit/medcreate')
-            .then((res) => {
-                console.log(res);
-                // methodHandle(res.data.id);
-            })
-            .catch((e) => console.log(e));
+        setError(validationError);
+
+        if (Object.keys(validationError).length === 0) {
+            methodHandle(valueUnit, valueGroup);
+        }
+    };
+
+    const onChangeSelectedUnit = (obj) => {
+        setValueUnit(obj.target.value);
+    };
+
+    const onChangeSelectedGr = (obj) => {
+        setValueGroup(obj.target.value);
     };
 
     useEffect(() => {
         axios
-            .get('http://localhost:8081/category/medicine/unit/med')
+            .get('http://localhost:8081/category/medicine/unit')
             .then((res) => {
                 setDataUnitMed(res.data);
+            })
+            .catch((e) => console.log(e));
+
+        axios
+            .get('http://localhost:8081/category/medicine/group')
+            .then((res) => {
+                setDataGrMed(res.data);
             })
             .catch((e) => console.log(e));
     }, []);
@@ -58,32 +77,50 @@ function ModalAddMed({ dataInputs, dataValueInputs, methodOnchange, methodToggle
                     <div className={cx('modal-if')}>
                         {dataInputs.map((input) => (
                             <div key={input.id} className={cx('if-detail')}>
-                                <div className={cx('label')}>{input.placeholder}</div>
-                                <input
-                                    name={input.name}
-                                    value={dataValueInputs[input.name]}
-                                    placeholder={input.placeholder}
-                                    onChange={methodOnchange}
-                                />
+                                <div>
+                                    <div className={cx('label')}>{input.label}</div>
+                                    <input
+                                        name={input.name}
+                                        value={dataValueInputs[input.name]}
+                                        placeholder={input.placeholder}
+                                        onChange={methodOnchange}
+                                    />
+                                </div>
+                                {error[input.name] && <div className={cx('error-validate')}>{error[input.name]}</div>}
                             </div>
                         ))}
                     </div>
                 </div>
-                <div className={cx('modal-action')}>
-                    <div className={cx('choose-unitDetail')}>
-                        <label>Đơn vị dược</label>
-                        <select name="max" className={cx('unit-select')}>
-                            <option value="">Đơn vị</option>
-                            {dataUnitMed.map((unit) => (
-                                <option key={unit.id} value={unit.id}>
-                                    {unit.mo_ta}
-                                </option>
-                            ))}
-                        </select>
+                <div className={cx('modal-actionAddMed')}>
+                    <div className={cx('select-action')}>
+                        <div className={cx('choose-unitDetail')}>
+                            <label>Đơn vị dược</label>
+                            <select className={cx('unit-select')} onChange={onChangeSelectedUnit}>
+                                <option value="">Đơn vị</option>
+                                {dataUnitMed.map((unit) => (
+                                    <option key={unit.id} value={unit.id}>
+                                        {unit.description_unit}
+                                    </option>
+                                ))}
+                            </select>
+                            {error.don_vi_duoc && <div className={cx('error-validateSelect')}>{error.don_vi_duoc}</div>}
+                        </div>
+                        <div className={cx('choose-unitDetail')}>
+                            <label>Nhóm thuốc</label>
+                            <select className={cx('unit-select')} onChange={onChangeSelectedGr}>
+                                <option value=""></option>
+                                {dataGrMed.map((gr) => (
+                                    <option key={gr.id} value={gr.id}>
+                                        {gr.ten_nhom_thuoc}
+                                    </option>
+                                ))}
+                            </select>
+                            {error.nhom_thuoc && <div className={cx('error-validateSelect')}>{error.nhom_thuoc}</div>}
+                        </div>
                     </div>
 
                     <div className={cx('modal-actionBtn')}>
-                        <button className={cx('btn-modal', 'btn-yes')} onClick={handleAdd}>
+                        <button className={cx('btn-modal', 'btn-yes')} onClick={validator}>
                             Thêm
                         </button>
                         <button className={cx('btn-modal', 'btn-no')} onClick={methodToggle}>

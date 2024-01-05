@@ -2,52 +2,36 @@ import classNames from 'classnames/bind';
 import style from './ModalPage.module.scss';
 
 import Modal from '~/components/Modal';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useState } from 'react';
 
 const cx = classNames.bind(style);
 
 function ModalAdd({ label, dataInputs, dataValueInputs, methodOnchange, methodToggle, methodHandle }) {
-    const [dataUnitMed, setDataUnitMed] = useState([]);
+    const [error, setError] = useState({});
 
-    const [valuesSelect, setValuesSelect] = useState({
-        max_unit: '',
-        medium_unit: '',
-        min_unit: '',
-    });
+    //validate
+    const validator = () => {
+        const validationError = {};
+        if (dataValueInputs.Name === '' && !dataValueInputs.Name.trim()) {
+            validationError.Name = 'Phải nhập tên nhà cung cấp';
+        }
 
-    const onChangeSelectMax = (selectedObj) => {
-        setValuesSelect({ ...valuesSelect, max_unit: selectedObj.target.value });
+        if (dataValueInputs.PhoneNumber === '' && !dataValueInputs.PhoneNumber.trim()) {
+            validationError.PhoneNumber = 'Phải nhập số điện thoại';
+        }
+
+        if (dataValueInputs.Email === '' && !dataValueInputs.Email.trim()) {
+            validationError.Email = 'Phải nhập Email';
+        } else if (!/\S+@\S+\.\S+/.test(dataValueInputs.Email)) {
+            validationError.Email = 'Email không hợp lệ';
+        }
+
+        setError(validationError);
+
+        if (Object.keys(validationError).length === 0) {
+            methodHandle();
+        }
     };
-
-    const onChangeSelectMedium = (selectedObj) => {
-        setValuesSelect({ ...valuesSelect, medium_unit: selectedObj.target.value });
-    };
-
-    const onChangeSelectMin = (selectedObj) => {
-        setValuesSelect({ ...valuesSelect, min_unit: selectedObj.target.value });
-    };
-
-    //handle
-
-    const handleAdd = () => {
-        axios
-            .put('http://localhost:8081/category/medicine/unit/medcreate', valuesSelect)
-            .then((res) => {
-                methodHandle(res.data.id);
-            })
-            .catch((e) => console.log(e));
-    };
-
-    useEffect(() => {
-        axios
-            .get('http://localhost:8081/category/medicine/unit/all')
-            .then((res) => {
-                setDataUnitMed(res.data);
-            })
-            .catch((e) => console.log(e));
-    }, []);
-
     return (
         <Modal>
             <div className={cx('modal-view')}>
@@ -56,60 +40,21 @@ function ModalAdd({ label, dataInputs, dataValueInputs, methodOnchange, methodTo
                     <div className={cx('modal-if')}>
                         {dataInputs.map((input) => (
                             <div key={input.id} className={cx('if-detail')}>
-                                <div className={cx('label')}>{input.placeholder}</div>
+                                <div className={cx('label')}>{input.label}</div>
                                 <input
                                     name={input.name}
                                     value={dataValueInputs[input.name]}
                                     placeholder={input.placeholder}
                                     onChange={methodOnchange}
                                 />
+                                {error[input.name] && <div className={cx('error-validate')}>{error[input.name]}</div>}
                             </div>
                         ))}
                     </div>
-
-                    {label === 'Thêm mới dược phẩm' && (
-                        <div className={cx('choose-unit')}>
-                            <div>
-                                <label>Max Unit</label>
-                                <select name="max" onChange={onChangeSelectMax}>
-                                    <option value="">Đơn vị</option>
-                                    {dataUnitMed.map((unit) => (
-                                        <option key={unit.id} value={unit.id}>
-                                            {unit.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            <div>
-                                <label>Medium Unit</label>
-                                <select name="medium" onChange={onChangeSelectMedium}>
-                                    <option value="">Đơn vị</option>
-                                    {dataUnitMed.map((unit) => (
-                                        <option key={unit.id} value={unit.id}>
-                                            {unit.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            <div>
-                                <label>Min Unit</label>
-                                <select name="min" onChange={onChangeSelectMin}>
-                                    <option value="">Đơn vị</option>
-                                    {dataUnitMed.map((unit) => (
-                                        <option key={unit.id} value={unit.id}>
-                                            {unit.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
-                    )}
                 </div>
 
-                <div className={cx('modal-action')}>
-                    <button className={cx('btn-modal', 'btn-yes')} onClick={handleAdd}>
+                <div className={cx('modal-actionAll')}>
+                    <button className={cx('btn-modal', 'btn-yes')} onClick={validator}>
                         Thêm
                     </button>
                     <button className={cx('btn-modal', 'btn-no')} onClick={methodToggle}>

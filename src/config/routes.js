@@ -1,22 +1,27 @@
 const routes = {
-    login: '/',
+    login: '/login',
     signUp: '/register',
-    home: '/home',
+    home: '/',
     sell: '/sell',
     sellCreate: '/sell/create',
     sellList: '/sell/list',
 
     warehouse: '/warehouse',
-    importGoods: '/warehouse/import',
-    importCreate: '/warehouse/import/create',
-    importList: '/warehouse/import/list',
-    exportGoods: '/warehouse/export',
-    checkInventory: '/warehouse/check',
+
+    importCreate: '/importlist/create',
+    importList: '/importlist',
+
+    exportCreate: '/exportlist/create',
+    exportList: '/exportlist',
+
+    checkInventory: '/warehouse',
 
     category: '/category',
     categoryStaff: '/category/staff',
     categorySupplier: '/category/supplier',
     categoryMedicine: '/category/medicine',
+    categoryGroupMedicine: '/category/grmedicine',
+    categoryUnitMedicine: '/category/unitmedicine',
 
     report: '/report',
 

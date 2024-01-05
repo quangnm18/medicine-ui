@@ -6,7 +6,7 @@ import Modal from '../Modal';
 
 const cx = classNames.bind(style);
 
-function ModalAll({ methodToggle, methodHandle, data, label }) {
+function ModalAll({ methodToggle, methodHandle, label, data }) {
     return (
         <Modal>
             <div className={cx('modalAll')}>
