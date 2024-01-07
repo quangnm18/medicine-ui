@@ -6,6 +6,14 @@
     width: 1430px;
 }
 
+.search-sellWh {
+    width: 346px;
+}
+
+.search-statistic {
+    width: 440px;
+}
+
 .result-item {
     font-size: 1.6rem;
     padding: 8px 12px;
@@ -22,7 +30,8 @@
 
 .input-name {
     width: 100%;
-    padding: 8px;
+    padding: 9px;
     font-size: 1.6rem;
     border: 1px solid #e4e4e4;
+    outline: none;
 }

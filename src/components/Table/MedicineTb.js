@@ -25,14 +25,6 @@ function MedicineTb({ data, method }) {
         },
     };
 
-    // const allKeys = Object.keys(data[0]);
-    // const column = allKeys.map((key, index) => {
-    //     return {
-    //         name: key,
-    //         selector: (row) => row[key],
-    //     };
-    // });
-
     const columns = [
         {
             name: 'STT',

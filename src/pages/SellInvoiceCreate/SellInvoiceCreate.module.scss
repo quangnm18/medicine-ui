@@ -8,12 +8,18 @@
     font-weight: 500;
 }
 
-.choose-medicine {
+.choose-sell {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.choose-detail {
     display: flex;
     align-items: center;
 }
 
-.medicine-option {
+.sell-option {
     padding: 8px;
 
     input,
@@ -34,6 +40,17 @@
     .input-name {
         min-width: 400px;
     }
+}
+
+.sell-optionSearch {
+    label {
+        display: block;
+        width: 124px;
+    }
+    display: flex;
+    align-items: center;
+    height: 52px;
+    width: 460px;
 }
 
 .btn-action {

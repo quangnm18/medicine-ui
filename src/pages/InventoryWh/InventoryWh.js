@@ -3,82 +3,32 @@ import style from './InventoryWh.module.scss';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import axios from 'axios';
-import * as supplierServices from '~/apiServices/supplierServices';
 import InventoryWhTb from '~/components/Table/InventoryWhTb';
 
 const cx = classNames.bind(style);
 
 function InventoryWh() {
-    // const [dataSup, setDataSup] = useState([]);
-    // const [dataSupCurr, setDataSupCurr] = useState([]);
-    // const [dataSupDel, setDataSupDel] = useState([]);
-
-    // const [dataTb, setDataTb] = useState([]);
-    // const [dataTbDel, setDataTbDel] = useState([]);
-
-    // const [stateBin, setStateBin] = useState(false);
-
-    // const [values, setValues] = useState({
-    //     Name: '',
-    //     PhoneNumber: '',
-    //     Email: '',
-    //     Address: '',
-    //     personRepresent: '',
-    //     TaxCode: '',
-    // });
+    const [allData, setAllData] = useState([]);
 
     const [valuesSearch, setValuesSearch] = useState('');
-
-    // const [showModalAdd, setShowModalAdd] = useState(false);
-    // const [showModalView, setShowModalView] = useState(false);
-    // const [showModalDelete, setShowModalDelete] = useState(false);
-    // const [showModalHardDel, setShowModaHardDel] = useState(false);
-    // const [showModalRes, setShowModalRes] = useState(false);
-
-    // const [idSelected, setIdSelected] = useState();
-
-    // const onChangeInputSup = (e) => {
-    //     setValues({ ...values, [e.target.name]: e.target.value });
-    // };
 
     const onChangeInputSearch = (e) => {
         setValuesSearch(e.target.value);
     };
 
-    // const handleFilter = () => {
-    //     if (stateBin) {
-    //         if (valuesSearch.length) {
-    //             const arr = dataSupDel.filter((sup) => {
-    //                 return sup.Name.toLowerCase().includes(valuesSearch.toLocaleLowerCase());
-    //             });
-    //             setDataTbDel(arr);
-    //         } else {
-    //             setDataTbDel(dataSupDel);
-    //         }
-    //     } else {
-    //         if (valuesSearch.length) {
-    //             const arr = dataSupCurr.filter((sup) => {
-    //                 return sup.Name.toLocaleLowerCase().includes(valuesSearch.toLocaleLowerCase());
-    //             });
-    //             setDataTb(arr);
-    //         } else {
-    //             setDataTb(dataSupCurr);
-    //         }
-    //     }
-    // };
+    useEffect(() => {
+        axios
+            .get('http://localhost:8081/category/warehouse')
+            .then((res) => {
+                setAllData(res.data[0]);
+            })
+            .catch((e) => console.log(e));
+    }, []);
 
-    // const handleKeyPress = (e) => {
-    //     if (e.code === 'Enter') {
-    //         handleFilter();
-    //     }
-    // };
-
-    // useEffect(() => {
-    //     loadData();
-    // }, []);
+    console.log(allData);
 
     return (
         <div className={cx('content')}>
@@ -99,15 +49,13 @@ function InventoryWh() {
                                 <FontAwesomeIcon icon={faSearch} className={cx('search-icon')} />
                             </button>
                         </div>
-                        <button className={cx('btn-addstaff')}>Thêm</button>
-                        <button className={cx('btn-addstaff')}>Nhập excel</button>
-                        <button className={cx('btn-addstaff')}>Bin</button>
+                        <button className={cx('btn-addstaff')}>Xuất excel</button>
                     </div>
                 </div>
             </div>
 
             <div className={cx('main-content')}>
-                <InventoryWhTb />
+                <InventoryWhTb data={allData} />
             </div>
         </div>
     );

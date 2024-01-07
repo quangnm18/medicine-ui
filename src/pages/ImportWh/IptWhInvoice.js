@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import DirectionHeader from '~/components/DirectionHeader/DirectionHeader';
@@ -9,6 +9,8 @@ import SearchInput from '~/components/Search/SearchInput';
 import * as searchServices from '~/apiServices/searchServices';
 import ModalAll from '~/components/ModalPage/ModalAll';
 import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSquareXmark, faXmark } from '@fortawesome/free-solid-svg-icons';
 
 const cx = classNames.bind(style);
 
@@ -19,9 +21,10 @@ function CreateInvoiceIpt() {
 
     const [dataDetails, setDataDetails] = useState([]);
     const [dataSup, setDataSup] = useState([]);
-    const [chooseSup, setChooseSup] = useState(-1);
+    const [chooseSup, setChooseSup] = useState('');
 
     const [valuesRow, setValuesRow] = useState({
+        med_id: '',
         ten: '',
         soluong_lon: '',
         soluong_tb: '',
@@ -69,6 +72,8 @@ function CreateInvoiceIpt() {
             dong_goi: data.description_unit,
             dvt: data.donvi_nho,
             ten: data.ten,
+            med_id: data.id,
+            ma_ncc: chooseSup,
         });
 
         setDataDetails([
@@ -78,16 +83,26 @@ function CreateInvoiceIpt() {
                 dong_goi: data.description_unit,
                 dvt: data.donvi_nho,
                 ten: data.ten,
+                med_id: data.id,
             },
         ]);
     };
 
     const onchangeInputs = (e, index, prop) => {
+        console.log(e.target.value);
         let temp = [...dataDetails];
         temp[index][prop] = e.target.value;
-        temp[index].sl_tong = temp[index].soluong_lon * temp[index].soluong_nho;
-        temp[index].gianhap_daqd = temp[index].gianhap_chuaqd / temp[index].soluong_nho;
-        temp[index].thanh_tien = temp[index].soluong_lon * temp[index].gianhap_chuaqd;
+        if (temp[index].soluong_lon && temp[index].soluong_nho) {
+            temp[index].sl_tong = temp[index].soluong_nho * temp[index].soluong_lon;
+        }
+
+        if (temp[index].gianhap_chuaqd && temp[index].soluong_nho) {
+            temp[index].gianhap_daqd = temp[index].gianhap_chuaqd / temp[index].soluong_nho;
+        }
+
+        if (temp[index].soluong_lon && temp[index].gianhap_chuaqd) {
+            temp[index].thanh_tien = temp[index].gianhap_chuaqd * temp[index].soluong_lon;
+        }
         setDataDetails([...temp]);
     };
 
@@ -114,9 +129,9 @@ function CreateInvoiceIpt() {
         }, 0);
 
         return total + tong_ck;
-    }, [dataDetails]);
+    }, [dataDetails, tong_ck]);
 
-    const handleRemoveData = (e, data, index) => {
+    const handleRemoveData = (data, index) => {
         let temp = [...dataDetails];
         let arr = temp.filter((item, index1) => index1 !== index);
         setDataDetails([...arr]);
@@ -135,6 +150,10 @@ function CreateInvoiceIpt() {
                 validationError.soluong_nho = 'Is Required';
             }
 
+            if (!dataDetails[i].ma_ncc) {
+                validationError.ma_ncc = 'Is Required';
+            }
+
             arr.push(validationError);
         }
         setErrors(arr);
@@ -144,7 +163,7 @@ function CreateInvoiceIpt() {
         });
 
         if (valid) {
-            handleCreatedCp();
+            toggleModalSave();
         }
     };
 
@@ -212,10 +231,10 @@ function CreateInvoiceIpt() {
                 </div>
             </div>
 
-            {modalSave && (
+            {modalSave && dataDetails.length > 0 && (
                 <ModalAll
                     methodToggle={toggleModalSave}
-                    methodHandle={handleValidate}
+                    methodHandle={handleCreatedCp}
                     data={dataDetails}
                     label={'Lưu lại hóa đơn?'}
                 />
@@ -228,10 +247,10 @@ function CreateInvoiceIpt() {
                             <thead>
                                 <tr>
                                     <th className={cx('th-ten')}>Tên</th>
-                                    <th className={cx('th-slqdtn')}>Số lượng</th>
-                                    <th className={cx('th-slqdtn')}>Quy đổi(ĐVTB)</th>
-                                    <th className={cx('th-slqdtn')}>Quy đổi(ĐVNN)</th>
-                                    <th className={cx('th-slqdtn')}>Tổng nhập</th>
+                                    <th className={cx('th-sl')}>Số lượng nhập(1ĐV)</th>
+                                    <th className={cx('th-sltb')}>Quy đổi 1(/1ĐV)</th>
+                                    <th className={cx('th-slnn')}>Quy đổi 2(/1ĐV)</th>
+                                    <th className={cx('th-tn')}>Tổng nhập</th>
                                     <th className={cx('th-dvt')}>Đơn vị tính</th>
                                     <th className={cx('th-donggoi')}>Đóng gói</th>
                                     <th className={cx('th-gia')}>Giá nhập(chưa Qđ)</th>
@@ -248,23 +267,68 @@ function CreateInvoiceIpt() {
                             <tbody>
                                 {dataDetails.map((item, index1) => (
                                     <tr key={index1}>
-                                        {Object.keys(item).map((dataField, index2) => (
-                                            <td key={index2}>
-                                                <input
-                                                    className={cx('table-input')}
-                                                    name={dataField}
-                                                    onChange={(e) => onchangeInputs(e, index1, dataField)}
-                                                    onBlur={(e) => onchangeInputs(e, index1, dataField)}
-                                                    value={item[dataField]}
-                                                />
-                                            </td>
-                                        ))}
+                                        {Object.keys(item).map((dataField, index2) => {
+                                            if (dataField === 'han_dung') {
+                                                return (
+                                                    <td key={index2}>
+                                                        <input
+                                                            className={cx('table-input')}
+                                                            name={dataField}
+                                                            onChange={(e) => onchangeInputs(e, index1, dataField)}
+                                                            onBlur={(e) => onchangeInputs(e, index1, dataField)}
+                                                            value={item[dataField]}
+                                                            type="date"
+                                                        />
+                                                    </td>
+                                                );
+                                            }
+                                            if (
+                                                dataField !== 'med_id' &&
+                                                dataField !== 'tong_ck' &&
+                                                dataField !== 'ma_ncc'
+                                            ) {
+                                                if (
+                                                    dataField !== 'ten' &&
+                                                    dataField !== 'dvt' &&
+                                                    dataField !== 'dong_goi' &&
+                                                    dataField !== 'han_dung' &&
+                                                    dataField !== 'so_lo'
+                                                ) {
+                                                    return (
+                                                        <td key={index2}>
+                                                            <input
+                                                                className={cx('table-input')}
+                                                                name={dataField}
+                                                                onChange={(e) => onchangeInputs(e, index1, dataField)}
+                                                                onBlur={(e) => onchangeInputs(e, index1, dataField)}
+                                                                value={item[dataField]}
+                                                                type="number"
+                                                            />
+                                                        </td>
+                                                    );
+                                                } else {
+                                                    return (
+                                                        <td key={index2}>
+                                                            <input
+                                                                className={cx('table-input')}
+                                                                name={dataField}
+                                                                onChange={(e) => onchangeInputs(e, index1, dataField)}
+                                                                onBlur={(e) => onchangeInputs(e, index1, dataField)}
+                                                                value={item[dataField]}
+                                                                type="text"
+                                                            />
+                                                        </td>
+                                                    );
+                                                }
+                                            }
+                                            return '';
+                                        })}
                                         <td>
                                             <button
-                                                className={cx('table-btn', 'btn-search')}
-                                                onClick={(e) => handleRemoveData(e, item, index1)}
+                                                onClick={(e) => handleRemoveData(item, index1)}
+                                                className={cx('table-btn')}
                                             >
-                                                Delete
+                                                <FontAwesomeIcon icon={faXmark} className={cx('table-icon')} />
                                             </button>
                                         </td>
                                     </tr>
@@ -283,23 +347,24 @@ function CreateInvoiceIpt() {
                         </table>
                     </div>
                 </div>
+            </div>
+            <div className={cx('btn-desc')}>
+                <select className={cx('btn-select')} onChange={onchangeSelect}>
+                    <option>Chọn nhà cung cấp</option>
+                    {dataSup.map((sup) => (
+                        <option key={sup.ID} value={sup.ID}>
+                            {sup.ten_ncc}
+                        </option>
+                    ))}
+                </select>
 
-                <div className={cx('btn-desc')}>
-                    <select className={cx('btn-select')} onChange={onchangeSelect}>
-                        <option>Chọn nhà cung cấp</option>
-                        {dataSup.map((sup) => (
-                            <option key={sup.ID} value={sup.ID}>
-                                {sup.ten_ncc}
-                            </option>
-                        ))}
-                    </select>
-                    <button className={cx('btn', 'btn-confirm')} onClick={toggleModalSave}>
-                        Lưu lại
-                    </button>
-                    <button className={cx('btn', 'btn-confirm')} onClick={() => routeChange('/importlist')}>
-                        Danh sách
-                    </button>
-                </div>
+                <button className={cx('btn', 'btn-confirm')} onClick={handleValidate}>
+                    Lưu lại
+                </button>
+
+                <button className={cx('btn', 'btn-confirm')} onClick={() => routeChange('/importlist')}>
+                    Danh sách
+                </button>
             </div>
         </div>
     );

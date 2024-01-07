@@ -30,7 +30,6 @@ function Medicine() {
         dot_cap: '',
         dang_bao_che: '',
         dong_goi: '',
-        don_vi_duoc: '',
         tieu_chuan: '',
         han_dung: '',
         cty_dk: '',
@@ -39,6 +38,7 @@ function Medicine() {
         dchi_ctysx: '',
         don_vi_duoc: '',
         nhom_thuoc: '',
+        don_gia: '',
     });
 
     const inputsMedicine = [
@@ -140,6 +140,13 @@ function Medicine() {
             type: 'text',
             placeholder: 'Địa chỉ công ty sản xuất',
         },
+        {
+            id: 15,
+            label: 'Đơn giá bán',
+            name: 'don_gia',
+            type: 'number',
+            placeholder: 'Đơn giá bán',
+        },
     ];
 
     const [dataMedicine, setDataMedicine] = useState([]);
@@ -232,25 +239,25 @@ function Medicine() {
 
     const toggleModalAdd = () => {
         setValues({
-            ten: '',
-            han_dung: '',
             sdk: '',
             han_sdk: '0000-00-00',
+            ten: '',
+            hoat_chat: '',
+            ham_luong: '',
             sqd: '',
             nam_cap: '0000-00-00',
             dot_cap: '',
-            hoat_chat: '',
-            ham_luong: '',
             dang_bao_che: '',
             dong_goi: '',
-            don_vi_duoc: '',
-            nhom_thuoc: '',
+            tieu_chuan: '',
+            han_dung: '',
             cty_dk: '',
             dchi_ctydk: '',
             cty_sx: '',
             dchi_ctysx: '',
             don_vi_duoc: '',
             nhom_thuoc: '',
+            don_gia: '',
         });
         setShowModalAdd(!showModalAdd);
     };

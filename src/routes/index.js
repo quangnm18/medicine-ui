@@ -4,7 +4,7 @@ import Home from '../pages/Home';
 import Login from '~/pages/Login/Login';
 import SignUp from '~/pages/Login/SignUp';
 import LoginLayout from '~/Layout/LoginLayout';
-import InvoiceCreate from '~/pages/InvoiceCreate/InvoiceCreate';
+import SellInvoiceCreate from '~/pages/SellInvoiceCreate/SellInvoiceCreate';
 import InvoiceList from '~/pages/InvoiceList/InvoiceList';
 import Staff from '~/pages/Staff/Staff';
 import Supplier from '~/pages/Supplier/Supplier';
@@ -15,6 +15,7 @@ import IptWhInvoice from '~/pages/ImportWh/IptWhInvoice';
 import InventoryWh from '~/pages/InventoryWh/InventoryWh';
 import GroupMed from '~/pages/UnitGroupMed/GroupMed';
 import UnitMed from '~/pages/UnitGroupMed/UnitMed';
+import HisIptDetail from '~/pages/Statistic/HisIptDetail';
 
 const publicRoutes = [
     { path: routesConfig.login, component: Login, layout: LoginLayout },
@@ -22,8 +23,8 @@ const publicRoutes = [
 
     { path: routesConfig.home, component: Home },
 
-    { path: routesConfig.sell, component: InvoiceCreate },
-    { path: routesConfig.sellCreate, component: InvoiceCreate },
+    { path: routesConfig.sell, component: SellInvoiceCreate },
+    { path: routesConfig.sellCreate, component: SellInvoiceCreate },
     { path: routesConfig.sellList, component: InvoiceList },
 
     { path: routesConfig.category, component: Staff },
@@ -42,6 +43,8 @@ const publicRoutes = [
     { path: routesConfig.checkInventory, component: InventoryWh },
 
     { path: routesConfig.report, component: Report },
+
+    { path: routesConfig.historyImportStatistic, component: HisIptDetail },
 ];
 
 const privateRoutes = [];

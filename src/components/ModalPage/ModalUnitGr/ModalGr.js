@@ -7,7 +7,6 @@ import { useState } from 'react';
 const cx = classNames.bind(style);
 
 function ModalGr({ label, dataInputs, dataValueInputs, methodOnchange, methodToggle, methodHandle }) {
-    console.log(dataValueInputs.ten_nhom_thuoc);
     const [error, setError] = useState({});
     const validator = () => {
         const validationError = {};

@@ -27,7 +27,7 @@ function SupplierTb({ data, method }) {
         },
         {
             name: 'Tên',
-            selector: (row) => row.Name,
+            selector: (row) => row.ten_ncc,
         },
         {
             name: 'Số điện thoại',

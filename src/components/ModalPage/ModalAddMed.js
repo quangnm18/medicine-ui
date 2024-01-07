@@ -22,20 +22,16 @@ function ModalAddMed({ dataInputs, dataValueInputs, methodOnchange, methodToggle
             validationError.ten = 'Phải nhập tên dược phẩm';
         }
 
-        if (dataValueInputs.dang_bao_che === '' && !dataValueInputs.dang_bao_che.trim()) {
-            validationError.dang_bao_che = 'Phải nhập dạng bào chế dược phẩm';
-        }
-
-        if (dataValueInputs.dong_goi === '' && !dataValueInputs.dong_goi.trim()) {
-            validationError.dong_goi = 'Phải nhập quy cách đóng gói';
-        }
-
         if (valueUnit === '' && !valueUnit.trim()) {
             validationError.don_vi_duoc = 'Phải chọn đơn vị dược';
         }
 
         if (valueGroup === '' && !valueGroup.trim()) {
             validationError.nhom_thuoc = 'Phải chọn nhóm thuốc';
+        }
+
+        if (dataValueInputs.don_gia === '' && !dataValueInputs.don_gia.trim()) {
+            validationError.don_gia = 'Phải nhập đơn giá bán';
         }
 
         setError(validationError);
@@ -84,42 +80,51 @@ function ModalAddMed({ dataInputs, dataValueInputs, methodOnchange, methodToggle
                                         value={dataValueInputs[input.name]}
                                         placeholder={input.placeholder}
                                         onChange={methodOnchange}
+                                        type={input.type}
                                     />
                                 </div>
                                 {error[input.name] && <div className={cx('error-validate')}>{error[input.name]}</div>}
                             </div>
                         ))}
+                        <div className={cx('select-action')}>
+                            <div className={cx('choose-unitDetail')}>
+                                <label>Đơn vị dược</label>
+                                <select className={cx('unit-select')} onChange={onChangeSelectedUnit}>
+                                    <option value="">Đơn vị</option>
+                                    {dataUnitMed.map((unit) => (
+                                        <option key={unit.id} value={unit.id}>
+                                            {unit.description_unit}
+                                        </option>
+                                    ))}
+                                </select>
+                                {error.don_vi_duoc && (
+                                    <div className={cx('error-validateSelect')}>{error.don_vi_duoc}</div>
+                                )}
+                            </div>
+                            <div className={cx('choose-unitDetail')}>
+                                <label>Nhóm thuốc</label>
+                                <select className={cx('unit-select')} onChange={onChangeSelectedGr}>
+                                    <option value=""></option>
+                                    {dataGrMed.map((gr) => (
+                                        <option key={gr.id} value={gr.id}>
+                                            {gr.ten_nhom_thuoc}
+                                        </option>
+                                    ))}
+                                </select>
+                                {error.nhom_thuoc && (
+                                    <div className={cx('error-validateSelect')}>{error.nhom_thuoc}</div>
+                                )}
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div className={cx('modal-actionAddMed')}>
-                    <div className={cx('select-action')}>
-                        <div className={cx('choose-unitDetail')}>
-                            <label>Đơn vị dược</label>
-                            <select className={cx('unit-select')} onChange={onChangeSelectedUnit}>
-                                <option value="">Đơn vị</option>
-                                {dataUnitMed.map((unit) => (
-                                    <option key={unit.id} value={unit.id}>
-                                        {unit.description_unit}
-                                    </option>
-                                ))}
-                            </select>
-                            {error.don_vi_duoc && <div className={cx('error-validateSelect')}>{error.don_vi_duoc}</div>}
-                        </div>
-                        <div className={cx('choose-unitDetail')}>
-                            <label>Nhóm thuốc</label>
-                            <select className={cx('unit-select')} onChange={onChangeSelectedGr}>
-                                <option value=""></option>
-                                {dataGrMed.map((gr) => (
-                                    <option key={gr.id} value={gr.id}>
-                                        {gr.ten_nhom_thuoc}
-                                    </option>
-                                ))}
-                            </select>
-                            {error.nhom_thuoc && <div className={cx('error-validateSelect')}>{error.nhom_thuoc}</div>}
-                        </div>
-                    </div>
 
-                    <div className={cx('modal-actionBtn')}>
+                <div className={cx('modal-actionBtn')}>
+                    <div>
+                        <button className={cx('btn-modal', 'btnAddMore-modal', 'btn-yes')}>Thêm đơn vị dược</button>
+                        <button className={cx('btn-modal', 'btnAddMore-modal', 'btn-yes')}>Thêm đơn nhóm thuốc</button>
+                    </div>
+                    <div>
                         <button className={cx('btn-modal', 'btn-yes')} onClick={validator}>
                             Thêm
                         </button>

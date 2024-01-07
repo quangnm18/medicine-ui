@@ -6,6 +6,8 @@ import {
     faChartColumn,
     faChevronDown,
     faChevronUp,
+    faClipboardCheck,
+    faClipboardList,
     faFileExport,
     faHouse,
     faList,
@@ -133,10 +135,22 @@ export const SidebarData = [
     {
         id: 6,
         title: 'Thống kê',
-        path: routesConfig.statistic,
+        path: routesConfig.historyImportStatistic,
         icon: <FontAwesomeIcon icon={faChartColumn} />,
         iconClosed: <FontAwesomeIcon icon={faChevronDown} />,
         iconOpened: <FontAwesomeIcon icon={faChevronUp} />,
+        subNav: [
+            {
+                title: 'Chi tiết nhập',
+                path: routesConfig.historyImportStatistic,
+                icon: <FontAwesomeIcon icon={faTruckMoving} />,
+            },
+            {
+                title: 'Chi tiết bán',
+                path: routesConfig.historyImportStatistic,
+                icon: <FontAwesomeIcon icon={faClipboardList} />,
+            },
+        ],
     },
     {
         id: 7,

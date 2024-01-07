@@ -6,7 +6,14 @@ import { useState, memo } from 'react';
 
 const cx = classNames.bind(style);
 
-function SearchInput({ dataInputValue, dataSearchResult = [], methodOnchangeInput, methodSelectedResult, classWidth }) {
+function SearchInput({
+    dataInputValue,
+    dataSearchResult = [],
+    methodOnchangeInput,
+    methodSelectedResult,
+    classWidth,
+    placeholder = '',
+}) {
     const [showResult, setShowResult] = useState(false);
 
     const handleShowResult = (e) => {
@@ -33,18 +40,40 @@ function SearchInput({ dataInputValue, dataSearchResult = [], methodOnchangeInpu
                 <div className={cx(classWidth)} tabIndex="-1" {...attrs}>
                     <Popper>
                         <div className={cx('result-list')}>
-                            {dataSearchResult.map((item) => (
-                                <div
-                                    key={item.id}
-                                    className={cx('result-item')}
-                                    onClick={() => handleSelectedResult(item)}
-                                >
-                                    <div>{item.ten}</div>
-                                    <span className={cx('result-itemmore')}>
-                                        {item.ten} - {item.hoat_chat} - {item.ham_luong}
-                                    </span>
-                                </div>
-                            ))}
+                            {dataSearchResult.map((item) => {
+                                if (classWidth === 'search-sellWh') {
+                                    return (
+                                        <div
+                                            key={item.id}
+                                            className={cx('result-item')}
+                                            onClick={() => handleSelectedResult(item)}
+                                        >
+                                            <div>{item.ten}</div>
+                                            <span className={cx('result-itemmore')}>{item.dong_goi}</span>
+                                            <div className={cx('result-itemmore')}>
+                                                {item.soluong_lon ? item.soluong_lon : 0} {item.donvi_lon} --
+                                                {item.soluong_lon * item.soluong_tb
+                                                    ? item.soluong_lon * item.soluong_tb
+                                                    : ''}{' '}
+                                                {item.soluong_lon * item.soluong_tb ? item.donvi_tb : ''} --{' '}
+                                                {item.sl_tong ? item.sl_tong : 0} {item.donvi_nho}
+                                            </div>
+                                        </div>
+                                    );
+                                } else
+                                    return (
+                                        <div
+                                            key={item.id}
+                                            className={cx('result-item')}
+                                            onClick={() => handleSelectedResult(item)}
+                                        >
+                                            <div>{item.ten}</div>
+                                            <span className={cx('result-itemmore')}>
+                                                {item.ten} -- {item.description_unit} --
+                                            </span>
+                                        </div>
+                                    );
+                            })}
                         </div>
                     </Popper>
                 </div>
@@ -55,6 +84,7 @@ function SearchInput({ dataInputValue, dataSearchResult = [], methodOnchangeInpu
                 value={dataInputValue}
                 onChange={(e) => handleShowResult(e)}
                 onFocus={() => setShowResult(true)}
+                placeholder={placeholder}
             />
         </Tippy>
     );

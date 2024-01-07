@@ -1,6 +1,7 @@
-import { faPenToSquare, faTrashCan } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DataTable from 'react-data-table-component';
+import WarehouseExpander from '../ExpandRow/warehouse';
+import { faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames/bind';
 import style from './Table.module.scss';
 
@@ -24,53 +25,64 @@ function InventoryWhTb({ data, method }) {
         {
             name: 'STT',
             cell: (row, index) => index + 1,
+            width: '80px',
         },
         {
-            name: 'Số hóa đơn',
-            selector: (row) => row.ID,
+            name: 'Tên thuốc',
+            selector: (row) => row.ten,
+            width: '340px',
         },
         {
-            name: 'Ngày lập',
-            selector: (row) => {
-                let date = new Date(row.CreatedDate);
-                return date.toLocaleDateString();
-            },
+            name: 'SL(ĐVLN)',
+            selector: (row) => (row.soluong_nho ? row.sl_tong / row.soluong_nho : 0),
+            width: '150px',
         },
         {
-            name: 'Tổng tiền',
-            selector: (row) => row.thanh_tien,
+            name: 'SL(ĐVTB)',
+            selector: (row) => (row.soluong_tb ? (row.sl_tong * row.soluong_tb) / row.soluong_nho : 0),
+            width: '140px',
         },
         {
-            name: 'Nhân viên',
+            name: 'SL(ĐVNN)',
+            selector: (row) => (row.sl_tong ? row.sl_tong : 0),
+            width: '140px',
+        },
+        {
+            name: 'Đơn vị tính',
+            selector: (row) => row.dvt,
+            width: '140px',
+        },
+        {
+            name: 'Đóng gói',
+            selector: (row) => row.dong_goi,
+            width: '250px',
+        },
+        {
+            name: 'Đã bán',
             selector: (row) => row.Name,
         },
         {
             name: '#',
             cell: (row) => (
                 <div>
-                    <button className={cx('btn')} onClick={() => method.toggleModalDelete(row.ID)}>
-                        <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
-                    </button>
                     <button className={cx('btn')}>
-                        <FontAwesomeIcon icon={faPenToSquare} className={cx('icon-view')} />
+                        <FontAwesomeIcon icon={faPenToSquare} className={cx('icon-view', 'icon-eye')} />
                     </button>
                 </div>
             ),
-        },
-        {
-            name: 'Trạng thái',
-            cell: (row) => (
-                <div>
-                    {row.status === 2 && <button>Đang duyệt</button>}
-                    {row.status === 1 && <button>Đã duyệt</button>}
-                    {row.status === 0 && <button>Từ chối</button>}
-                </div>
-            ),
+            width: '100px',
         },
     ];
     return (
         <div>
-            <DataTable columns={columns} data={data} customStyles={tableStyle}></DataTable>
+            <DataTable
+                columns={columns}
+                data={data}
+                customStyles={tableStyle}
+                pagination
+                expandableRows
+                expandableRowsComponent={(row) => <WarehouseExpander data={row} />}
+            ></DataTable>
         </div>
     );
 }

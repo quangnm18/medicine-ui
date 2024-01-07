@@ -1,21 +1,25 @@
 import DirectionHeader from '~/components/DirectionHeader/DirectionHeader';
-import style from './InvoiceCreate.module.scss';
+import style from './SellInvoiceCreate.module.scss';
 import classNames from 'classnames/bind';
-import InvoiceCreateTb from '~/components/Table/InvoiceCreateTb';
+import SellInvoiceCreateTb from '~/components/Table/SellInvoiceCreateTb';
 
-import Tippy from '@tippyjs/react/headless';
-import Popper from '~/components/Popper/Popper';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
+import SearchInput from '~/components/Search/SearchInput';
+import useDebounce from '~/hooks/useDebounce';
+import * as searchServices from '~/apiServices/searchServices';
 
 const cx = classNames.bind(style);
 
-function InvoiceCreate() {
+function SellInvoiceCreate() {
     const [nameSearchInput, setNameSearchInput] = useState('');
     const [searchResult, setSearchResult] = useState([]);
+
     const [units, setUnits] = useState([]);
     const [unitSelected, setUnitSelected] = useState('');
     const [price, setPrice] = useState();
+
+    const debounced = useDebounce(nameSearchInput, 500);
 
     const handleSelected = (e) => {
         setUnitSelected(e.target.value);
@@ -25,72 +29,59 @@ function InvoiceCreate() {
         setPrice(filtered[0].Price);
     };
 
-    // useEffect(() => {
-    //     axios.get(`http://localhost:8081/category/medicine/search/?name=${nameSearchInput}`).then((res) => {
-    //         setSearchResult(res.data);
-    //     });
-    // }, [nameSearchInput]);
+    const handleOnchangeInput = useCallback((value) => {
+        setNameSearchInput(value);
+    }, []);
 
-    const handleSelectedMedicine = (medicine) => {
-        setNameSearchInput(medicine.Name);
-        // axios
-        //     .get(`http://localhost:8081/sell/create/medicineunit/${medicine.ID}`)
-        //     .then((res) => {
-        //         setUnits(res.data);
-        //         setPrice(res.data[0].Price);
-        //         setUnitSelected(res.data[0].Name);
-        //     })
-        //     .catch((err) => console.log(err));
-    };
+    const handleSelectedMedicine = useCallback((medicine) => {
+        setNameSearchInput(medicine.ten);
+    }, []);
+    console.log(searchResult);
+
+    useEffect(() => {
+        if (!debounced.trim()) {
+            setSearchResult([]);
+            return;
+        }
+
+        const fetchApi = async () => {
+            const result = await searchServices.searchWh(debounced);
+            setSearchResult(result);
+        };
+        fetchApi();
+    }, [debounced]);
 
     return (
         <div className={cx('content')}>
             <div className={cx('header-content')}>
                 <DirectionHeader>Bán hàng</DirectionHeader>
                 <h4 className={cx('header-title')}>Lập hóa đơn</h4>
-                <div className={cx('choose-medicine')}>
-                    <div className={cx('medicine-option')}>
-                        <label className={cx('label-option')}>Tên dược</label>
-                        <Tippy
-                            interactive
-                            visible={nameSearchInput && searchResult.length > 0}
-                            placement="bottom"
-                            render={(attrs) => (
-                                <div className={cx('search-result')} tabIndex="-1" {...attrs}>
-                                    <Popper>
-                                        {searchResult.map((medicine) => (
-                                            <div
-                                                key={medicine.ID}
-                                                className={cx('result-item')}
-                                                onClick={() => handleSelectedMedicine(medicine)}
-                                            >
-                                                {medicine.Name}
-                                            </div>
-                                        ))}
-                                    </Popper>
-                                </div>
-                            )}
-                        >
-                            <input
-                                className={cx('input-name')}
-                                value={nameSearchInput}
-                                onChange={(e) => setNameSearchInput(e.target.value)}
+                <div className={cx('choose-sell')}>
+                    <div className={cx('choose-detail')}>
+                        <div className={cx('sell-option', 'sell-optionSearch')}>
+                            <label>Tên thuốc</label>
+                            <SearchInput
+                                dataInputValue={nameSearchInput}
+                                dataSearchResult={searchResult}
+                                methodOnchangeInput={handleOnchangeInput}
+                                methodSelectedResult={handleSelectedMedicine}
+                                classWidth={'search-sellWh'}
                             />
-                        </Tippy>
-                    </div>
-                    <div className={cx('medicine-option')}>
-                        <label className={cx('label-option')}>Loại</label>
-                        <select value={unitSelected} onChange={handleSelected}>
-                            {units.map((unit) => (
-                                <option value={unit.Name} key={unit.ID}>
-                                    {unit.Name}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className={cx('medicine-option')}>
-                        <label className={cx('label-option')}>Số lượng</label>
-                        <input className={cx('input-count')} />
+                        </div>
+                        <div className={cx('sell-option')}>
+                            <label className={cx('label-option')}>Loại</label>
+                            <select value={unitSelected} onChange={handleSelected}>
+                                {units.map((unit) => (
+                                    <option value={unit.Name} key={unit.ID}>
+                                        {unit.Name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className={cx('sell-option')}>
+                            <label className={cx('label-option')}>Số lượng</label>
+                            <input className={cx('input-count')} />
+                        </div>
                     </div>
 
                     <div className={cx('btn-action')}>
@@ -102,7 +93,7 @@ function InvoiceCreate() {
 
             <div className={cx('main-content')}>
                 <div className={cx('table-content')}>
-                    <InvoiceCreateTb />
+                    <SellInvoiceCreateTb />
                 </div>
 
                 <div className={cx('invoice-sale')}>
@@ -152,4 +143,4 @@ function InvoiceCreate() {
     );
 }
 
-export default InvoiceCreate;
+export default SellInvoiceCreate;

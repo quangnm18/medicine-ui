@@ -16,12 +16,8 @@ function ModalViewMed({ dataInputs, dataValueInputs, methodOnchange, methodToggl
             validationError.ten = 'Phải nhập tên dược phẩm';
         }
 
-        if (dataValueInputs.dang_bao_che === '' && !dataValueInputs.dang_bao_che.trim()) {
-            validationError.dang_bao_che = 'Phải nhập dạng bào chế dược phẩm';
-        }
-
-        if (dataValueInputs.dong_goi === '' && !dataValueInputs.dong_goi.trim()) {
-            validationError.dong_goi = 'Phải nhập quy cách đóng gói';
+        if (dataValueInputs.don_gia === '' && !dataValueInputs.don_gia.trim()) {
+            validationError.dong_gia = 'Phải nhập đơn giá bán';
         }
 
         setError(validationError);
@@ -51,22 +47,21 @@ function ModalViewMed({ dataInputs, dataValueInputs, methodOnchange, methodToggl
                         ))}
                         <div className={cx('if-detail')}>
                             <div className={cx('label')}>Đơn vị dược</div>
-                            <input disabled value={dataValueInputs.mo_ta} />
+                            <input disabled value={dataValueInputs.description_unit} />
                         </div>
                         <div className={cx('if-detail')}>
                             <div className={cx('label')}>Nhóm thuốc</div>
                             <input disabled value={dataValueInputs.ten_nhom_thuoc} />
                         </div>
+                        <div className={cx('modal-actionView')}>
+                            <button className={cx('btn-modal', 'btn-yes')} onClick={validator}>
+                                Cập nhật
+                            </button>
+                            <button className={cx('btn-modal', 'btn-no')} onClick={methodToggle}>
+                                Trở lại
+                            </button>
+                        </div>
                     </div>
-                </div>
-
-                <div className={cx('modal-actionView')}>
-                    <button className={cx('btn-modal', 'btn-yes')} onClick={validator}>
-                        Cập nhật
-                    </button>
-                    <button className={cx('btn-modal', 'btn-no')} onClick={methodToggle}>
-                        Trở lại
-                    </button>
                 </div>
             </div>
         </Modal>

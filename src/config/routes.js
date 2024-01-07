@@ -25,9 +25,8 @@ const routes = {
 
     report: '/report',
 
-    statistic: '/statistic',
-    saleStatistic: '/statistic/sale',
-    importStatistic: '/statistic/import',
+    statistic: '/statistic/historyImport',
+    historyImportStatistic: '/statistic/historyImport',
 
     account: '/account',
 };

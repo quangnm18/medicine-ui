@@ -64,7 +64,7 @@ function Sidebar() {
                                         {item.subNav.map((subItem, index) => (
                                             <NavLink
                                                 key={index}
-                                                className={(nav) => cx('subMenu-item', { active: nav.isActive })}
+                                                className={(nav) => cx('subMenu-item', { active2: nav.isActive })}
                                                 to={subItem.path}
                                             >
                                                 <div className={cx('menu-itemIf')}>

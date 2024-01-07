@@ -216,7 +216,7 @@ function Supplier() {
         if (stateBin) {
             if (valuesSearch.length) {
                 const arr = dataSupDel.filter((sup) => {
-                    return sup.Name.toLowerCase().includes(valuesSearch.toLocaleLowerCase());
+                    return sup.ten_ncc.toLocaleLowerCase().includes(valuesSearch.toLocaleLowerCase());
                 });
                 setDataTbDel(arr);
             } else {
@@ -225,7 +225,7 @@ function Supplier() {
         } else {
             if (valuesSearch.length) {
                 const arr = dataSupCurr.filter((sup) => {
-                    return sup.Name.toLocaleLowerCase().includes(valuesSearch.toLocaleLowerCase());
+                    return sup.ten_ncc.toLocaleLowerCase().includes(valuesSearch.toLocaleLowerCase());
                 });
                 setDataTb(arr);
             } else {
@@ -234,6 +234,7 @@ function Supplier() {
         }
     };
 
+    console.log(dataSupCurr);
     const handleKeyPress = (e) => {
         if (e.code === 'Enter') {
             handleFilter();
