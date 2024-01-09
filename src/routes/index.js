@@ -16,6 +16,8 @@ import InventoryWh from '~/pages/InventoryWh/InventoryWh';
 import GroupMed from '~/pages/UnitGroupMed/GroupMed';
 import UnitMed from '~/pages/UnitGroupMed/UnitMed';
 import HisIptDetail from '~/pages/Statistic/HisIptDetail';
+import HisSaleDetail from '~/pages/Statistic/HisSaleDetail';
+import Account from '~/pages/Account/Acount';
 
 const publicRoutes = [
     { path: routesConfig.login, component: Login, layout: LoginLayout },
@@ -34,17 +36,20 @@ const publicRoutes = [
     { path: routesConfig.categoryGroupMedicine, component: GroupMed },
     { path: routesConfig.categoryUnitMedicine, component: UnitMed },
 
+    { path: routesConfig.warehouse, component: IptWhInvoice },
     { path: routesConfig.importCreate, component: IptWhInvoice },
     { path: routesConfig.importList, component: ListImportWh },
-
-    { path: routesConfig.exportCreate, component: ListImportWh },
-    { path: routesConfig.exportList, component: ListImportWh },
-
     { path: routesConfig.checkInventory, component: InventoryWh },
+    { path: routesConfig.exportCreate, component: InventoryWh },
+    { path: routesConfig.exportList, component: InventoryWh },
 
     { path: routesConfig.report, component: Report },
 
+    { path: routesConfig.statistic, component: HisIptDetail },
     { path: routesConfig.historyImportStatistic, component: HisIptDetail },
+    { path: routesConfig.historySaleStatistic, component: HisSaleDetail },
+
+    { path: routesConfig.account, component: Account },
 ];
 
 const privateRoutes = [];

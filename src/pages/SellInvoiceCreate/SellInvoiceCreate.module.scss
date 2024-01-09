@@ -11,7 +11,7 @@
 .choose-sell {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    // justify-content: space-between;
 }
 
 .choose-detail {
@@ -20,6 +20,8 @@
 }
 
 .sell-option {
+    display: flex;
+    align-items: center;
     padding: 8px;
 
     input,
@@ -50,11 +52,20 @@
     display: flex;
     align-items: center;
     height: 52px;
-    width: 460px;
+    width: 1224px;
+    margin-left: 9px;
+}
+
+.fake-input {
+    background-color: var(--white);
+    width: 180px;
+    height: 36px;
+    border: 1px solid #e4e4e4;
+    padding: 5px 8px 6px 8px;
 }
 
 .btn-action {
-    margin-left: 12px;
+    // margin-left: 12px;
 }
 
 .btn-add {
@@ -94,7 +105,7 @@
     height: 100%;
     background-color: var(--white);
     // padding: 8px 0 0 12px;
-    height: 100vh;
+    // height: 100vh;
     display: flex;
     justify-content: space-between;
 }
@@ -104,8 +115,67 @@
     flex: 1;
 }
 
+//table.........
+
+table {
+    width: 100%;
+}
+
+.table-input {
+    height: 42px;
+    font-size: 1.6rem;
+    outline: none;
+    width: 100%;
+    padding: 8px;
+}
+
+.th-ten {
+    width: 500px;
+}
+
+.th-sldvl {
+    width: 60px;
+}
+.th-sldvn {
+    width: 60px;
+}
+
+.th-dvl {
+    width: 580px;
+}
+
+.th-tong {
+    width: 100px;
+}
+
+.th-dvn {
+    width: 80px;
+}
+
+.th-giaban {
+    width: 160px;
+}
+
+.th-thanhtien {
+    // width: 300px;
+}
+
+.th-btn {
+    width: 40px;
+}
+
+.table-btn {
+    cursor: pointer;
+    color: var(--white);
+    background-color: red;
+    padding: 6px 8px;
+    border-radius: 4px;
+}
+
+//Invoice-sale
 .invoice-sale {
-    width: 400px;
+    height: 76vh;
+    width: 26%;
     border-left: 6px solid #e9f1f9;
 }
 
@@ -146,4 +216,10 @@
     button + button {
         margin-left: 24px;
     }
+}
+
+.invoice-input {
+    width: 160px;
+    border: 1px solid #e4e4e4;
+    outline: none;
 }

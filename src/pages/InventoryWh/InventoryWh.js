@@ -11,24 +11,49 @@ import InventoryWhTb from '~/components/Table/InventoryWhTb';
 const cx = classNames.bind(style);
 
 function InventoryWh() {
-    const [allData, setAllData] = useState([]);
+    const [allDataImport, setAllDataImport] = useState([]);
+    const [allDataSale, setAllDataSale] = useState([]);
 
     const [valuesSearch, setValuesSearch] = useState('');
+
+    const [dataWh, setDataWh] = useState([]);
 
     const onChangeInputSearch = (e) => {
         setValuesSearch(e.target.value);
     };
 
+    const updateWh = () => {
+        let arrImport = [...allDataImport];
+        let newA = arrImport.map((item) => {
+            let newB = allDataSale.filter((item2) => item2.id === item.id);
+            return { ...item, sl_tong: item.sl_tong - newB[0].so_luong_ban };
+        });
+        setDataWh(newA);
+    };
+
     useEffect(() => {
         axios
+            //full chi tiet nhap
             .get('http://localhost:8081/category/warehouse')
             .then((res) => {
-                setAllData(res.data[0]);
+                setAllDataImport(res.data[0]);
+
+                axios
+                    //full chi tiet ban
+                    .get('http://localhost:8081/sell/ivdetail/synthetic')
+                    .then((res1) => {
+                        setAllDataSale(res1.data[0]);
+                    })
+                    .catch((e) => console.log(e));
             })
             .catch((e) => console.log(e));
     }, []);
 
-    console.log(allData);
+    useEffect(() => {}, []);
+
+    useEffect(() => {
+        updateWh();
+    }, [allDataSale]);
 
     return (
         <div className={cx('content')}>
@@ -49,13 +74,15 @@ function InventoryWh() {
                                 <FontAwesomeIcon icon={faSearch} className={cx('search-icon')} />
                             </button>
                         </div>
-                        <button className={cx('btn-addstaff')}>Xuất excel</button>
+                        <button className={cx('btn-addstaff')} onClick={updateWh}>
+                            Xuất excel
+                        </button>
                     </div>
                 </div>
             </div>
 
             <div className={cx('main-content')}>
-                <InventoryWhTb data={allData} />
+                <InventoryWhTb data={dataWh} />
             </div>
         </div>
     );

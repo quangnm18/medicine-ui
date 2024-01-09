@@ -172,13 +172,13 @@
 }
 
 .table-details {
-    min-width: 2200px;
+    width: 2200px;
 }
 
 //table
 
 .table-content {
-    max-width: 1300px;
+    width: 1300px;
 }
 
 th,
@@ -207,49 +207,45 @@ tbody {
 }
 
 .th-ten {
-    width: 400px;
+    width: 200px;
 }
 
 .th-sl {
-    width: 140px;
+    // width: 140px;
 }
 
 .th-sltb {
-    width: 80px;
+    // width: 80px;
 }
 
 .th-slnn {
-    width: 160px;
+    // width: 160px;
 }
 
 .th-tn {
-    width: 300px;
+    // width: 100px;
 }
 
 .th-dvt {
-    width: 140px;
+    width: 100px;
 }
 
 .th-donggoi {
-    width: 400px;
+    width: 180px;
 }
 
-.th-gia {
-    width: 300px;
+// .th-handung {
+//     width: 100px;
+// }
+
+.th-solo {
+    width: 200px;
 }
 
-.th-ckvat {
-    width: 120px;
-}
-
-.th-handunglo {
-    width: 400px;
-}
-
-.th-btn {
-    width: 80px;
-    text-align: center;
-}
+// .th-btn {
+//     width: 80px;
+//     text-align: center;
+// }
 
 .table-input {
     height: 42px;
@@ -277,4 +273,9 @@ tbody {
     display: flex;
     border: none;
     padding: 12px;
+    position: fixed;
+}
+
+.foot-tr + .foot-tr {
+    margin-top: 28px;
 }

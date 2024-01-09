@@ -28,7 +28,7 @@ function MedicineTb({ data, method }) {
     const columns = [
         {
             name: 'STT',
-            cell: (row, index) => index + 1,
+            cell: (row, index, a) => index + 1,
         },
         {
             name: 'Tên dược',

@@ -7,7 +7,6 @@ import style from './Table.module.scss';
 const cx = classNames.bind(style);
 
 function ImportCpListTb({ data, method }) {
-    console.log(data);
     const tableStyle = {
         rows: {
             style: {
@@ -90,8 +89,13 @@ function ImportCpListTb({ data, method }) {
             cell: (row) => (
                 <div>
                     {row.status === 2 && <button className={cx('btn-status')}>Đang chờ</button>}
-                    {row.status === 1 && <button className={cx('btn-status', 'btn-reject')}>Từ chối</button>}
-                    {row.status === 0 && <button className={cx('btn-status', 'btn-okay')}>Đã duyệt</button>}
+                    {row.status === 0 && <button className={cx('btn-status', 'btn-reject')}>Từ chối</button>}
+                    {row.status === 1 && <button className={cx('btn-status', 'btn-okay')}>Đã duyệt</button>}
+                    {row.status === 2 && (
+                        <button className={cx('btn-status')} onClick={() => method.toggleModalAccept(row.invoice_code)}>
+                            Phê duyệt
+                        </button>
+                    )}
                 </div>
             ),
         },

@@ -74,12 +74,12 @@ export const SidebarData = [
             },
             {
                 title: 'Xuất kho',
-                path: routesConfig.exportGoods,
+                path: routesConfig.exportCreate,
                 icon: <FontAwesomeIcon icon={faFileExport} />,
             },
             {
                 title: 'Danh sách xuất kho',
-                path: routesConfig.importGoods,
+                path: routesConfig.exportList,
                 icon: <FontAwesomeIcon icon={faListCheck} />,
             },
             {
@@ -135,7 +135,7 @@ export const SidebarData = [
     {
         id: 6,
         title: 'Thống kê',
-        path: routesConfig.historyImportStatistic,
+        path: routesConfig.statistic,
         icon: <FontAwesomeIcon icon={faChartColumn} />,
         iconClosed: <FontAwesomeIcon icon={faChevronDown} />,
         iconOpened: <FontAwesomeIcon icon={faChevronUp} />,
@@ -147,7 +147,7 @@ export const SidebarData = [
             },
             {
                 title: 'Chi tiết bán',
-                path: routesConfig.historyImportStatistic,
+                path: routesConfig.historySaleStatistic,
                 icon: <FontAwesomeIcon icon={faClipboardList} />,
             },
         ],

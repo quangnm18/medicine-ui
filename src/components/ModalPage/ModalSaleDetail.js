@@ -8,21 +8,13 @@ import DataTable from 'react-data-table-component';
 
 const cx = classNames.bind(style);
 
-function ModalViewIvDetail({ label, data, methodToggle, methodHandle }) {
-    const VND = new Intl.NumberFormat('vi-VN', {
-        style: 'currency',
-        currency: 'VND',
-    });
+function ModalViewSaleDetail({ label, data, methodToggle, methodHandle }) {
+    console.log(data);
     const date = new Date(data.createdDate);
 
     const [dataDetails, setDataDetails] = useState([]);
 
     const tableStyle = {
-        // table: {
-        //     style: {
-        //         width: '12px',
-        //     },
-        // },
         rows: {
             style: {
                 fontSize: '16px',
@@ -44,46 +36,38 @@ function ModalViewIvDetail({ label, data, methodToggle, methodHandle }) {
         },
         {
             name: 'Tên thuốc',
-            selector: (row) => row.med,
+            selector: (row) => row.ten_duoc,
             sortable: true,
             width: '260px',
         },
         {
-            name: 'Số lượng (ĐVLN)',
-            selector: (row) => row.soluong_lon,
+            name: 'Số lượng bán',
+            selector: (row) => row.so_luong_ban,
             width: '152px',
             center: true,
         },
         {
-            name: 'Quy đổi (ĐVNN)',
-            selector: (row) => row.soluong_nho,
+            name: 'Đơn vị tính',
+            selector: (row) => row.don_vi_ban,
             width: '152px',
             center: true,
         },
         {
-            name: 'Tổng nhập',
-            selector: (row) => row.sl_tong,
+            name: 'Đơn giá',
+            selector: (row) => Intl.NumberFormat().format(row.don_gia_ban),
             sortable: true,
             width: '150px',
             center: true,
         },
         {
-            name: 'Đơn vị tính (NN)',
-            selector: (row) => row.dvt,
+            name: 'Thành tiền',
+            selector: (row) => Intl.NumberFormat().format(row.thanh_tien),
             width: '152px',
             center: true,
         },
         {
-            name: 'Giá nhập (/ĐVLN)',
-            selector: (row) => VND.format(row.gianhap_chuaqd),
-            sortable: true,
-            width: '200px',
-            center: true,
-        },
-
-        {
-            name: 'Tổng giá trị',
-            selector: (row) => VND.format(row.thanh_tien),
+            name: 'Thời gian',
+            selector: (row) => date.toLocaleDateString(row.createdDate),
             sortable: true,
             width: '200px',
             center: true,
@@ -92,7 +76,7 @@ function ModalViewIvDetail({ label, data, methodToggle, methodHandle }) {
 
     useEffect(() => {
         axios
-            .get(`http://localhost:8081/importlist/alldetail/?q=${data.invoice_code}`)
+            .get(`http://localhost:8081/sell/ivdetailcurr/?q=${data.ma_hoa_don}`)
             .then((res) => setDataDetails(res.data))
             .catch((e) => console.log(e));
     }, []);
@@ -103,11 +87,14 @@ function ModalViewIvDetail({ label, data, methodToggle, methodHandle }) {
                 <div className={cx('modal-title')}>{label}</div>
                 <div className={cx('modal-form', 'modal-formDetail')}>
                     <div className={cx('modal-if')}></div>
-                    <div>Mã hóa đơn : {data.invoice_code}</div>
+                    <div>Mã hóa đơn : {data.ma_hoa_don}</div>
+                    <div>Nhân viên : {data.Name}</div>
                     <div>Ngày tạo : {date.toLocaleDateString()}</div>
-                    <div>Tổng giá trị : {VND.format(data.thanh_tien - data.tong_ck)}</div>
-                    <div>Tổng CK : {VND.format(data.tong_ck)}</div>
-                    <div>Thành tiền : {VND.format(data.thanh_tien)}</div>
+                    <div>Tổng giá trị : {Intl.NumberFormat().format(data.tong_tien_hang)}</div>
+                    <div>Tổng CK : {Intl.NumberFormat().format(data.tong_ck)}</div>
+                    <div>Thành tiền : {Intl.NumberFormat().format(data.tong_phai_tra)}</div>
+                    <div>Khách trả : {Intl.NumberFormat().format(data.khach_tra)}</div>
+                    <div>Tiền dư : {Intl.NumberFormat().format(data.tien_du)}</div>
                 </div>
                 <div className={cx('table-details')}>
                     <DataTable data={dataDetails} columns={columns} customStyles={tableStyle} />
@@ -123,4 +110,4 @@ function ModalViewIvDetail({ label, data, methodToggle, methodHandle }) {
     );
 }
 
-export default ModalViewIvDetail;
+export default ModalViewSaleDetail;

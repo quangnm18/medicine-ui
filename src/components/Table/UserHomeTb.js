@@ -6,7 +6,7 @@ import style from './Table.module.scss';
 
 const cx = classNames.bind(style);
 
-function InvoiceListTb({ data, method }) {
+function UserHomeTb({ data, method }) {
     const tableStyle = {
         rows: {
             style: {
@@ -24,28 +24,40 @@ function InvoiceListTb({ data, method }) {
         {
             name: 'STT',
             cell: (row, index) => index + 1,
+            width: '100px',
         },
         {
-            name: 'Số hóa đơn',
-            selector: (row) => row.ma_hoa_don,
+            name: 'Đơn vị lớn',
+            selector: (row) => row.donvi_lon,
+            width: '220px',
+            center: true,
         },
         {
-            name: 'Ngày lập',
-            selector: (row) => {
-                let date = new Date(row.createdDate);
-                return date.toLocaleDateString();
-            },
+            name: 'Đơn vị trung bình',
+            selector: (row) => row.donvi_tb,
+            width: '220px',
+            center: true,
         },
         {
-            name: 'Tổng tiền',
-            selector: (row) => Intl.NumberFormat().format(row.tong_phai_tra),
+            name: 'Đơn vị nhỏ nhất',
+            selector: (row) => row.donvi_nho,
+            width: '220px',
+            center: true,
         },
         {
-            name: 'Nhân viên',
-            selector: (row) => row.Name,
+            name: 'Đóng gói',
+            selector: (row) => row.description_unit,
+            width: '280px',
+            center: true,
         },
         {
-            name: '#',
+            name: 'Mã đơn vị',
+            selector: (row) => row.unit_code,
+            width: '200px',
+            center: true,
+        },
+        {
+            name: '',
             cell: (row) => (
                 <div>
                     <button className={cx('btn')} onClick={() => method.toggleModalSoftDel(row.id)}>
@@ -60,9 +72,9 @@ function InvoiceListTb({ data, method }) {
     ];
     return (
         <div>
-            <DataTable columns={columns} data={data} customStyles={tableStyle}></DataTable>
+            <DataTable columns={columns} data={data} customStyles={tableStyle} pagination selectableRows></DataTable>
         </div>
     );
 }
 
-export default InvoiceListTb;
+export default UserHomeTb;

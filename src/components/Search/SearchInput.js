@@ -49,15 +49,15 @@ function SearchInput({
                                             onClick={() => handleSelectedResult(item)}
                                         >
                                             <div>{item.ten}</div>
-                                            <span className={cx('result-itemmore')}>{item.dong_goi}</span>
-                                            <div className={cx('result-itemmore')}>
-                                                {item.soluong_lon ? item.soluong_lon : 0} {item.donvi_lon} --
+                                            <span className={cx('result-itemmore')}>
+                                                {item.ten_nhom_thuoc} || {'   '} Đóng gói: {item.description_unit} ||
+                                                Tồn kho: {item.soluong_lon ? item.soluong_lon : 0} {item.donvi_lon} --
                                                 {item.soluong_lon * item.soluong_tb
                                                     ? item.soluong_lon * item.soluong_tb
                                                     : ''}{' '}
                                                 {item.soluong_lon * item.soluong_tb ? item.donvi_tb : ''} --{' '}
                                                 {item.sl_tong ? item.sl_tong : 0} {item.donvi_nho}
-                                            </div>
+                                            </span>
                                         </div>
                                     );
                                 } else

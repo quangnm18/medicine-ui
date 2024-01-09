@@ -30,17 +30,34 @@ function InventoryWhTb({ data, method }) {
         {
             name: 'Tên thuốc',
             selector: (row) => row.ten,
-            width: '340px',
+            width: '300px',
         },
         {
             name: 'SL(ĐVLN)',
-            selector: (row) => (row.soluong_nho ? row.sl_tong / row.soluong_nho : 0),
-            width: '150px',
+            selector: (row) => {
+                if (row.soluong_nho && row.sl_tong % row.soluong_nho !== 0) {
+                    let du = row.sl_tong % row.soluong_nho;
+                    let nguyen = (row.sl_tong - (row.sl_tong % row.soluong_nho)) / row.soluong_nho;
+                    return nguyen + ' ' + row.donvi_lon + ' - ' + du + ' ' + row.donvi_nho;
+                } else return row.soluong_nho ? row.sl_tong / row.soluong_nho + ' ' + row.donvi_lon : 0;
+            },
+            width: '180px',
         },
         {
             name: 'SL(ĐVTB)',
-            selector: (row) => (row.soluong_tb ? (row.sl_tong * row.soluong_tb) / row.soluong_nho : 0),
-            width: '140px',
+            selector: (row) => {
+                if (row.soluong_tb && row.sl_tong % (row.soluong_nho / row.soluong_tb) !== 0) {
+                    let du = row.sl_tong % (row.soluong_nho / row.soluong_tb);
+                    let nguyen =
+                        (row.sl_tong * row.soluong_tb - ((row.sl_tong * row.soluong_tb) % row.soluong_nho)) /
+                        row.soluong_nho;
+
+                    return nguyen + ' ' + row.donvi_tb + ' - ' + du + ' ' + row.donvi_nho;
+                } else if (row.soluong_tb) {
+                    return (row.sl_tong * row.soluong_tb) / row.soluong_nho + ' ' + row.donvi_tb;
+                } else return 0;
+            },
+            width: '180px',
         },
         {
             name: 'SL(ĐVNN)',
@@ -50,16 +67,17 @@ function InventoryWhTb({ data, method }) {
         {
             name: 'Đơn vị tính',
             selector: (row) => row.dvt,
-            width: '140px',
+            width: '120px',
         },
         {
             name: 'Đóng gói',
             selector: (row) => row.dong_goi,
-            width: '250px',
+            width: '200px',
         },
         {
             name: 'Đã bán',
             selector: (row) => row.Name,
+            width: '100px',
         },
         {
             name: '#',
@@ -82,6 +100,7 @@ function InventoryWhTb({ data, method }) {
                 pagination
                 expandableRows
                 expandableRowsComponent={(row) => <WarehouseExpander data={row} />}
+                highlightOnHover
             ></DataTable>
         </div>
     );

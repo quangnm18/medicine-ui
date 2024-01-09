@@ -24,6 +24,7 @@ function ImportWh() {
 
     const [showModalSoftDel, setShowModalSoftDel] = useState(false);
     const [showModalView, setShowModalView] = useState(false);
+    const [showModalAccept, setShowModalAccept] = useState(false);
 
     //Method Toggle
     const toggleModalSoftDel = (id) => {
@@ -36,6 +37,11 @@ function ImportWh() {
         setIdSelected(item);
     };
 
+    const toggleModalAccept = (invoice_code) => {
+        setShowModalAccept(!showModalAccept);
+        setIdSelected(invoice_code);
+    };
+
     //Method handle
 
     const handleSoftDel = (id) => {
@@ -44,6 +50,21 @@ function ImportWh() {
             .then((res) => {
                 setShowModalSoftDel(false);
                 loadData();
+            })
+            .catch((e) => console.log(e));
+    };
+
+    const handleAcceptIv = (data) => {
+        axios
+            .put('http://localhost:8081/importlist/acceptiv', { ma_hoa_don: data })
+            .then((res) => {
+                axios
+                    .put('http://localhost:8081/importlist/importdetail', { ma_hoa_don: data })
+                    .then((res) => {
+                        setShowModalAccept(!showModalAccept);
+                        loadData();
+                    })
+                    .catch((e) => console.log(e));
             })
             .catch((e) => console.log(e));
     };
@@ -166,8 +187,17 @@ function ImportWh() {
                 />
             )}
 
+            {showModalAccept && (
+                <ModalAll
+                    label={'Xác nhận đơn nhập?'}
+                    methodToggle={toggleModalAccept}
+                    methodHandle={handleAcceptIv}
+                    data={idSelected}
+                />
+            )}
+
             <div className={cx('main-content')}>
-                <ImportCpListTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView }} />
+                <ImportCpListTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView, toggleModalAccept }} />
             </div>
         </div>
     );

@@ -27,23 +27,19 @@ function InvoiceCreateTb({ data }) {
         },
         {
             name: 'Tên dược',
-            selector: (row) => row.name,
-        },
-        {
-            name: 'Đơn vị',
-            selector: (row) => row.unit,
-        },
-        {
-            name: 'Hạn dùng',
-            selector: (row) => row.dueDate,
+            selector: (row) => row.ten,
         },
         {
             name: 'Số lượng',
-            selector: (row) => row.count,
+            cell: (row) => <input />,
+        },
+        {
+            name: 'Giá bán',
+            cell: (row) => <input />,
         },
         {
             name: 'Đơn giá',
-            selector: (row) => row.price,
+            selector: (row) => row.don_gia,
         },
         {
             name: 'Thành tiền',

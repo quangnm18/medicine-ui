@@ -10,7 +10,8 @@ import * as searchServices from '~/apiServices/searchServices';
 import ModalAll from '~/components/ModalPage/ModalAll';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSquareXmark, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import FormatInput from '~/components/format/FormatInput';
 
 const cx = classNames.bind(style);
 
@@ -89,9 +90,27 @@ function CreateInvoiceIpt() {
     };
 
     const onchangeInputs = (e, index, prop) => {
-        console.log(e.target.value);
         let temp = [...dataDetails];
         temp[index][prop] = e.target.value;
+        if (temp[index].soluong_lon && temp[index].soluong_nho) {
+            temp[index].sl_tong = temp[index].soluong_nho * temp[index].soluong_lon;
+        }
+
+        if (temp[index].gianhap_chuaqd && temp[index].soluong_nho) {
+            temp[index].gianhap_daqd = temp[index].gianhap_chuaqd / temp[index].soluong_nho;
+        }
+
+        if (temp[index].soluong_lon && temp[index].gianhap_chuaqd) {
+            temp[index].thanh_tien = temp[index].gianhap_chuaqd * temp[index].soluong_lon;
+        }
+        setDataDetails([...temp]);
+    };
+
+    const onchangeFormatInput = (e, index, prop) => {
+        let temp = [...dataDetails];
+
+        temp[index][prop] = e;
+
         if (temp[index].soluong_lon && temp[index].soluong_nho) {
             temp[index].sl_tong = temp[index].soluong_nho * temp[index].soluong_lon;
         }
@@ -148,6 +167,14 @@ function CreateInvoiceIpt() {
             }
             if (!dataDetails[i].soluong_nho) {
                 validationError.soluong_nho = 'Is Required';
+            }
+
+            if (!dataDetails[i].gianhap_chuaqd) {
+                validationError.gianhap_chuaqd = 'Is Required';
+            }
+
+            if (!dataDetails[i].han_dung) {
+                validationError.han_dung = 'Is Required';
             }
 
             if (!dataDetails[i].ma_ncc) {
@@ -259,8 +286,8 @@ function CreateInvoiceIpt() {
                                     <th className={cx('th-gia')}>Thành tiền</th>
                                     <th className={cx('th-ckvat')}>CK(%)</th>
                                     <th className={cx('th-ckvat')}>VAT(%)</th>
-                                    <th className={cx('th-handunglo')}>Hạn dùng</th>
-                                    <th className={cx('th-handunglo')}>Số lô</th>
+                                    <th className={cx('th-handung')}>Hạn dùng</th>
+                                    <th className={cx('th-solo')}>Số lô</th>
                                     <th className={cx('th-btn')}></th>
                                 </tr>
                             </thead>
@@ -296,15 +323,32 @@ function CreateInvoiceIpt() {
                                                 ) {
                                                     return (
                                                         <td key={index2}>
-                                                            <input
-                                                                className={cx('table-input')}
+                                                            <FormatInput
+                                                                className={
+                                                                    dataField === 'soluong_lon' ||
+                                                                    dataField === 'soluong_tb' ||
+                                                                    dataField === 'soluong_nho' ||
+                                                                    dataField === 'sl_tong'
+                                                                        ? 'format-sl'
+                                                                        : 'format-price'
+                                                                }
                                                                 name={dataField}
-                                                                onChange={(e) => onchangeInputs(e, index1, dataField)}
-                                                                onBlur={(e) => onchangeInputs(e, index1, dataField)}
                                                                 value={item[dataField]}
-                                                                type="number"
+                                                                methodOnchange={(e) =>
+                                                                    onchangeFormatInput(e, index1, dataField)
+                                                                }
                                                             />
                                                         </td>
+                                                        // <td key={index2}>
+                                                        //     <input
+                                                        //         className={cx('table-input')}
+                                                        //         name={dataField}
+                                                        //         onChange={(e) => onchangeInputs(e, index1, dataField)}
+                                                        //         onBlur={(e) => onchangeInputs(e, index1, dataField)}
+                                                        //         value={item[dataField]}
+                                                        //         type="number"
+                                                        //     />
+                                                        // </td>
                                                     );
                                                 } else {
                                                     return (
@@ -337,11 +381,15 @@ function CreateInvoiceIpt() {
                             <tfoot className="foot-table">
                                 <tr className={cx('foot-tr')}>
                                     <td colSpan={13} className={cx('')}>
-                                        Tổng CK: {tong_ck}
+                                        Tổng CK:{' '}
+                                        {Intl.NumberFormat().format(tong_ck) ? Intl.NumberFormat().format(tong_ck) : 0}
                                     </td>
                                 </tr>
                                 <tr className={cx('foot-tr')}>
-                                    <td className={cx('')}>Tổng tiền: {total}</td>
+                                    <td className={cx('')}>
+                                        Tổng tiền:{' '}
+                                        {Intl.NumberFormat().format(total) ? Intl.NumberFormat().format(total) : 0}
+                                    </td>
                                 </tr>
                             </tfoot>
                         </table>

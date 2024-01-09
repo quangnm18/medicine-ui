@@ -9,30 +9,31 @@ import DirectionHeader from '~/components/DirectionHeader/DirectionHeader';
 import style from './InvoiceList.module.scss';
 import InvoiceListTb from '~/components/Table/InvoiceListTb';
 import ModalDelete from '~/components/ModalPage/ModalSingleDelete';
+import ModalAll from '~/components/ModalPage/ModalAll';
+import ModalViewSaleDetail from '~/components/ModalPage/ModalSaleDetail';
 
 const cx = classNames.bind(style);
 
 function InvoiceList() {
-    const [showModalDelete, setShowModalDelete] = useState(false);
+    const [showModalSoftDel, setShowModalSoftDel] = useState(false);
     const [showModalView, setShowModalView] = useState(false);
-
-    const [updatedList, setUpdatedList] = useState();
 
     const [dateStart, setDateStart] = useState('');
     const [dateTo, setDateTo] = useState('');
 
-    const [listInvoice, setListInvoice] = useState([]);
-    const [renderInvoices, setRenderInvoices] = useState([]);
+    const [listIvSale, setListIvSale] = useState([]);
+    const [dataTb, setDataTb] = useState([]);
 
     const [idSelected, setIdSelected] = useState();
 
-    const toggleModalDelete = (id) => {
-        setShowModalDelete(!showModalDelete);
+    const toggleModalSoftDel = (id) => {
+        setShowModalSoftDel(!showModalSoftDel);
         setIdSelected(id);
     };
 
-    const toggleModalView = (id) => {
+    const toggleModalView = (data) => {
         setShowModalView(!showModalView);
+        setIdSelected(data);
     };
 
     const handleChooseDateStart = (e) => {
@@ -46,50 +47,58 @@ function InvoiceList() {
 
     const handleSearch = () => {
         if (dateStart !== '' && dateTo !== '') {
-            let filtered = listInvoice.filter((invoice) => {
+            let filtered = listIvSale.filter((invoice) => {
                 let invoiceDate = invoice.CreateDate;
                 return invoiceDate >= dateStart && invoiceDate <= dateTo;
             });
-            setRenderInvoices(filtered);
+            setDataTb(filtered);
         }
 
         if (dateStart !== '' && dateTo === '') {
-            let filtered = listInvoice.filter((invoice) => {
+            let filtered = listIvSale.filter((invoice) => {
                 let invoiceDate = invoice.CreateDate;
                 return invoiceDate >= dateStart;
             });
-            setRenderInvoices(filtered);
+            setDataTb(filtered);
         }
 
         if (dateStart === '' && dateTo !== '') {
-            let filtered = listInvoice.filter((invoice) => {
+            let filtered = listIvSale.filter((invoice) => {
                 let invoiceDate = invoice.CreateDate;
                 return invoiceDate <= dateTo;
             });
-            setRenderInvoices(filtered);
+            setDataTb(filtered);
         }
 
         if (dateStart === '' && dateTo === '') {
-            setRenderInvoices(listInvoice);
+            setDataTb(listIvSale);
         }
     };
 
-    // useEffect(() => {
-    //     axios.get(`http://localhost:8081/sell/list`).then((res) => {
-    //         setListInvoice(res.data);
-    //         setRenderInvoices(res.data);
-    //     });
-    // }, [updatedList]);
-
-    const deleteInvoice = (id) => {
-        // axios
-        //     .delete(`http://localhost:8081/sell/list/delete/${id}`)
-        //     .then((res) => {
-        //         setShowModalDelete(false);
-        //         setUpdatedList(Math.random());
-        //     })
-        //     .catch((e) => console.log(e));
+    //method handle
+    const handleSoftDel = (id) => {
+        axios
+            .put(`http://localhost:8081/sell/ivlist/softdelete/${id}`)
+            .then((res) => {
+                setShowModalSoftDel(false);
+                loadData();
+            })
+            .catch((e) => console.log(e));
     };
+
+    const loadData = () => {
+        axios
+            .get('http://localhost:8081/sell/ivlist')
+            .then((res) => {
+                setDataTb(res.data);
+                setListIvSale(res.data);
+            })
+            .catch((e) => console.log(e));
+    };
+
+    useEffect(() => {
+        loadData();
+    }, []);
 
     const navigate = useNavigate();
     const routeChange = () => {
@@ -127,9 +136,24 @@ function InvoiceList() {
                     </div>
                 </div>
             </div>
-            {showModalDelete && <ModalDelete method={{ toggleModalDelete, deleteInvoice }} idSelected={idSelected} />}
+            {showModalSoftDel && (
+                <ModalAll
+                    label={'Bạn có muốn xóa?'}
+                    methodToggle={toggleModalSoftDel}
+                    methodHandle={handleSoftDel}
+                    data={idSelected}
+                />
+            )}
+
+            {showModalView && (
+                <ModalViewSaleDetail
+                    label={'Thông tin chi tiết hóa đơn'}
+                    data={idSelected}
+                    methodToggle={toggleModalView}
+                />
+            )}
             <div className={cx('main-content')}>
-                <InvoiceListTb data={renderInvoices} method={{ toggleModalDelete, toggleModalView }} />
+                <InvoiceListTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView }} />
             </div>
         </div>
     );

@@ -2,19 +2,17 @@ const routes = {
     login: '/login',
     signUp: '/register',
     home: '/',
+
     sell: '/sell',
     sellCreate: '/sell/create',
     sellList: '/sell/list',
 
     warehouse: '/warehouse',
-
-    importCreate: '/importlist/create',
-    importList: '/importlist',
-
-    exportCreate: '/exportlist/create',
-    exportList: '/exportlist',
-
-    checkInventory: '/warehouse',
+    importCreate: '/warehouse/import/create',
+    importList: '/warehouse/import/list',
+    exportCreate: '/warehouse/export/create',
+    exportList: '/warehouse/export/list',
+    checkInventory: '/warehouse/inventory',
 
     category: '/category',
     categoryStaff: '/category/staff',
@@ -25,8 +23,9 @@ const routes = {
 
     report: '/report',
 
-    statistic: '/statistic/historyImport',
+    statistic: '/statistic',
     historyImportStatistic: '/statistic/historyImport',
+    historySaleStatistic: '/statistic/historySale',
 
     account: '/account',
 };
