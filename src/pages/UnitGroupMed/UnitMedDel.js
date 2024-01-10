@@ -8,22 +8,22 @@ import DirectionHeader from '~/components/DirectionHeader/DirectionHeader';
 import style from './UnitGroupMed.module.scss';
 import ModalAll from '~/components/ModalPage/ModalAll';
 import ModalGr from '~/components/ModalPage/ModalUnitGr/ModalGr';
-import UnitMedTb from '~/components/Table/UnitMedTb';
+import UnitMedDelTb from '~/components/Table/UnitMedDelTb';
 import { useNavigate } from 'react-router-dom';
 import Pagination from '~/components/Pagination/Pagination';
 
 const cx = classNames.bind(style);
 
-function UnitMed() {
+function UnitMedDel() {
     const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState(1);
     const [dataTb, setDataTb] = useState([]);
-
     const [idSelected, setIdSelected] = useState('');
-    const [showModalSofDel, setShowModalSofDel] = useState(false);
+
+    const [showModalRes, setShowModalRes] = useState(false);
+    const [showModalHardDel, setShowModalHarDel] = useState(false);
     const [showModalView, setShowModalView] = useState(false);
-    const [showModalAdd, setShowModalAdd] = useState(false);
 
     const [valuesSearch, setValuesSearch] = useState('');
     const [valueInputs, setValueInputs] = useState({
@@ -79,9 +79,14 @@ function UnitMed() {
 
     //method toggle
 
-    const toggleModalSoftDel = (id) => {
+    const toggleModalRes = (id) => {
         setIdSelected(id);
-        setShowModalSofDel(!showModalSofDel);
+        setShowModalRes(!showModalRes);
+    };
+
+    const toggleModalHardDel = (id) => {
+        setIdSelected(id);
+        setShowModalHarDel(!showModalHardDel);
     };
 
     const toggleModalView = (gr) => {
@@ -91,44 +96,24 @@ function UnitMed() {
         setValueInputs(gr);
     };
 
-    const toggleModalAdd = (id) => {
-        setValueInputs({
-            donvi_lon: '',
-            donvi_tb: '',
-            donvi_nho: '',
-            unit_code: '',
-            description_unit: '',
-        });
-        setIdSelected(id);
-        setShowModalAdd(!showModalAdd);
-    };
-
     //method handle
-    const handleSingleSoftDel = (id) => {
+
+    const handleRes = (id) => {
         axios
-            .put(`http://localhost:8081/category/medicine/unit/softdelete/${id}`)
+            .put(`http://localhost:8081/category/medicine/unit/restore/${id}`)
             .then((res) => {
-                setShowModalSofDel(false);
+                setShowModalRes(false);
                 loadData();
             })
             .catch((e) => console.log(e));
     };
 
-    const handleAdd = () => {
+    const handleHardDel = (id) => {
         axios
-            .get('http://localhost:8081/category/maxidunit')
+            .delete(`http://localhost:8081/category/medicine/unit/harddelete/${id}`)
             .then((res) => {
-                const unit_code = `UC${res.data[0].max_id + 1}`;
-                axios
-                    .post('http://localhost:8081/category/medicine/unit/add', {
-                        ...valueInputs,
-                        unit_code: unit_code,
-                    })
-                    .then((res1) => {
-                        setShowModalAdd(false);
-                        loadData();
-                    })
-                    .catch((e) => console.log(e));
+                setShowModalHarDel(false);
+                loadData();
             })
             .catch((e) => console.log(e));
     };
@@ -148,7 +133,7 @@ function UnitMed() {
         axios
             .get('http://localhost:8081/category/medicineunit/', {
                 params: {
-                    isDeleted: 0,
+                    isDeleted: 1,
                     numRecord: numRecord,
                     startRecord: startRecord,
                     totalRecord: 0,
@@ -176,7 +161,7 @@ function UnitMed() {
             <div className={cx('header-content')}>
                 <DirectionHeader>Quản lý danh mục</DirectionHeader>
                 <div className={cx('choose-medicine')}>
-                    <h4 className={cx('header-title')}>Danh sách đơn vị dược</h4>
+                    <h4 className={cx('header-title')}>Danh sách đơn vị đã xóa</h4>
                     <div className={cx('header-action')}>
                         <div className={cx('header-search')}>
                             <input
@@ -190,23 +175,28 @@ function UnitMed() {
                                 <FontAwesomeIcon icon={faSearch} className={cx('search-icon')} />
                             </button>
                         </div>
-                        <button className={cx('btn-addstaff')} onClick={toggleModalAdd}>
-                            Thêm
-                        </button>
-                        <button
-                            className={cx('btn-addstaff')}
-                            onClick={() => routeChange('/category/unitmedicine/deleted')}
-                        >
-                            Đã xóa
+
+                        <button className={cx('btn-addstaff')} onClick={() => routeChange('/category/unitmedicine')}>
+                            Trở lại
                         </button>
                     </div>
                 </div>
             </div>
-            {showModalSofDel && (
+
+            {showModalRes && (
                 <ModalAll
-                    label={'Bạn có muốn xóa?'}
-                    methodToggle={toggleModalSoftDel}
-                    methodHandle={handleSingleSoftDel}
+                    label={'Bạn có muốn khôi phục?'}
+                    methodToggle={toggleModalRes}
+                    methodHandle={handleRes}
+                    data={idSelected}
+                />
+            )}
+
+            {showModalHardDel && (
+                <ModalAll
+                    label={'Bạn có muốn xóa vĩnh viễn?'}
+                    methodToggle={toggleModalHardDel}
+                    methodHandle={handleHardDel}
                     data={idSelected}
                 />
             )}
@@ -221,19 +211,10 @@ function UnitMed() {
                     methodHandle={handleUpdate}
                 />
             )}
-            {showModalAdd && (
-                <ModalGr
-                    label={'Thêm mới đơn vị'}
-                    dataInputs={dataInputs}
-                    dataValueInputs={valueInputs}
-                    methodToggle={toggleModalAdd}
-                    methodOnchange={onChangeInputs}
-                    methodHandle={handleAdd}
-                />
-            )}
+
             <div className={cx('main-content')}>
-                <div>
-                    <UnitMedTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView }} />
+                <div className={cx('content-table')}>
+                    <UnitMedDelTb data={dataTb} method={{ toggleModalRes, toggleModalView, toggleModalHardDel }} />
                 </div>
                 <div>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />
@@ -243,4 +224,4 @@ function UnitMed() {
     );
 }
 
-export default UnitMed;
+export default UnitMedDel;

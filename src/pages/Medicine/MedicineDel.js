@@ -3,28 +3,25 @@ import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
-import MedicineTb from '~/components/Table/MedicineTb';
 import DirectionHeader from '~/components/DirectionHeader/DirectionHeader';
 import style from './Medicine.module.scss';
 import classNames from 'classnames/bind';
+import MedDeletedTb from '~/components/Table/MedDeletedTb';
 import SearchInput from '~/components/Search/SearchInput';
 import useDebounce from '~/hooks/useDebounce';
 import * as searchServices from '~/apiServices/searchServices';
 import ModalAll from '~/components/ModalPage/ModalAll';
-import ModalAddMed from '~/components/ModalPage/ModalAddMed';
 import ModalViewMed from '~/components/ModalPage/ModalViewMed';
-import ModalAddExcel from '~/components/ModalPage/ModalExcel';
-import Pagination from '~/components/Pagination/Pagination';
 import { useNavigate } from 'react-router-dom';
+import Pagination from '~/components/Pagination/Pagination';
 
 const cx = classNames.bind(style);
 
-function Medicine() {
+function MedicineDel() {
     const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState(1);
 
-    const [dataTb, setDataTb] = useState([]);
     const [values, setValues] = useState({
         sdk: '',
         han_sdk: '',
@@ -159,15 +156,14 @@ function Medicine() {
     const [searchResult, setSearchResult] = useState([]);
     const debounced = useDebounce(nameSearchInput, 500);
 
+    const [dataTbDel, setDataTbDel] = useState([]);
+
     const [idSelected, setIdSelected] = useState({});
     const [medSelected, setMedSelected] = useState([]);
 
-    const [showModalSingleDelete, setShowModalSingleDelete] = useState(false);
-    const [showModalMultiDelete, setShowModalMultiDelete] = useState(false);
-
+    const [showModalRes, setShowModalRes] = useState(false);
+    const [showModalHardDelete, setShowModalHardDelete] = useState(false);
     const [showModalView, setShowModalView] = useState(false);
-    const [showModalAdd, setShowModalAdd] = useState(false);
-    const [showModalExcel, setShowModalExcel] = useState(false);
 
     //search
     const handleSelectedMedicine = useCallback((medicine) => {
@@ -202,14 +198,9 @@ function Medicine() {
 
     //Method Toggle
 
-    const toggleModalSingleDelete = (med) => {
-        setShowModalSingleDelete(!showModalSingleDelete);
-        setMedSelected([med]);
-    };
-
-    const toggleModalMultiDelete = (arrMed) => {
-        setShowModalMultiDelete(!showModalMultiDelete);
-        setMedSelected(arrMed);
+    const toggleModalHardDelete = (id) => {
+        setShowModalHardDelete(!showModalHardDelete);
+        setIdSelected(id);
     };
 
     const toggleModalView = (med) => {
@@ -225,62 +216,29 @@ function Medicine() {
         setShowModalView(!showModalView);
     };
 
-    const toggleModalAdd = () => {
-        setValues({
-            sdk: '',
-            han_sdk: '0000-00-00',
-            ten: '',
-            hoat_chat: '',
-            ham_luong: '',
-            sqd: '',
-            nam_cap: '0000-00-00',
-            dot_cap: '',
-            dang_bao_che: '',
-            dong_goi: '',
-            tieu_chuan: '',
-            han_dung: '',
-            cty_dk: '',
-            dchi_ctydk: '',
-            cty_sx: '',
-            dchi_ctysx: '',
-            don_vi_duoc: '',
-            nhom_thuoc: '',
-            don_gia: '',
-        });
-        setShowModalAdd(!showModalAdd);
-    };
-
-    const toggleModalExcel = () => {
-        setShowModalExcel(!showModalExcel);
+    const toggleModalRes = (id) => {
+        setShowModalRes(!showModalRes);
+        setIdSelected(id);
     };
 
     //Method Handle
 
-    const addMedicine = (valueUnit, valueGroup) => {
+    const restoreMed = () => {
         axios
-            .post('http://localhost:8081/category/medicine/add', {
-                ...values,
-                don_vi_duoc: valueUnit,
-                nhom_thuoc: valueGroup,
-            })
+            .put(`http://localhost:8081/category/medicine/update/restore/${idSelected}`)
             .then((res) => {
-                if (res.data.errno) {
-                    console.log(res.data);
-                } else {
-                    setShowModalAdd(false);
-                    loadData();
-                }
+                setShowModalRes(false);
+                loadDataTbDel();
             })
             .catch((e) => console.log(e));
     };
 
-    const softDeleteMed = (data) => {
+    const deleteMedicine = () => {
         axios
-            .put('http://localhost:8081/category/medicine/update/softdelete', { data })
+            .delete(`http://localhost:8081/category/medicine/delete/${idSelected}`)
             .then((res) => {
-                setShowModalSingleDelete(false);
-                setShowModalMultiDelete(false);
-                loadData();
+                setShowModalHardDelete(false);
+                loadDataTbDel();
             })
             .catch((e) => console.log(e));
     };
@@ -290,7 +248,7 @@ function Medicine() {
             .put(`http://localhost:8081/category/medicine/update/${idSelected}`, values)
             .then((res) => {
                 setShowModalView(false);
-                loadData();
+                loadDataTbDel();
             })
             .catch((e) => console.log(e));
     };
@@ -308,32 +266,32 @@ function Medicine() {
     };
 
     //Call API Render
-    const loadData = () => {
+    const loadDataTbDel = () => {
         axios
             .get('http://localhost:8081/category/getallmed/', {
                 params: {
-                    isDeleted: 0,
+                    isDeleted: 1,
                     numRecord: numRecord,
                     startRecord: startRecord,
                     totalRecord: 0,
                 },
             })
             .then((res) => {
-                setDataTb(res.data[0]);
+                setDataTbDel(res.data[0]);
                 const totalRecord = res.data[1][0].totalRecord;
                 setPageCount(Math.ceil(totalRecord / numRecord));
             })
-            .catch((err) => console.log(err));
+            .catch((e) => console.log(e));
     };
+
+    useEffect(() => {
+        loadDataTbDel();
+    }, [startRecord]);
 
     const navigate = useNavigate();
     const routeChange = (path) => {
         navigate(path);
     };
-
-    useEffect(() => {
-        loadData();
-    }, [startRecord]);
 
     //search
     useEffect(() => {
@@ -373,46 +331,30 @@ function Medicine() {
                                 <FontAwesomeIcon icon={faSearch} className={cx('search-icon')} />
                             </button>
                         </div>
-                        <span className={cx('control-action')}>
-                            <button className={cx('btn-action', 'btn')} onClick={toggleModalAdd}>
-                                Thêm mới
-                            </button>
-                            <button className={cx('btn-action', 'btn')} onClick={toggleModalExcel}>
-                                Nhập Excel
-                            </button>
-
-                            <button className={cx('btn-action', 'btn')}>Xuất excel</button>
-                        </span>
                     </div>
 
                     <div className={cx('action-bin')}>
-                        <button className={cx('btn-delete', 'btn')} onClick={() => toggleModalMultiDelete(medSelected)}>
-                            Xóa dược
-                        </button>
-                        <button
-                            className={cx('btn-delete', 'btn')}
-                            onClick={() => routeChange('/category/medicine/deleted')}
-                        >
-                            Đã xóa
+                        <button className={cx('btn-delete', 'btn')} onClick={() => routeChange('/category/medicine')}>
+                            Trở lại
                         </button>
                     </div>
                 </div>
             </div>
 
-            {showModalSingleDelete && (
+            {showModalHardDelete && (
                 <ModalAll
-                    label={'Bạn có muốn xóa?'}
-                    methodToggle={toggleModalSingleDelete}
-                    methodHandle={softDeleteMed}
-                    data={medSelected}
+                    label={'Bạn có muốn xóa vĩnh viễn?'}
+                    methodToggle={toggleModalHardDelete}
+                    methodHandle={deleteMedicine}
+                    data={idSelected}
                 />
             )}
 
-            {medSelected.length > 0 && showModalMultiDelete && (
+            {showModalRes && (
                 <ModalAll
-                    label={'Xóa các mục đã chọn?'}
-                    methodToggle={toggleModalMultiDelete}
-                    methodHandle={softDeleteMed}
+                    label={'Bạn có muốn khôi phục?'}
+                    methodHandle={restoreMed}
+                    methodToggle={toggleModalRes}
                     data={medSelected}
                 />
             )}
@@ -429,23 +371,12 @@ function Medicine() {
                 </div>
             )}
 
-            {showModalAdd && (
-                <div>
-                    <ModalAddMed
-                        dataInputs={inputsMedicine}
-                        dataValueInputs={values}
-                        methodOnchange={onChange}
-                        methodToggle={toggleModalAdd}
-                        methodHandle={addMedicine}
-                    />
-                </div>
-            )}
-
-            {showModalExcel && <ModalAddExcel methodToggle={toggleModalExcel} />}
-
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>
-                    <MedicineTb data={dataTb} method={{ toggleModalSingleDelete, toggleModalView, handleChooseRow }} />
+                    <MedDeletedTb
+                        data={dataTbDel}
+                        method={{ toggleModalView, toggleModalRes, toggleModalHardDelete }}
+                    />
                 </div>
 
                 <div className={cx('wrap-pagination')}>
@@ -456,4 +387,4 @@ function Medicine() {
     );
 }
 
-export default Medicine;
+export default MedicineDel;

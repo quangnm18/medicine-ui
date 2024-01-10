@@ -124,16 +124,9 @@ export const SidebarData = [
             },
         ],
     },
+
     {
         id: 5,
-        title: 'Báo cáo',
-        path: routesConfig.report,
-        icon: <FontAwesomeIcon icon={faPaste} />,
-        iconClosed: <FontAwesomeIcon icon={faChevronDown} />,
-        iconOpened: <FontAwesomeIcon icon={faChevronUp} />,
-    },
-    {
-        id: 6,
         title: 'Thống kê',
         path: routesConfig.statistic,
         icon: <FontAwesomeIcon icon={faChartColumn} />,
@@ -151,6 +144,14 @@ export const SidebarData = [
                 icon: <FontAwesomeIcon icon={faClipboardList} />,
             },
         ],
+    },
+    {
+        id: 6,
+        title: 'Báo cáo',
+        path: routesConfig.report,
+        icon: <FontAwesomeIcon icon={faPaste} />,
+        iconClosed: <FontAwesomeIcon icon={faChevronDown} />,
+        iconOpened: <FontAwesomeIcon icon={faChevronUp} />,
     },
     {
         id: 7,

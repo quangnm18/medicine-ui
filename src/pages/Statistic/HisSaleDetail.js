@@ -13,7 +13,10 @@ import { useNavigate } from 'react-router-dom';
 const cx = classNames.bind(style);
 
 function HisSaleDetail() {
-    const [dataDetailCurr, setDataDetailCurr] = useState([]);
+    const numRecord = 10;
+    const [startRecord, setStartRecord] = useState(0);
+    const [pageCount, setPageCount] = useState(1);
+
     const [dataTb, setDataTb] = useState([]);
 
     const [dateStart, setDateStart] = useState('');
@@ -46,69 +49,59 @@ function HisSaleDetail() {
     };
 
     const fillInvoiceDetail = () => {
-        if (dateStart !== '' && dateEnd !== '' && valuesSearch.length) {
-            let arr = dataDetailCurr.filter((detail) => {
-                return detail.ma_hoa_don.toLocaleLowerCase().includes(valuesSearch.toLocaleLowerCase());
-            });
-
-            let filtered = dataDetailCurr.filter((detail) => {
-                let detailDate = detail.createdDt_at;
-                return detailDate >= dateStart && detailDate <= dateEnd;
-            });
-            let result = new Set(arr.concat(filtered));
-            setDataTb([...result]);
-            console.log([...result]);
-            console.log(123);
-        }
-
-        if (dateStart !== '' && dateEnd === '') {
-            let filtered = dataDetailCurr.filter((detail) => {
-                let detailDate = detail.createdDt_at;
-                return (
-                    detailDate >= dateStart &&
-                    detail.ma_hoa_don.toLocaleLowerCase().includes(valuesSearch.toLocaleLowerCase())
-                );
-            });
-            setDataTb(filtered);
-        }
-
-        if (dateStart === '' && dateEnd !== '') {
-            let filtered = dataDetailCurr.filter((detail) => {
-                let detailDate = detail.createdDt_at;
-                return (
-                    detailDate <= dateEnd &&
-                    detail.ma_hoa_don.toLocaleLowerCase().includes(valuesSearch.toLocaleLowerCase())
-                );
-            });
-            setDataTb(filtered);
-        }
-
-        if (dateStart === '' && dateEnd === '') {
-            setDataTb(dataDetailCurr);
-        }
+        // if (dateStart !== '' && dateEnd !== '' && valuesSearch.length) {
+        //     let arr = dataDetailCurr.filter((detail) => {
+        //         return detail.ma_hoa_don.toLocaleLowerCase().includes(valuesSearch.toLocaleLowerCase());
+        //     });
+        //     let filtered = dataDetailCurr.filter((detail) => {
+        //         let detailDate = detail.createdDt_at;
+        //         return detailDate >= dateStart && detailDate <= dateEnd;
+        //     });
+        //     let result = new Set(arr.concat(filtered));
+        //     setDataTb([...result]);
+        //     console.log([...result]);
+        //     console.log(123);
+        // }
+        // if (dateStart !== '' && dateEnd === '') {
+        //     let filtered = dataDetailCurr.filter((detail) => {
+        //         let detailDate = detail.createdDt_at;
+        //         return (
+        //             detailDate >= dateStart &&
+        //             detail.ma_hoa_don.toLocaleLowerCase().includes(valuesSearch.toLocaleLowerCase())
+        //         );
+        //     });
+        //     setDataTb(filtered);
+        // }
+        // if (dateStart === '' && dateEnd !== '') {
+        //     let filtered = dataDetailCurr.filter((detail) => {
+        //         let detailDate = detail.createdDt_at;
+        //         return (
+        //             detailDate <= dateEnd &&
+        //             detail.ma_hoa_don.toLocaleLowerCase().includes(valuesSearch.toLocaleLowerCase())
+        //         );
+        //     });
+        //     setDataTb(filtered);
+        // }
+        // if (dateStart === '' && dateEnd === '') {
+        //     setDataTb(dataDetailCurr);
+        // }
     };
 
     const handleFilter = () => {
-        if (valuesSearch.length) {
-            const arr = dataDetailCurr.filter((detail) => {
-                return detail.ma_hoa_don.toLocaleLowerCase().includes(valuesSearch.toLocaleLowerCase());
-            });
-            setDataTb(arr);
-        } else {
-            setDataTb(dataDetailCurr);
-        }
+        // if (valuesSearch.length) {
+        //     const arr = dataDetailCurr.filter((detail) => {
+        //         return detail.ma_hoa_don.toLocaleLowerCase().includes(valuesSearch.toLocaleLowerCase());
+        //     });
+        //     setDataTb(arr);
+        // } else {
+        //     setDataTb(dataDetailCurr);
+        // }
     };
 
     const VND = new Intl.NumberFormat('vi-VN', {
         style: 'currency',
         currency: 'VND',
     });
-
-    const navigate = useNavigate();
-    const routeChange = () => {
-        let path = `/sell/list`;
-        navigate(path);
-    };
 
     //method handle
     // const handleSoftDel = () => {
@@ -122,17 +115,45 @@ function HisSaleDetail() {
 
     const loadData = () => {
         axios
-            .get('http://localhost:8081/sell/ivdetailcurr')
-            .then((res) => {
-                setDataDetailCurr(res.data);
-                setDataTb(res.data);
+            .get('http://localhost:8081/importlist/detail/', {
+                params: {
+                    isImported: 1,
+                    isDeleted: 0,
+                    numRecord: numRecord,
+                    startRecord: startRecord,
+                    totalRecord: 0,
+                },
             })
-            .catch((e) => console.log(e));
+            .then((res) => {
+                setDataTb(res.data[0]);
+                const totalRecord = res.data[1][0].totalRecord;
+                setPageCount(Math.ceil(totalRecord / numRecord));
+            })
+            .catch((err) => console.log(err));
+    };
+
+    const navigate = useNavigate();
+    const routeChange = (path) => {
+        navigate(path);
     };
 
     useEffect(() => {
         loadData();
-    }, []);
+    }, [startRecord]);
+
+    // const loadData = () => {
+    //     axios
+    //         .get('http://localhost:8081/sell/ivdetailcurr')
+    //         .then((res) => {
+    //             setDataDetailCurr(res.data);
+    //             setDataTb(res.data);
+    //         })
+    //         .catch((e) => console.log(e));
+    // };
+
+    // useEffect(() => {
+    //     loadData();
+    // }, []);
 
     return (
         <div className={cx('content')}>

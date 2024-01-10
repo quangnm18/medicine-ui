@@ -1,4 +1,4 @@
-import { faPenToSquare, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DataTable from 'react-data-table-component';
 import classNames from 'classnames/bind';
@@ -52,7 +52,7 @@ function InvoiceListTb({ data, method }) {
                         <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
                     </button>
                     <button className={cx('btn')} onClick={() => method.toggleModalView(row)}>
-                        <FontAwesomeIcon icon={faPenToSquare} className={cx('icon-view')} />
+                        <FontAwesomeIcon icon={faEye} className={cx('icon-eye')} />
                     </button>
                 </div>
             ),

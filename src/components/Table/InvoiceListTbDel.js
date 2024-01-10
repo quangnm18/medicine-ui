@@ -1,4 +1,4 @@
-import { faPenToSquare, faRotateLeft, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faPenToSquare, faRotateBack, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DataTable from 'react-data-table-component';
 import classNames from 'classnames/bind';
@@ -6,7 +6,7 @@ import style from './Table.module.scss';
 
 const cx = classNames.bind(style);
 
-function GrMedTbDeleted({ data, method }) {
+function InvoiceListTbDel({ data, method }) {
     const tableStyle = {
         rows: {
             style: {
@@ -24,58 +24,48 @@ function GrMedTbDeleted({ data, method }) {
         {
             name: 'STT',
             cell: (row, index) => index + 1,
-            width: '100px',
         },
         {
-            name: 'Tên nhóm thuốc',
-            selector: (row) => row.ten_nhom_thuoc,
-            sortable: true,
-            width: '320px',
+            name: 'Số hóa đơn',
+            selector: (row) => row.ma_hoa_don,
         },
         {
-            name: 'Mô tả',
-            selector: (row) => row.description,
-            width: '400px',
+            name: 'Ngày lập',
+            selector: (row) => {
+                let date = new Date(row.createdDate);
+                return date.toLocaleDateString();
+            },
         },
         {
-            name: 'Mã nhóm thuốc',
-            selector: (row) => row.group_code,
-            sortable: true,
-            width: '180px',
-            // center: true,
+            name: 'Tổng tiền',
+            selector: (row) => Intl.NumberFormat().format(row.tong_phai_tra),
         },
         {
-            name: '',
+            name: 'Nhân viên',
+            selector: (row) => row.Name,
+        },
+        {
+            name: '#',
             cell: (row) => (
                 <div>
                     <button className={cx('btn')} onClick={() => method.toggleModalHardDel(row.id)}>
                         <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
                     </button>
-                </div>
-            ),
-            width: '200px',
-            right: true,
-        },
-        {
-            name: '',
-            cell: (row) => (
-                <div>
                     <button className={cx('btn')} onClick={() => method.toggleModalView(row)}>
-                        <FontAwesomeIcon icon={faPenToSquare} className={cx('icon-view')} />
+                        <FontAwesomeIcon icon={faEye} className={cx('icon-eye')} />
                     </button>
                     <button className={cx('btn')} onClick={() => method.toggleModalRes(row.id)}>
-                        <FontAwesomeIcon icon={faRotateLeft} className={cx('icon-view')} />
+                        <FontAwesomeIcon icon={faRotateBack} className={cx('icon-view')} />
                     </button>
                 </div>
             ),
-            width: '200px',
         },
     ];
     return (
         <div>
-            <DataTable columns={columns} data={data} customStyles={tableStyle} selectableRows></DataTable>
+            <DataTable columns={columns} data={data} customStyles={tableStyle}></DataTable>
         </div>
     );
 }
 
-export default GrMedTbDeleted;
+export default InvoiceListTbDel;

@@ -69,7 +69,10 @@
     height: 100%;
     background-color: var(--white);
     padding: 8px 12px 0 12px;
-    height: 100vh;
+}
+
+.content-table {
+    min-height: 580px;
 }
 
 // .modal {

@@ -148,7 +148,7 @@
 
 //Main Content
 .main-content {
-    height: 680px;
+    height: 678px;
     background-color: var(--white);
     padding: 8px 12px 0 12px;
     margin-top: 12px;
@@ -157,6 +157,10 @@
     flex-direction: column;
     justify-content: space-between;
     overflow: auto;
+}
+
+.wrap-paginate {
+    margin-bottom: 8px;
 }
 
 .main-content::-webkit-scrollbar {

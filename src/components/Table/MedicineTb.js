@@ -28,7 +28,7 @@ function MedicineTb({ data, method }) {
     const columns = [
         {
             name: 'STT',
-            cell: (row, index, a) => index + 1,
+            cell: (row, index) => index + 1,
         },
         {
             name: 'Tên dược',
@@ -71,8 +71,6 @@ function MedicineTb({ data, method }) {
                 columns={columns}
                 data={data}
                 customStyles={tableStyle}
-                fixedHeader={true}
-                pagination
                 selectableRows
                 onSelectedRowsChange={method.handleChooseRow}
             ></DataTable>

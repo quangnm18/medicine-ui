@@ -8,19 +8,20 @@ import axios from 'axios';
 import DirectionHeader from '~/components/DirectionHeader/DirectionHeader';
 import style from './InvoiceList.module.scss';
 import InvoiceListTb from '~/components/Table/InvoiceListTb';
-import ModalDelete from '~/components/ModalPage/ModalSingleDelete';
 import ModalAll from '~/components/ModalPage/ModalAll';
 import ModalViewSaleDetail from '~/components/ModalPage/ModalSaleDetail';
 import Pagination from '~/components/Pagination/Pagination';
+import InvoiceListTbDel from '~/components/Table/InvoiceListTbDel';
 
 const cx = classNames.bind(style);
 
-function InvoiceList() {
+function InvoiceListDel() {
     const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState(1);
 
-    const [showModalSoftDel, setShowModalSoftDel] = useState(false);
+    const [showModalRes, setShowModalRes] = useState(false);
+    const [showModalHardDel, setShowModalHardDel] = useState(false);
     const [showModalView, setShowModalView] = useState(false);
 
     const [dateStart, setDateStart] = useState('');
@@ -30,14 +31,19 @@ function InvoiceList() {
 
     const [idSelected, setIdSelected] = useState();
 
-    const toggleModalSoftDel = (id) => {
-        setShowModalSoftDel(!showModalSoftDel);
-        setIdSelected(id);
-    };
-
     const toggleModalView = (data) => {
         setShowModalView(!showModalView);
         setIdSelected(data);
+    };
+
+    const toggleModalRes = (id) => {
+        setShowModalRes(!showModalRes);
+        setIdSelected(id);
+    };
+
+    const toggleModalHardDel = (id) => {
+        setShowModalHardDel(!showModalHardDel);
+        setIdSelected(id);
     };
 
     const handleChooseDateStart = (e) => {
@@ -77,11 +83,21 @@ function InvoiceList() {
     };
 
     //method handle
-    const handleSoftDel = (id) => {
+    const handleRes = (id) => {
         axios
-            .put(`http://localhost:8081/sell/ivlist/softdelete/${id}`)
+            .put(`http://localhost:8081/sell/ivlist/restore/${id}`)
             .then((res) => {
-                setShowModalSoftDel(false);
+                setShowModalRes(false);
+                loadData();
+            })
+            .catch((e) => console.log(e));
+    };
+
+    const handleHardDel = (id) => {
+        axios
+            .delete(`http://localhost:8081/sell/ivlist/harddelete/${id}`)
+            .then((res) => {
+                setShowModalHardDel(false);
                 loadData();
             })
             .catch((e) => console.log(e));
@@ -95,7 +111,7 @@ function InvoiceList() {
         axios
             .get('http://localhost:8081/sell/ivlist/', {
                 params: {
-                    isDeleted: 0,
+                    isDeleted: 1,
                     numRecord: numRecord,
                     startRecord: startRecord,
                     totalRecord: 0,
@@ -144,17 +160,27 @@ function InvoiceList() {
                         <button className={cx('btn-add')} onClick={() => routeChange('/sell/create')}>
                             Lập hóa đơn
                         </button>
-                        <button className={cx('btn-add')} onClick={() => routeChange('/sell/list/deleted')}>
-                            Đã xóa
+                        <button className={cx('btn-add')} onClick={() => routeChange('/sell/list')}>
+                            Trở về
                         </button>
                     </div>
                 </div>
             </div>
-            {showModalSoftDel && (
+
+            {showModalRes && (
                 <ModalAll
-                    label={'Bạn có muốn xóa?'}
-                    methodToggle={toggleModalSoftDel}
-                    methodHandle={handleSoftDel}
+                    label={'Bạn có muốn khôi phục?'}
+                    methodToggle={toggleModalRes}
+                    methodHandle={handleRes}
+                    data={idSelected}
+                />
+            )}
+
+            {showModalHardDel && (
+                <ModalAll
+                    label={'Bạn có muốn xóa vĩnh viễn?'}
+                    methodToggle={toggleModalHardDel}
+                    methodHandle={handleHardDel}
                     data={idSelected}
                 />
             )}
@@ -168,7 +194,7 @@ function InvoiceList() {
             )}
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>
-                    <InvoiceListTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView }} />
+                    <InvoiceListTbDel data={dataTb} method={{ toggleModalRes, toggleModalView, toggleModalHardDel }} />
                 </div>
 
                 <div>
@@ -179,4 +205,4 @@ function InvoiceList() {
     );
 }
 
-export default InvoiceList;
+export default InvoiceListDel;

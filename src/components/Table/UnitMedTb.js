@@ -72,7 +72,7 @@ function UnitMedTb({ data, method }) {
     ];
     return (
         <div>
-            <DataTable columns={columns} data={data} customStyles={tableStyle} pagination selectableRows></DataTable>
+            <DataTable columns={columns} data={data} customStyles={tableStyle} selectableRows></DataTable>
         </div>
     );
 }

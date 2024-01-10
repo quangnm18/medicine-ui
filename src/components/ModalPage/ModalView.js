@@ -8,11 +8,12 @@ const cx = classNames.bind(style);
 
 function ModalView({ label, dataInputs, dataValueInputs, methodOnchange, methodToggle, methodHandle }) {
     const [error, setError] = useState({});
-
+    console.log(dataValueInputs);
+    console.log(dataInputs);
     const validator = () => {
         const validationError = {};
-        if (dataValueInputs.Name === '' && !dataValueInputs.Name.trim()) {
-            validationError.Name = 'Phải nhập tên nhà cung cấp';
+        if (dataValueInputs.ten_ncc === '' && !dataValueInputs.ten_ncc.trim()) {
+            validationError.ten_ncc = 'Phải nhập tên nhà cung cấp';
         }
 
         if (dataValueInputs.PhoneNumber === '' && !dataValueInputs.PhoneNumber.trim()) {

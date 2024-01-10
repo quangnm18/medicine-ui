@@ -10,7 +10,7 @@ import Staff from '~/pages/Staff/Staff';
 import Supplier from '~/pages/Supplier/Supplier';
 import Medicine from '~/pages/Medicine/Medicine';
 import Report from '~/pages/Report/Report';
-import ListImportWh from '~/pages/ImportWh/ListImportWh';
+import ListIptCp from '~/pages/ImportWh/ListIptCp';
 import IptWhInvoice from '~/pages/ImportWh/IptWhInvoice';
 import InventoryWh from '~/pages/InventoryWh/InventoryWh';
 import GroupMed from '~/pages/UnitGroupMed/GroupMed';
@@ -18,6 +18,13 @@ import UnitMed from '~/pages/UnitGroupMed/UnitMed';
 import HisIptDetail from '~/pages/Statistic/HisIptDetail';
 import HisSaleDetail from '~/pages/Statistic/HisSaleDetail';
 import Account from '~/pages/Account/Acount';
+import GroupMedDel from '~/pages/UnitGroupMed/GroupMedDel';
+import MedicineDel from '~/pages/Medicine/MedicineDel';
+import SupplierDel from '~/pages/Supplier/SupplierDel';
+import UnitMedDel from '~/pages/UnitGroupMed/UnitMedDel';
+import ListIptCpDel from '~/pages/ImportWh/ListIptCpDel';
+import HisIptDetailDel from '~/pages/Statistic/HisIptDetailDel';
+import InvoiceListDel from '~/pages/InvoiceList/InvoiceListDel';
 
 const publicRoutes = [
     { path: routesConfig.login, component: Login, layout: LoginLayout },
@@ -38,7 +45,7 @@ const publicRoutes = [
 
     { path: routesConfig.warehouse, component: IptWhInvoice },
     { path: routesConfig.importCreate, component: IptWhInvoice },
-    { path: routesConfig.importList, component: ListImportWh },
+    { path: routesConfig.importList, component: ListIptCp },
     { path: routesConfig.checkInventory, component: InventoryWh },
     { path: routesConfig.exportCreate, component: InventoryWh },
     { path: routesConfig.exportList, component: InventoryWh },
@@ -52,6 +59,18 @@ const publicRoutes = [
     { path: routesConfig.account, component: Account },
 ];
 
-const privateRoutes = [];
+const privateRoutes = [
+    { path: routesConfig.categoryMedicineDel, component: MedicineDel },
+    { path: routesConfig.categoryGroupMedicineDel, component: GroupMedDel },
+    { path: routesConfig.categoryUnitMedicineDel, component: UnitMedDel },
+    { path: routesConfig.categorySupplierDel, component: SupplierDel },
+    { path: routesConfig.categoryGroupMedicineDel, component: GroupMedDel },
+
+    { path: routesConfig.importListDel, component: ListIptCpDel },
+    { path: routesConfig.sellListDel, component: InvoiceListDel },
+
+    { path: routesConfig.historyImportStatisticDel, component: HisIptDetailDel },
+    { path: routesConfig.historySaleStatisticDel, component: HisSaleDetail },
+];
 
 export { publicRoutes, privateRoutes };

@@ -93,9 +93,9 @@ function SellInvoiceCreate() {
 
     const handleSaveIv = () => {
         axios
-            .get('http://localhost:8081/sell/ivlist')
+            .get('http://localhost:8081/sell/getmaxid')
             .then((res) => {
-                const newId = res.data[0].id + 1;
+                const newId = res.data[0].max_id + 1;
                 axios
                     .post('http://localhost:8081/sell/ivcreate', {
                         user_id: user.id,
@@ -107,7 +107,7 @@ function SellInvoiceCreate() {
                         newId: newId,
                     })
                     .then((res1) => {
-                        const ma_hoa_don = res1.data.id;
+                        const ma_hoa_don = newId;
                         axios
                             .post('http://localhost:8081/sell/ivdetail/create', { dataInvoice, ma_hoa_don })
                             .then((res) => {

@@ -1,4 +1,4 @@
-import { faEye, faPenToSquare, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faRotateBack, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DataTable from 'react-data-table-component';
 import classNames from 'classnames/bind';
@@ -6,7 +6,7 @@ import style from './Table.module.scss';
 
 const cx = classNames.bind(style);
 
-function ImportCpListTb({ data, method }) {
+function IptCpListTbDel({ data, method }) {
     const tableStyle = {
         rows: {
             style: {
@@ -71,19 +71,7 @@ function ImportCpListTb({ data, method }) {
             name: 'Nhà cung cấp',
             selector: (row) => row.ten_ncc,
         },
-        {
-            name: '#',
-            cell: (row) => (
-                <div>
-                    <button className={cx('btn')} onClick={() => method.toggleModalSoftDel(row.id)}>
-                        <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
-                    </button>
-                    <button className={cx('btn')} onClick={() => method.toggleModalView(row)}>
-                        <FontAwesomeIcon icon={faEye} className={cx('icon-view', 'icon-eye')} />
-                    </button>
-                </div>
-            ),
-        },
+
         {
             name: 'Trạng thái',
             cell: (row) => (
@@ -91,11 +79,29 @@ function ImportCpListTb({ data, method }) {
                     {row.status === 2 && <button className={cx('btn-status')}>Đang chờ</button>}
                     {row.status === 0 && <button className={cx('btn-status', 'btn-reject')}>Từ chối</button>}
                     {row.status === 1 && <button className={cx('btn-status', 'btn-okay')}>Đã duyệt</button>}
-                    {row.status === 2 && (
+                    {/* {row.status === 2 && (
                         <button className={cx('btn-status')} onClick={() => method.toggleModalAccept(row.invoice_code)}>
                             Phê duyệt
                         </button>
-                    )}
+                    )} */}
+                </div>
+            ),
+        },
+
+        {
+            name: '#',
+            cell: (row) => (
+                <div>
+                    <button className={cx('btn')} onClick={() => method.toggleModalHardDel(row.id)}>
+                        <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
+                    </button>
+                    <button className={cx('btn')} onClick={() => method.toggleModalView(row)}>
+                        <FontAwesomeIcon icon={faEye} className={cx('icon-view', 'icon-eye')} />
+                    </button>
+
+                    <button className={cx('btn')} onClick={() => method.toggleModalRes(row.id)}>
+                        <FontAwesomeIcon icon={faRotateBack} className={cx('icon-view', 'icon-res')} />
+                    </button>
                 </div>
             ),
         },
@@ -107,4 +113,4 @@ function ImportCpListTb({ data, method }) {
     );
 }
 
-export default ImportCpListTb;
+export default IptCpListTbDel;

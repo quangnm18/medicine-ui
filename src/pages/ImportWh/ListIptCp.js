@@ -7,14 +7,18 @@ import classNames from 'classnames/bind';
 
 import DirectionHeader from '~/components/DirectionHeader/DirectionHeader';
 import axios from 'axios';
-import ImportCpListTb from '~/components/Table/ImportCpListTb';
 import ModalAll from '~/components/ModalPage/ModalAll';
 import ModalIvDetail from '~/components/ModalPage/ModalIvDetail';
+import Pagination from '~/components/Pagination/Pagination';
+import IptCpListTb from '~/components/Table/IptCpListTb';
 
 const cx = classNames.bind(style);
 
-function ImportWh() {
-    const [dataListIptIv, setDataListIptIv] = useState([]);
+function ListIptCp() {
+    const numRecord = 10;
+    const [startRecord, setStartRecord] = useState(0);
+    const [pageCount, setPageCount] = useState(1);
+
     const [dataTb, setDataTb] = useState([]);
 
     const [dateStart, setDateStart] = useState('');
@@ -79,56 +83,63 @@ function ImportWh() {
     };
 
     const fillInvoice = () => {
-        if (dateStart !== '' && dateEnd !== '') {
-            let filtered = dataListIptIv.filter((invoice) => {
-                let invoiceDate = invoice.createdDate;
-                return invoiceDate >= dateStart && invoiceDate <= dateEnd;
-            });
-            setDataTb(filtered);
-        }
-
-        if (dateStart !== '' && dateEnd === '') {
-            let filtered = dataListIptIv.filter((invoice) => {
-                let invoiceDate = invoice.createdDate;
-                return invoiceDate >= dateStart;
-            });
-            setDataTb(filtered);
-        }
-
-        if (dateStart === '' && dateEnd !== '') {
-            let filtered = dataListIptIv.filter((invoice) => {
-                let invoiceDate = invoice.createdDate;
-                return invoiceDate <= dateEnd;
-            });
-            setDataTb(filtered);
-        }
-
-        if (dateStart === '' && dateEnd === '') {
-            setDataTb(dataListIptIv);
-        }
+        // if (dateStart !== '' && dateEnd !== '') {
+        //     let filtered = dataListIptIv.filter((invoice) => {
+        //         let invoiceDate = invoice.createdDate;
+        //         return invoiceDate >= dateStart && invoiceDate <= dateEnd;
+        //     });
+        //     setDataTb(filtered);
+        // }
+        // if (dateStart !== '' && dateEnd === '') {
+        //     let filtered = dataListIptIv.filter((invoice) => {
+        //         let invoiceDate = invoice.createdDate;
+        //         return invoiceDate >= dateStart;
+        //     });
+        //     setDataTb(filtered);
+        // }
+        // if (dateStart === '' && dateEnd !== '') {
+        //     let filtered = dataListIptIv.filter((invoice) => {
+        //         let invoiceDate = invoice.createdDate;
+        //         return invoiceDate <= dateEnd;
+        //     });
+        //     setDataTb(filtered);
+        // }
+        // if (dateStart === '' && dateEnd === '') {
+        //     setDataTb(dataListIptIv);
+        // }
     };
 
-    //method #
+    //call api
+    const loadData = () => {
+        axios
+            .get('http://localhost:8081/importlist/alllistpaginate/', {
+                params: {
+                    isDeleted: 0,
+                    numRecord: numRecord,
+                    startRecord: startRecord,
+                    totalRecord: 0,
+                },
+            })
+            .then((res) => {
+                setDataTb(res.data[0]);
+                const totalRecord = res.data[1][0].totalRecord;
+                setPageCount(Math.ceil(totalRecord / numRecord));
+            })
+            .catch((err) => console.log(err));
+    };
 
     const navigate = useNavigate();
     const routeChange = (path) => {
         navigate(path);
     };
 
-    //call api
-    const loadData = () => {
-        axios
-            .get('http://localhost:8081/importlist/allcurrent')
-            .then((res) => {
-                setDataListIptIv(res.data);
-                setDataTb(res.data);
-            })
-            .catch((e) => console.log(e));
-    };
-
     useEffect(() => {
         loadData();
-    }, []);
+    }, [startRecord]);
+
+    const handleChangePage = (e) => {
+        setStartRecord(e.selected * numRecord);
+    };
 
     return (
         <div className={cx('content')}>
@@ -162,10 +173,15 @@ function ImportWh() {
                             <FontAwesomeIcon icon={faSearch} />
                         </button>
                         <div className={cx('btn-action')}>
-                            <button className={cx('btn-add')} onClick={() => routeChange('/importlist/create')}>
+                            <button className={cx('btn-add')} onClick={() => routeChange('/warehouse/importcreate')}>
                                 Nhập tồn
                             </button>
-                            <button className={cx('btn-add')}>Xuất excel</button>
+                            <button
+                                className={cx('btn-add')}
+                                onClick={() => routeChange('/warehouse/importlist/deleted')}
+                            >
+                                Đã xóa
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -197,10 +213,15 @@ function ImportWh() {
             )}
 
             <div className={cx('main-content')}>
-                <ImportCpListTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView, toggleModalAccept }} />
+                <div className={cx('content-table')}>
+                    <IptCpListTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView, toggleModalAccept }} />
+                </div>
+                <div className={cx('wrap-paginate')}>
+                    <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />
+                </div>
             </div>
         </div>
     );
 }
 
-export default ImportWh;
+export default ListIptCp;

@@ -32,7 +32,7 @@ function SupDeletedTb({ data, method }) {
         },
         {
             name: 'Tên nhà cung cấp',
-            selector: (row) => row.Name,
+            selector: (row) => row.ten_ncc,
             sortable: true,
         },
         {
@@ -72,14 +72,7 @@ function SupDeletedTb({ data, method }) {
     ];
     return (
         <div>
-            <DataTable
-                columns={columns}
-                data={data}
-                customStyles={tableStyle}
-                fixedHeader={true}
-                pagination
-                selectableRows
-            ></DataTable>
+            <DataTable columns={columns} data={data} customStyles={tableStyle} fixedHeader={true}></DataTable>
         </div>
     );
 }

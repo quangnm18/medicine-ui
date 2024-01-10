@@ -3,23 +3,21 @@ import style from './Supplier.module.scss';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import SupplierTb from '~/components/Table/SupplierTb';
 import { useCallback, useEffect, useState } from 'react';
 
 import axios from 'axios';
+import SupDeletedTb from '~/components/Table/SupDeletedTb';
 import ModalAll from '~/components/ModalPage/ModalAll';
 import ModalView from '~/components/ModalPage/ModalView';
-import ModalAdd from '~/components/ModalPage/ModalAdd';
 import { useNavigate } from 'react-router-dom';
 import Pagination from '~/components/Pagination/Pagination';
 
 const cx = classNames.bind(style);
 
-function Supplier() {
+function SupplierDel() {
     const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState(1);
-
     const [dataTb, setDataTb] = useState([]);
 
     const [values, setValues] = useState({
@@ -78,9 +76,9 @@ function Supplier() {
 
     const [valuesSearch, setValuesSearch] = useState('');
 
-    const [showModalAdd, setShowModalAdd] = useState(false);
     const [showModalView, setShowModalView] = useState(false);
-    const [showModalDelete, setShowModalDelete] = useState(false);
+    const [showModalHardDel, setShowModaHardDel] = useState(false);
+    const [showModalRes, setShowModalRes] = useState(false);
 
     const [idSelected, setIdSelected] = useState();
 
@@ -92,46 +90,34 @@ function Supplier() {
         setValuesSearch(e.target.value);
     };
 
-    const handleChangePage = (e) => {
-        setStartRecord(e.selected * numRecord);
-    };
-
     //toggle method
-    const toggleModalSingleDelete = (id) => {
-        setShowModalDelete(!showModalDelete);
-        setIdSelected(id);
-    };
+
     const toggleModalView = (id) => {
         setShowModalView(!showModalView);
         setIdSelected(id);
         const item = dataTb.filter((item) => {
             return item.ID === id;
         });
-        setValues({ ...item[0] });
+        setValues(item[0]);
     };
 
-    const toggleModalAdd = () => {
-        setValues({
-            ten_ncc: '',
-            PhoneNumber: '',
-            Email: '',
-            Address: '',
-            personRepresent: '',
-            TaxCode: '',
-        });
-        setShowModalAdd(!showModalAdd);
-    };
+    const toggleModalHardDel = useCallback(
+        (id) => {
+            setShowModaHardDel(!showModalHardDel);
+            setIdSelected(id);
+        },
+        [showModalHardDel],
+    );
+
+    const toggleModalRes = useCallback(
+        (id) => {
+            setShowModalRes(!showModalRes);
+            setIdSelected(id);
+        },
+        [showModalRes],
+    );
 
     //handleClick method
-    const handleAdd = () => {
-        axios
-            .post('http://localhost:8081/category/supplier/add', values)
-            .then((res) => {
-                loadData();
-                setShowModalAdd(false);
-            })
-            .catch((e) => console.log(e));
-    };
 
     const handleUpdate = () => {
         axios
@@ -143,12 +129,22 @@ function Supplier() {
             .catch((e) => console.log(e));
     };
 
-    const handleSoftDel = (id) => {
+    const handleHardDel = (id) => {
         axios
-            .put(`http://localhost:8081/category/supplier/softdelete/${id}`)
+            .delete(`http://localhost:8081/category/supplier/harddelete/${id}`)
             .then((res) => {
                 loadData();
-                setShowModalDelete(false);
+                setShowModaHardDel(false);
+            })
+            .catch((e) => console.log(e));
+    };
+
+    const handleRes = (id) => {
+        axios
+            .put(`http://localhost:8081/category/supplier/restore/${id}`)
+            .then((res) => {
+                loadData();
+                setShowModalRes(false);
             })
             .catch((e) => console.log(e));
     };
@@ -177,14 +173,19 @@ function Supplier() {
 
     const handleKeyPress = (e) => {
         if (e.code === 'Enter') {
+            // handleFilter();
         }
+    };
+
+    const handleChangePage = (e) => {
+        setStartRecord(e.selected * numRecord);
     };
 
     const loadData = () => {
         axios
             .get('http://localhost:8081/category/supplier/', {
                 params: {
-                    isDeleted: 0,
+                    isDeleted: 1,
                     numRecord: numRecord,
                     startRecord: startRecord,
                     totalRecord: 0,
@@ -212,7 +213,7 @@ function Supplier() {
             <div className={cx('header-content')}>
                 <DirectionHeader>Quản lý danh mục</DirectionHeader>
                 <div className={cx('choose-medicine')}>
-                    <h4 className={cx('header-title')}>Danh sách nhà cung cấp</h4>
+                    <h4 className={cx('header-title')}>Danh sách nhà cung cấp đã xóa</h4>
                     <div className={cx('header-action')}>
                         <div className={cx('header-search')}>
                             <input
@@ -226,49 +227,29 @@ function Supplier() {
                                 <FontAwesomeIcon icon={faSearch} className={cx('search-icon')} />
                             </button>
                         </div>
-                        <button
-                            className={cx('btn-addstaff')}
-                            onClick={() => {
-                                setShowModalAdd(true);
-                                setValues({
-                                    ten_ncc: '',
-                                    PhoneNumber: '',
-                                    Email: '',
-                                    Address: '',
-                                    personRepresent: '',
-                                    TaxCode: '',
-                                });
-                            }}
-                        >
-                            Thêm
-                        </button>
-                        <button className={cx('btn-addstaff')}>Nhập excel</button>
-                        <button
-                            className={cx('btn-addstaff')}
-                            onClick={() => routeChange('/category/supplier/deleted')}
-                        >
-                            Đã xóa
+
+                        <button className={cx('btn-addstaff')} onClick={() => routeChange('/category/supplier')}>
+                            Trở lại
                         </button>
                     </div>
                 </div>
             </div>
-            {showModalDelete && (
+
+            {showModalHardDel && (
                 <ModalAll
-                    label={'Bạn có muốn xóa?'}
-                    methodToggle={toggleModalSingleDelete}
-                    methodHandle={handleSoftDel}
+                    label={'Bạn có muốn xóa vĩnh viễn?'}
+                    methodToggle={toggleModalHardDel}
+                    methodHandle={handleHardDel}
                     data={idSelected}
                 />
             )}
 
-            {showModalAdd && (
-                <ModalAdd
-                    label={'Thêm mới nhà cung cấp'}
-                    dataInputs={inputsSupplier}
-                    dataValueInputs={values}
-                    methodOnchange={onChangeInputSup}
-                    methodToggle={toggleModalAdd}
-                    methodHandle={handleAdd}
+            {showModalRes && (
+                <ModalAll
+                    label={'Bạn có muốn khôi phục?'}
+                    methodToggle={toggleModalRes}
+                    methodHandle={handleRes}
+                    data={idSelected}
                 />
             )}
 
@@ -284,7 +265,7 @@ function Supplier() {
             )}
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>
-                    <SupplierTb data={dataTb} method={{ toggleModalSingleDelete, toggleModalView }} />
+                    <SupDeletedTb data={dataTb} method={{ toggleModalHardDel, toggleModalView, toggleModalRes }} />
                 </div>
                 <div className={cx('wrap-pagination')}>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />
@@ -294,4 +275,4 @@ function Supplier() {
     );
 }
 
-export default Supplier;
+export default SupplierDel;

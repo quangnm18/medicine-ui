@@ -31,7 +31,7 @@
     width: 100%;
     display: flex;
     align-items: center;
-    padding: 8px;
+    padding: 8px 8px 12px 8px;
 
     // justify-content: space-between;
     // width: 1600px;
@@ -63,7 +63,8 @@
     button {
         color: var(--white);
         min-width: 120px;
-        padding: 12px;
+        height: 38px;
+        // padding: 12px;
     }
 }
 
@@ -96,9 +97,11 @@
     height: 100%;
     background-color: var(--white);
     padding: 8px 12px 0 12px;
-    height: 100vh;
 }
 
+.content-table {
+    min-height: 560px;
+}
 //modal
 
 .modal-view {

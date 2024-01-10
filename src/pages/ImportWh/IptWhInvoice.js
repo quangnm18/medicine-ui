@@ -196,13 +196,13 @@ function CreateInvoiceIpt() {
 
     const handleCreatedCp = () => {
         axios
-            .get('http://localhost:8081/importlist/all')
+            .get('http://localhost:8081/importlist/getmaxid')
             .then((res) => {
-                const newId = res.data[0].id + 1;
+                const newId = res.data[0].max_id + 1;
                 axios
                     .post('http://localhost:8081/importlist/create', { dataDetails, total, tong_ck, newId })
                     .then((res1) => {
-                        const invoice_code = res1.data.id;
+                        const invoice_code = newId;
                         axios
                             .post('http://localhost:8081/importlist/createdetail', { dataDetails, invoice_code })
                             .then((res) => {
@@ -238,7 +238,7 @@ function CreateInvoiceIpt() {
 
     useEffect(() => {
         axios
-            .get('http://localhost:8081/category/supplier')
+            .get('http://localhost:8081/category/supplierall')
             .then((res) => setDataSup(res.data))
             .catch((e) => console.log(e));
     }, []);
@@ -410,7 +410,7 @@ function CreateInvoiceIpt() {
                     Lưu lại
                 </button>
 
-                <button className={cx('btn', 'btn-confirm')} onClick={() => routeChange('/importlist')}>
+                <button className={cx('btn', 'btn-confirm')} onClick={() => routeChange('/warehouse/importlist')}>
                     Danh sách
                 </button>
             </div>

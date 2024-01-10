@@ -9,11 +9,12 @@ import { useEffect, useState } from 'react';
 import ModalAll from '~/components/ModalPage/ModalAll';
 import Modal from '~/components/Modal';
 import { useNavigate } from 'react-router-dom';
+import HisIptDetailTbDel from '~/components/Table/HisIptDetailTbDel';
 import Pagination from '~/components/Pagination/Pagination';
 
 const cx = classNames.bind(style);
 
-function HisIptDetail() {
+function HisIptDetailDel() {
     const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState(1);
@@ -25,17 +26,23 @@ function HisIptDetail() {
     const [valuesSearch, setValuesSearch] = useState('');
 
     const [idSelected, setIdSelected] = useState('');
-    const [showModalSoftDel, setShowModalSoftDel] = useState(false);
     const [showModalView, setShowModalView] = useState(false);
-
-    const toggleModalSoftDel = (id) => {
-        setShowModalSoftDel(!showModalSoftDel);
-        setIdSelected(id);
-    };
+    const [showModalRes, setShowModalRes] = useState(false);
+    const [showModalHardDel, setShowModalHardDel] = useState(false);
 
     const toggleModalView = (data) => {
         setShowModalView(!showModalView);
         setIdSelected(data);
+    };
+
+    const toggleModalRes = (id) => {
+        setShowModalRes(!showModalRes);
+        setIdSelected(id);
+    };
+
+    const toggleModalHardDel = (id) => {
+        setShowModalHardDel(!showModalHardDel);
+        setIdSelected(id);
     };
 
     const onchangeDateStart = (e) => {
@@ -109,11 +116,22 @@ function HisIptDetail() {
     });
 
     //method handle
-    const handleSoftDel = () => {
+
+    const handleRes = (id) => {
         axios
-            .put(`http://localhost:8081/importlist/detail/softdelete/${idSelected}`)
+            .put(`http://localhost:8081/importlist/detail/restore/${id}`)
             .then((res) => {
-                setShowModalSoftDel(false);
+                setShowModalRes(false);
+                loadData();
+            })
+            .catch((e) => console.log(e));
+    };
+
+    const handleHardDel = (id) => {
+        axios
+            .delete(`http://localhost:8081/importlist/detail/harddelete/${id}`)
+            .then((res) => {
+                setShowModalHardDel(false);
                 loadData();
             })
             .catch((e) => console.log(e));
@@ -124,7 +142,7 @@ function HisIptDetail() {
             .get('http://localhost:8081/importlist/detail/', {
                 params: {
                     isImported: 1,
-                    isDeleted: 0,
+                    isDeleted: 1,
                     numRecord: numRecord,
                     startRecord: startRecord,
                     totalRecord: 0,
@@ -150,7 +168,7 @@ function HisIptDetail() {
     return (
         <div className={cx('content')}>
             <div className={cx('header-content')}>
-                <DirectionHeader>Thống kê dược nhập kho</DirectionHeader>
+                <DirectionHeader>Thống kê nhập kho đã xóa</DirectionHeader>
                 <div>
                     <div className={cx('choose-medicine')}>
                         <div className={cx('medicine-option')}>
@@ -168,11 +186,8 @@ function HisIptDetail() {
                             <button className={cx('btn-add')} onClick={() => routeChange('/warehouse/importcreate')}>
                                 Nhập tồn
                             </button>
-                            <button
-                                className={cx('btn-add')}
-                                onClick={() => routeChange('/statistic/historyImport/deleted')}
-                            >
-                                Đã xóa
+                            <button className={cx('btn-add')} onClick={() => routeChange('/statistic/historyImport')}>
+                                Trở lại
                             </button>
                         </div>
                     </div>
@@ -187,8 +202,22 @@ function HisIptDetail() {
                 </div>
             </div>
 
-            {showModalSoftDel && (
-                <ModalAll label={'Bạn có muốn xóa ?'} methodToggle={toggleModalSoftDel} methodHandle={handleSoftDel} />
+            {showModalHardDel && (
+                <ModalAll
+                    label={'Bạn có muốn xóa vĩnh viễn ?'}
+                    methodToggle={toggleModalHardDel}
+                    methodHandle={handleHardDel}
+                    data={idSelected}
+                />
+            )}
+
+            {showModalRes && (
+                <ModalAll
+                    label={'Bạn có muốn khôi phục?'}
+                    methodToggle={toggleModalRes}
+                    methodHandle={handleRes}
+                    data={idSelected}
+                />
             )}
             {showModalView && (
                 <Modal>
@@ -265,14 +294,13 @@ function HisIptDetail() {
 
             <div className={cx('main-content')}>
                 <div>
-                    <HisIptDetailTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView }} />
+                    <HisIptDetailTbDel data={dataTb} method={{ toggleModalRes, toggleModalHardDel, toggleModalView }} />
                 </div>
-                <div>
-                    <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />
-                </div>
+                <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />
+                <div></div>
             </div>
         </div>
     );
 }
 
-export default HisIptDetail;
+export default HisIptDetailDel;

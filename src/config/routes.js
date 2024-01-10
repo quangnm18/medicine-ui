@@ -6,10 +6,13 @@ const routes = {
     sell: '/sell',
     sellCreate: '/sell/create',
     sellList: '/sell/list',
+    sellListDel: '/sell/list/deleted',
 
     warehouse: '/warehouse',
-    importCreate: '/warehouse/import/create',
-    importList: '/warehouse/import/list',
+    importCreate: '/warehouse/importcreate',
+    importList: '/warehouse/importlist',
+    importListDel: '/warehouse/importlist/deleted',
+
     exportCreate: '/warehouse/export/create',
     exportList: '/warehouse/export/list',
     checkInventory: '/warehouse/inventory',
@@ -17,15 +20,22 @@ const routes = {
     category: '/category',
     categoryStaff: '/category/staff',
     categorySupplier: '/category/supplier',
+    categorySupplierDel: '/category/supplier/deleted',
     categoryMedicine: '/category/medicine',
+    categoryMedicineDel: '/category/medicine/deleted',
     categoryGroupMedicine: '/category/grmedicine',
+    categoryGroupMedicineDel: '/category/grmedicine/deleted',
     categoryUnitMedicine: '/category/unitmedicine',
+    categoryUnitMedicineDel: '/category/unitmedicine/deleted',
 
     report: '/report',
 
     statistic: '/statistic',
     historyImportStatistic: '/statistic/historyImport',
+    historyImportStatisticDel: '/statistic/historyImport/deleted',
+
     historySaleStatistic: '/statistic/historySale',
+    historySaleStatisticDel: '/statistic/historySale/deleted',
 
     account: '/account',
 };

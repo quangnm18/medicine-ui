@@ -73,7 +73,6 @@ function MedDeletedTb({ data, method }) {
                 data={data}
                 customStyles={tableStyle}
                 fixedHeader={true}
-                pagination
                 selectableRows
             ></DataTable>
         </div>

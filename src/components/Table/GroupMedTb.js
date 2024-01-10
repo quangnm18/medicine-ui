@@ -26,11 +26,13 @@ function GroupMedTb({ data, method }) {
     };
 
     const columns = [
-        {
-            name: 'STT',
-            cell: (row, index) => index + 1,
-            width: '100px',
-        },
+        // {
+        //     name: 'ID',
+        //     cell: (row, index) => {
+        //
+        //     },
+        //     width: '100px',
+        // },
         {
             name: 'Tên nhóm thuốc',
             selector: (row) => row.ten_nhom_thuoc,
@@ -70,10 +72,10 @@ function GroupMedTb({ data, method }) {
                 columns={columns}
                 data={data}
                 customStyles={tableStyle}
-                pagination
                 selectableRows
                 fixedHeader
                 fixedHeaderScrollHeight="700px"
+                onSort={(e) => console.log(e)}
             ></DataTable>
         </div>
     );

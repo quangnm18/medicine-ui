@@ -1,0 +1,29 @@
+.pagination {
+    margin: 16px 16px 0 0;
+    list-style: none;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    gap: 5px;
+}
+
+.pagi-num {
+    cursor: pointer;
+    padding: 6px 10px;
+    color: #999;
+    border-radius: 4px;
+    border: 2px solid transparent;
+}
+
+.pagi-prenext {
+    padding: 4px 12px;
+    font-size: 2rem;
+}
+
+.pagi-num:hover {
+    background-color: rgba($color: #9eeaff, $alpha: 0.7);
+}
+
+.active {
+    border: 2px solid rgba($color: #4ec9ee, $alpha: 0.4);
+}

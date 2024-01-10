@@ -3,10 +3,9 @@ import style from './UnitGroupMed.module.scss';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import axios from 'axios';
-import GroupMedTb from '~/components/Table/GroupMedTb';
 import ModalAll from '~/components/ModalPage/ModalAll';
 import ModalGr from '~/components/ModalPage/ModalUnitGr/ModalGr';
 import GrMedTbDeleted from '~/components/Table/GrMedTbDeleted';
@@ -15,21 +14,20 @@ import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(style);
 
-function GroupMed() {
+function GroupMedDel() {
     const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState(1);
 
-    const [dataTb, setDataTb] = useState([]);
+    const [dataTbDel, setDataTbDel] = useState([]);
 
     const [idSelected, setIdSelected] = useState('');
 
     const [valuesSearch, setValuesSearch] = useState('');
 
-    const [showModalSofDel, setShowModalSofDel] = useState(false);
-
+    const [showModalRes, setShowModalRes] = useState(false);
+    const [showModalHardDel, setShowModalHarDel] = useState(false);
     const [showModalView, setShowModalView] = useState(false);
-    const [showModalAdd, setShowModalAdd] = useState(false);
 
     const [valueInputs, setValueInputs] = useState({
         ten_nhom_thuoc: '',
@@ -49,9 +47,14 @@ function GroupMed() {
 
     //method toggle
 
-    const toggleModalSoftDel = (id) => {
+    const toggleModalRes = (id) => {
         setIdSelected(id);
-        setShowModalSofDel(!showModalSofDel);
+        setShowModalRes(!showModalRes);
+    };
+
+    const toggleModalHardDel = (id) => {
+        setIdSelected(id);
+        setShowModalHarDel(!showModalHardDel);
     };
 
     const toggleModalView = (gr) => {
@@ -61,42 +64,24 @@ function GroupMed() {
         setValueInputs(gr);
     };
 
-    const toggleModalAdd = (id) => {
-        setValueInputs({
-            ten_nhom_thuoc: '',
-            group_code: '',
-            description: '',
-        });
-        setIdSelected(id);
-        setShowModalAdd(!showModalAdd);
-    };
-
     //method handle
-    const handleSingleSoftDel = (id) => {
+
+    const handleRes = (id) => {
         axios
-            .put(`http://localhost:8081/category/medicine/group/softdelete/${id}`)
+            .put(`http://localhost:8081/category/medicine/group/restore/${id}`)
             .then((res) => {
-                setShowModalSofDel(false);
-                loadDataTb();
+                setShowModalRes(false);
+                loadDataTbDel();
             })
             .catch((e) => console.log(e));
     };
 
-    const handleAdd = () => {
+    const handleHardDel = (id) => {
         axios
-            .get('http://localhost:8081/category/maxidgr')
+            .delete(`http://localhost:8081/category/medicine/group/harddelete/${id}`)
             .then((res) => {
-                const group_code = `N${res.data[0].max_id + 1}`;
-                axios
-                    .post('http://localhost:8081/category/medicine/group/add', {
-                        ...valueInputs,
-                        group_code: group_code,
-                    })
-                    .then((res1) => {
-                        setShowModalAdd(false);
-                        loadDataTb();
-                    })
-                    .catch((e) => console.log(e));
+                setShowModalHarDel(false);
+                loadDataTbDel();
             })
             .catch((e) => console.log(e));
     };
@@ -106,7 +91,7 @@ function GroupMed() {
             .put(`http://localhost:8081/category/medicine/group/update/${idSelected}`, valueInputs)
             .then((res) => {
                 setShowModalView(false);
-                loadDataTb();
+                loadDataTbDel();
             })
             .catch((e) => console.log(e));
     };
@@ -121,28 +106,6 @@ function GroupMed() {
         setValueInputs({ ...valueInputs, [e.target.name]: e.target.value });
     };
 
-    // const handleFilter = () => {
-    //     if (stateBin) {
-    //         if (valuesSearch.length) {
-    //             const arr = dataGrMedDel.filter((gr) => {
-    //                 return gr.ten_nhom_thuoc.toLocaleLowerCase().includes(valuesSearch.toLocaleLowerCase());
-    //             });
-    //             setDataTbDel(arr);
-    //         } else {
-    //             setDataTbDel(dataGrMedDel);
-    //         }
-    //     } else {
-    //         if (valuesSearch.length) {
-    //             const arr = dataGrMed.filter((gr) => {
-    //                 return gr.ten_nhom_thuoc.toLocaleLowerCase().includes(valuesSearch.toLocaleLowerCase());
-    //             });
-    //             setDataTb(arr);
-    //         } else {
-    //             setDataTb(dataGrMed);
-    //         }
-    //     }
-    // };
-
     const handleKeyPress = (e) => {
         // if (e.code === 'Enter') {
         //     handleFilter();
@@ -155,27 +118,27 @@ function GroupMed() {
 
     //call API
 
-    const loadDataTb = useCallback(() => {
+    const loadDataTbDel = () => {
         axios
             .get('http://localhost:8081/category/medicinegroup/', {
                 params: {
-                    isDeleted: 0,
+                    isDeleted: 1,
                     numRecord: numRecord,
                     startRecord: startRecord,
                     totalRecord: 0,
                 },
             })
             .then((res) => {
-                setDataTb(res.data[0]);
+                setDataTbDel(res.data[0]);
                 const totalRecord = res.data[1][0].totalRecord;
                 setPageCount(Math.ceil(totalRecord / numRecord));
             })
             .catch((e) => console.log(e));
-    }, [startRecord]);
+    };
 
     useEffect(() => {
-        loadDataTb();
-    }, [loadDataTb]);
+        loadDataTbDel();
+    }, [startRecord]);
 
     const navigate = useNavigate();
     const routeChange = (path) => {
@@ -201,24 +164,27 @@ function GroupMed() {
                                 <FontAwesomeIcon icon={faSearch} className={cx('search-icon')} />
                             </button>
                         </div>
-                        <button className={cx('btn-addstaff')} onClick={toggleModalAdd}>
-                            Thêm
-                        </button>
-                        <button
-                            className={cx('btn-addstaff')}
-                            onClick={() => routeChange('/category/grmedicine/deleted')}
-                        >
-                            Đã xóa
+                        <button className={cx('btn-addstaff')} onClick={() => routeChange('/category/grmedicine')}>
+                            Trở lại
                         </button>
                     </div>
                 </div>
             </div>
 
-            {showModalSofDel && (
+            {showModalRes && (
                 <ModalAll
-                    label={'Bạn có muốn xóa?'}
-                    methodToggle={toggleModalSoftDel}
-                    methodHandle={handleSingleSoftDel}
+                    label={'Bạn có muốn khôi phục?'}
+                    methodToggle={toggleModalRes}
+                    methodHandle={handleRes}
+                    data={idSelected}
+                />
+            )}
+
+            {showModalHardDel && (
+                <ModalAll
+                    label={'Bạn có muốn xóa vĩnh viễn?'}
+                    methodToggle={toggleModalHardDel}
+                    methodHandle={handleHardDel}
                     data={idSelected}
                 />
             )}
@@ -233,20 +199,10 @@ function GroupMed() {
                     methodHandle={handleUpdate}
                 />
             )}
-            {showModalAdd && (
-                <ModalGr
-                    label={'Thêm mới nhóm dược'}
-                    dataInputs={dataInputs}
-                    dataValueInputs={valueInputs}
-                    methodToggle={toggleModalAdd}
-                    methodOnchange={onChangeInputGrMed}
-                    methodHandle={handleAdd}
-                />
-            )}
 
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>
-                    <GroupMedTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView }} />
+                    <GrMedTbDeleted data={dataTbDel} method={{ toggleModalRes, toggleModalView, toggleModalHardDel }} />
                 </div>
                 <div className={cx('wrap-pagination')}>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />
@@ -256,4 +212,4 @@ function GroupMed() {
     );
 }
 
-export default GroupMed;
+export default GroupMedDel;
