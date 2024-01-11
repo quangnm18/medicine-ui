@@ -149,31 +149,13 @@ function SupplierDel() {
             .catch((e) => console.log(e));
     };
 
-    // const handleFilter = () => {
-    //     if (stateBin) {
-    //         if (valuesSearch.length) {
-    //             const arr = dataSupDel.filter((sup) => {
-    //                 return sup.ten_ncc.toLocaleLowerCase().includes(valuesSearch.toLocaleLowerCase());
-    //             });
-    //             setDataTbDel(arr);
-    //         } else {
-    //             setDataTbDel(dataSupDel);
-    //         }
-    //     } else {
-    //         if (valuesSearch.length) {
-    //             const arr = dataSupCurr.filter((sup) => {
-    //                 return sup.ten_ncc.toLocaleLowerCase().includes(valuesSearch.toLocaleLowerCase());
-    //             });
-    //             setDataTb(arr);
-    //         } else {
-    //             setDataTb(dataSupCurr);
-    //         }
-    //     }
-    // };
+    const handleSearch = () => {
+        loadData();
+    };
 
     const handleKeyPress = (e) => {
         if (e.code === 'Enter') {
-            // handleFilter();
+            handleSearch();
         }
     };
 
@@ -185,6 +167,7 @@ function SupplierDel() {
         axios
             .get('http://localhost:8081/category/supplier/', {
                 params: {
+                    search_value: valuesSearch,
                     isDeleted: 1,
                     numRecord: numRecord,
                     startRecord: startRecord,
@@ -206,6 +189,7 @@ function SupplierDel() {
 
     useEffect(() => {
         loadData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [startRecord]);
 
     return (
@@ -223,7 +207,7 @@ function SupplierDel() {
                                 onChange={onChangeInputSearch}
                                 onKeyDown={handleKeyPress}
                             />
-                            <button className={cx('search-btn')}>
+                            <button className={cx('search-btn')} onClick={handleSearch}>
                                 <FontAwesomeIcon icon={faSearch} className={cx('search-icon')} />
                             </button>
                         </div>

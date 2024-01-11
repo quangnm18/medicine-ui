@@ -73,6 +73,16 @@ function UnitMedDel() {
         setValueInputs({ ...valueInputs, [e.target.name]: e.target.value });
     };
 
+    const handleSearch = () => {
+        loadData();
+    };
+
+    const handleKeyPress = (e) => {
+        if (e.code === 'Enter') {
+            handleSearch();
+        }
+    };
+
     const handleChangePage = (e) => {
         setStartRecord(e.selected * numRecord);
     };
@@ -133,6 +143,7 @@ function UnitMedDel() {
         axios
             .get('http://localhost:8081/category/medicineunit/', {
                 params: {
+                    search_value: valuesSearch,
                     isDeleted: 1,
                     numRecord: numRecord,
                     startRecord: startRecord,
@@ -154,6 +165,7 @@ function UnitMedDel() {
 
     useEffect(() => {
         loadData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [startRecord]);
 
     return (
@@ -169,9 +181,9 @@ function UnitMedDel() {
                                 value={valuesSearch}
                                 placeholder="Tìm kiếm theo tên..."
                                 onChange={onChangeInputSearch}
-                                // onKeyDown={handleKeyPress}
+                                onKeyDown={handleKeyPress}
                             />
-                            <button className={cx('search-btn')}>
+                            <button className={cx('search-btn')} onClick={handleSearch}>
                                 <FontAwesomeIcon icon={faSearch} className={cx('search-icon')} />
                             </button>
                         </div>

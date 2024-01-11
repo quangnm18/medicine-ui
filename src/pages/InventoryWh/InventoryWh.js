@@ -23,12 +23,15 @@ function InventoryWh() {
     };
 
     const updateWh = () => {
-        let arrImport = [...allDataImport];
-        let newA = arrImport.map((item) => {
-            let newB = allDataSale.filter((item2) => item2.id === item.id);
-            return { ...item, sl_tong: item.sl_tong - newB[0].so_luong_ban };
-        });
-        setDataWh(newA);
+        if (allDataImport && allDataSale) {
+            const arr = allDataImport.map((item) => {
+                const arr1 = allDataSale.filter((item1) => item1.id === item.id);
+                if (arr1.length > 0) {
+                    return { ...item, sl_tong: item.sl_tong };
+                } else return { ...item };
+            });
+            setDataWh(arr);
+        }
     };
 
     useEffect(() => {
@@ -40,7 +43,7 @@ function InventoryWh() {
 
                 axios
                     //full chi tiet ban
-                    .get('http://localhost:8081/sell/ivdetail/synthetic')
+                    .get('http://localhost:8081/sell/allivdetail/synthetic')
                     .then((res1) => {
                         setAllDataSale(res1.data[0]);
                     })
@@ -48,8 +51,6 @@ function InventoryWh() {
             })
             .catch((e) => console.log(e));
     }, []);
-
-    useEffect(() => {}, []);
 
     useEffect(() => {
         updateWh();

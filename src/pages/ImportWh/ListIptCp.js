@@ -11,6 +11,7 @@ import ModalAll from '~/components/ModalPage/ModalAll';
 import ModalIvDetail from '~/components/ModalPage/ModalIvDetail';
 import Pagination from '~/components/Pagination/Pagination';
 import IptCpListTb from '~/components/Table/IptCpListTb';
+import ModalAccept from '~/components/ModalPage/ModalAccept';
 
 const cx = classNames.bind(style);
 
@@ -60,18 +61,20 @@ function ListIptCp() {
 
     const handleAcceptIv = (data) => {
         axios
-            .put('http://localhost:8081/importlist/acceptiv', { ma_hoa_don: data })
+            .put('http://localhost:8081/importlist/acceptiv', { ma_hoa_don: data[0].ma_hoa_don })
             .then((res) => {
                 axios
-                    .put('http://localhost:8081/importlist/importdetail', { ma_hoa_don: data })
+                    .put('http://localhost:8081/category/medicine/updatecount', { data })
                     .then((res) => {
-                        setShowModalAccept(!showModalAccept);
+                        setShowModalAccept(false);
                         loadData();
                     })
                     .catch((e) => console.log(e));
             })
             .catch((e) => console.log(e));
     };
+
+    const handleUpdateCount = (data) => {};
 
     //Method OnchangeInput
 
@@ -204,7 +207,7 @@ function ListIptCp() {
             )}
 
             {showModalAccept && (
-                <ModalAll
+                <ModalAccept
                     label={'Xác nhận đơn nhập?'}
                     methodToggle={toggleModalAccept}
                     methodHandle={handleAcceptIv}

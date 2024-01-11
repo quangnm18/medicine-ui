@@ -1,14 +1,13 @@
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 import DirectionHeader from '~/components/DirectionHeader/DirectionHeader';
 import style from './InvoiceList.module.scss';
 import InvoiceListTb from '~/components/Table/InvoiceListTb';
-import ModalDelete from '~/components/ModalPage/ModalSingleDelete';
 import ModalAll from '~/components/ModalPage/ModalAll';
 import ModalViewSaleDetail from '~/components/ModalPage/ModalSaleDetail';
 import Pagination from '~/components/Pagination/Pagination';
@@ -91,7 +90,7 @@ function InvoiceList() {
         setStartRecord(e.selected * numRecord);
     };
 
-    const loadData = useCallback(() => {
+    const loadData = () => {
         axios
             .get('http://localhost:8081/sell/ivlist/', {
                 params: {
@@ -107,11 +106,12 @@ function InvoiceList() {
                 setPageCount(Math.ceil(totalRecord / numRecord));
             })
             .catch((err) => console.log(err));
-    }, [startRecord]);
+    };
 
     useEffect(() => {
         loadData();
-    }, [loadData]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [startRecord]);
 
     const navigate = useNavigate();
     const routeChange = (path) => {

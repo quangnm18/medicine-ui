@@ -49,6 +49,16 @@ function HisIptDetail() {
         setValuesSearch(e.target.value);
     };
 
+    const handleSearch = () => {
+        loadData();
+    };
+
+    const handleKeyPress = (e) => {
+        if (e.code === 'Enter') {
+            handleSearch();
+        }
+    };
+
     const handleChangePage = (e) => {
         setStartRecord(e.selected * numRecord);
     };
@@ -123,6 +133,7 @@ function HisIptDetail() {
         axios
             .get('http://localhost:8081/importlist/detail/', {
                 params: {
+                    search_value: valuesSearch,
                     isImported: 1,
                     isDeleted: 0,
                     numRecord: numRecord,
@@ -145,6 +156,7 @@ function HisIptDetail() {
 
     useEffect(() => {
         loadData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [startRecord]);
 
     return (
@@ -161,7 +173,7 @@ function HisIptDetail() {
                             <label className={cx('label-option')}>Đến ngày</label>
                             <input type="date" onChange={onchangeDateEnd} />
                         </div>
-                        <button className={cx('btn-search')} onClick={fillInvoiceDetail}>
+                        <button className={cx('btn-search')} onClick={handleSearch}>
                             <FontAwesomeIcon icon={faSearch} />
                         </button>
                         <div className={cx('btn-action')}>
@@ -179,9 +191,10 @@ function HisIptDetail() {
 
                     <div className={cx('medicine-option', 'search-statistic')}>
                         <input
-                            placeholder="Tìm kiếm theo mã hóa đơn..."
+                            placeholder="Tìm kiếm theo tên, mã hóa đơn..."
                             value={valuesSearch}
                             onChange={onchangeSearch}
+                            onKeyUp={handleKeyPress}
                         />
                     </div>
                 </div>
@@ -264,10 +277,10 @@ function HisIptDetail() {
             )}
 
             <div className={cx('main-content')}>
-                <div>
+                <div className={cx('content-table')}>
                     <HisIptDetailTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView }} />
                 </div>
-                <div>
+                <div className={cx('wrap-paginate')}>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />
                 </div>
             </div>

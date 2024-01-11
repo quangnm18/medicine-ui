@@ -7,6 +7,7 @@ import style from './Table.module.scss';
 const cx = classNames.bind(style);
 
 function InvoiceListTb({ data, method }) {
+    console.log(data);
     const tableStyle = {
         rows: {
             style: {
@@ -24,10 +25,12 @@ function InvoiceListTb({ data, method }) {
         {
             name: 'STT',
             cell: (row, index) => index + 1,
+            width: '100px',
         },
         {
             name: 'Số hóa đơn',
             selector: (row) => row.ma_hoa_don,
+            width: '140px',
         },
         {
             name: 'Ngày lập',
@@ -37,7 +40,15 @@ function InvoiceListTb({ data, method }) {
             },
         },
         {
-            name: 'Tổng tiền',
+            name: 'Tổng tiền hàng',
+            selector: (row) => Intl.NumberFormat().format(row.tong_tien_hang),
+        },
+        {
+            name: 'Tổng CK',
+            selector: (row) => Intl.NumberFormat().format(row.tong_ck),
+        },
+        {
+            name: 'Thành tiền',
             selector: (row) => Intl.NumberFormat().format(row.tong_phai_tra),
         },
         {

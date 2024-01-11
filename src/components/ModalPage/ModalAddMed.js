@@ -51,7 +51,7 @@ function ModalAddMed({ dataInputs, dataValueInputs, methodOnchange, methodToggle
 
     useEffect(() => {
         axios
-            .get('http://localhost:8081/category/medicine/unit')
+            .get('http://localhost:8081/category/medicineunitall')
             .then((res) => {
                 setDataUnitMed(res.data);
             })

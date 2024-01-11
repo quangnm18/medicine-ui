@@ -293,11 +293,13 @@ function HisIptDetailDel() {
             )}
 
             <div className={cx('main-content')}>
-                <div>
+                <div className={cx('content-table')}>
                     <HisIptDetailTbDel data={dataTb} method={{ toggleModalRes, toggleModalHardDel, toggleModalView }} />
                 </div>
-                <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />
-                <div></div>
+
+                <div>
+                    <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />
+                </div>
             </div>
         </div>
     );

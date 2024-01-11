@@ -29,7 +29,7 @@ function HisSaleDetailTb({ data, method }) {
         {
             name: 'Tên dược',
             selector: (row) => row.ten_duoc,
-            width: '400px',
+            width: '250px',
             sortable: true,
         },
         {
@@ -40,6 +40,11 @@ function HisSaleDetailTb({ data, method }) {
         {
             name: 'Đơn vị',
             selector: (row) => row.don_vi_ban,
+            width: '100px',
+        },
+        {
+            name: 'Loại',
+            selector: (row) => row.description_unit,
             width: '100px',
         },
 

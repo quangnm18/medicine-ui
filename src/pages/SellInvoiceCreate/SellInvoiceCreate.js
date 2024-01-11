@@ -28,10 +28,15 @@ function SellInvoiceCreate() {
     const debounced = useDebounce(nameSearchInput, 500);
 
     const [modalSave, setModalSave] = useState(false);
+    const [modalSaveExport, setModalSaveExport] = useState(false);
 
     //method toggle
     const toggleModalSave = () => {
         setModalSave(!modalSave);
+    };
+
+    const toggleModalSaveExport = () => {
+        setModalSaveExport(!modalSaveExport);
     };
 
     //method onchange and select
@@ -101,6 +106,7 @@ function SellInvoiceCreate() {
                         user_id: user.id,
                         tong_tien_hang: tong_giatri,
                         ck: valueInvoice.ck,
+                        tong_ck: tong_ck,
                         tong_phai_tra: valueInvoice.tong_phai_tra,
                         khach_tra: valueInvoice.khach_tra,
                         tien_du: tien_du,
@@ -121,6 +127,43 @@ function SellInvoiceCreate() {
             .catch((e) => console.log(e));
     };
 
+    const handleSaveIvExport = () => {
+        axios
+            .get('http://localhost:8081/sell/getmaxid')
+            .then((res) => {
+                const newId = res.data[0].max_id + 1;
+                axios
+                    .post('http://localhost:8081/sell/ivcreate', {
+                        user_id: user.id,
+                        tong_tien_hang: tong_giatri,
+                        ck: valueInvoice.ck,
+                        tong_ck: tong_ck,
+                        tong_phai_tra: tong_phai_tra,
+                        khach_tra: valueInvoice.khach_tra,
+                        tien_du: tien_du,
+                        newId: newId,
+                    })
+                    .then((res1) => {
+                        const ma_hoa_don = newId;
+                        axios
+                            .post('http://localhost:8081/sell/ivdetail/create', { dataInvoice, ma_hoa_don })
+                            .then((res) => {
+                                axios
+                                    .get('http://localhost:5000/invoice', { params: { id: ma_hoa_don } })
+                                    .then((res3) => {
+                                        setModalSaveExport(false);
+                                        setDataInvoice([]);
+                                        window.open(`http://localhost:5000/invoice?id=${ma_hoa_don}`);
+                                    })
+                                    .catch((e) => console.log(e));
+                            })
+                            .catch((e) => console.log(e));
+                    })
+                    .catch((e) => console.log(e));
+            })
+            .catch((e) => console.log(e));
+    };
+
     //method caculate
     let tong_giatri = useMemo(() => {
         let total = dataInvoice.reduce((result, item) => {
@@ -132,10 +175,17 @@ function SellInvoiceCreate() {
 
     let tong_phai_tra = useMemo(() => {
         if (valueInvoice.ck) {
-            let tong = tong_giatri - tong_giatri * valueInvoice.ck;
+            let tong = tong_giatri - (tong_giatri * valueInvoice.ck) / 100;
             return tong;
         } else return tong_giatri;
-    }, [dataInvoice, valueInvoice]);
+    }, [dataInvoice, valueInvoice.ck]);
+
+    let tong_ck = useMemo(() => {
+        if (valueInvoice.ck) {
+            let result = (tong_giatri * valueInvoice.ck) / 100;
+            return result;
+        } else return 0;
+    }, [dataInvoice, valueInvoice.ck]);
 
     let tien_du = useMemo(() => {
         if (valueInvoice.khach_tra && tong_phai_tra) {
@@ -269,8 +319,16 @@ function SellInvoiceCreate() {
                     </table>
                 </div>
 
-                {modalSave && dataInvoice.length > 0 && (
+                {modalSave && (
                     <ModalAll label={'Lưu lại hóa đơn ?'} methodToggle={toggleModalSave} methodHandle={handleSaveIv} />
+                )}
+
+                {modalSaveExport && (
+                    <ModalAll
+                        label={'Lưu lại và xuất hóa đơn ?'}
+                        methodToggle={toggleModalSaveExport}
+                        methodHandle={handleSaveIvExport}
+                    />
                 )}
 
                 <div className={cx('invoice-sale')}>
@@ -290,13 +348,17 @@ function SellInvoiceCreate() {
                             <span>{tong_giatri ? Intl.NumberFormat().format(tong_giatri) : 0}</span>
                         </div>
                         <div className={cx('invoice-detail')}>
-                            <span>Chiết khấu</span>
+                            <span>Chiết khấu(%)</span>
                             <FormatInput
                                 className={'invoice-input'}
                                 name={'ck'}
                                 value={valueInvoice.ck ? valueInvoice.ck : 0}
                                 methodOnchange={onchangInvoice}
                             />
+                        </div>
+                        <div className={cx('invoice-detail')}>
+                            <span>Tổng CK</span>
+                            <span>{tong_ck ? Intl.NumberFormat().format(tong_ck) : 0}</span>
                         </div>
                         <div className={cx('invoice-detail')}>
                             <span>Tổng phải trả</span>
@@ -322,7 +384,9 @@ function SellInvoiceCreate() {
                         <button className={cx('invoice-btn')} onClick={toggleModalSave}>
                             Lưu hóa đơn
                         </button>
-                        <button className={cx('invoice-btn')}>Xuất hóa đơn</button>
+                        <button className={cx('invoice-btn')} onClick={toggleModalSaveExport}>
+                            Xuất hóa đơn
+                        </button>
                     </div>
                 </div>
             </div>

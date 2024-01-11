@@ -106,10 +106,14 @@ function GroupMedDel() {
         setValueInputs({ ...valueInputs, [e.target.name]: e.target.value });
     };
 
+    const handleSearch = () => {
+        loadDataTbDel();
+    };
+
     const handleKeyPress = (e) => {
-        // if (e.code === 'Enter') {
-        //     handleFilter();
-        // }
+        if (e.code === 'Enter') {
+            handleSearch();
+        }
     };
 
     const handleChangePage = (e) => {
@@ -122,6 +126,7 @@ function GroupMedDel() {
         axios
             .get('http://localhost:8081/category/medicinegroup/', {
                 params: {
+                    search_value: valuesSearch,
                     isDeleted: 1,
                     numRecord: numRecord,
                     startRecord: startRecord,
@@ -138,6 +143,7 @@ function GroupMedDel() {
 
     useEffect(() => {
         loadDataTbDel();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [startRecord]);
 
     const navigate = useNavigate();
@@ -160,7 +166,7 @@ function GroupMedDel() {
                                 onChange={onChangeInputSearch}
                                 onKeyDown={handleKeyPress}
                             />
-                            <button className={cx('search-btn')}>
+                            <button className={cx('search-btn')} onClick={handleSearch}>
                                 <FontAwesomeIcon icon={faSearch} className={cx('search-icon')} />
                             </button>
                         </div>

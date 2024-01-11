@@ -41,9 +41,15 @@ function ModalViewSaleDetail({ label, data, methodToggle, methodHandle }) {
             width: '260px',
         },
         {
+            name: 'Đóng gói',
+            selector: (row) => row.loai_dong_goi,
+            sortable: true,
+            width: '200px',
+        },
+        {
             name: 'Số lượng bán',
             selector: (row) => row.so_luong_ban,
-            width: '152px',
+            width: '130px',
             center: true,
         },
         {
@@ -80,6 +86,7 @@ function ModalViewSaleDetail({ label, data, methodToggle, methodHandle }) {
             .then((res) => setDataDetails(res.data))
             .catch((e) => console.log(e));
     }, []);
+    console.log(dataDetails);
 
     return (
         <Modal>

@@ -34,7 +34,7 @@ function HisIptDetailTb({ data, method }) {
         {
             name: 'Tên dược',
             selector: (row) => row.med,
-            width: '200px',
+            width: '180px',
             sortable: true,
         },
         {
@@ -43,30 +43,30 @@ function HisIptDetailTb({ data, method }) {
             width: '100px',
         },
         {
-            name: 'Quy đổi (TB)',
+            name: 'QĐ (TB)',
             selector: (row) => row.soluong_tb,
-            width: '128px',
+            width: '90px',
         },
         {
-            name: 'Quy đổi (NN)',
+            name: 'QĐ (NN)',
             selector: (row) => row.soluong_nho,
-            width: '128px',
+            width: '90px',
         },
         {
-            name: 'Tổng nhập',
+            name: 'Tổng',
             selector: (row) => row.sl_tong,
-            width: '140px',
+            width: '100px',
         },
         {
             name: 'ĐVT',
-            selector: (row) => row.dvt,
-            width: '80px',
+            selector: (row) => row.dong_goi,
+            width: '180px',
         },
 
         {
             name: 'Mã hóa đơn',
             selector: (row) => row.ma_hoa_don,
-            width: '140px',
+            width: '118px',
             sortable: true,
         },
 
@@ -76,7 +76,7 @@ function HisIptDetailTb({ data, method }) {
                 let date = new Date(row.createdDt_at);
                 return date.toLocaleDateString();
             },
-            width: '180px',
+            width: '140px',
         },
         {
             name: 'Hạn sử dụng',
@@ -84,7 +84,7 @@ function HisIptDetailTb({ data, method }) {
                 let date = new Date(row.han_dung);
                 return date.toLocaleDateString();
             },
-            width: '170px',
+            width: '150px',
         },
 
         {

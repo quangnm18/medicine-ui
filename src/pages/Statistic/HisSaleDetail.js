@@ -4,11 +4,12 @@ import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import ModalAll from '~/components/ModalPage/ModalAll';
 import Modal from '~/components/Modal';
 import HisSaleDetailTb from '~/components/Table/HisSaleDetailTb';
 import { useNavigate } from 'react-router-dom';
+import Pagination from '~/components/Pagination/Pagination';
 
 const cx = classNames.bind(style);
 
@@ -113,11 +114,14 @@ function HisSaleDetail() {
     //         .catch((e) => console.log(e));
     // };
 
-    const loadData = () => {
+    const handleChangePage = (e) => {
+        setStartRecord(e.selected * numRecord);
+    };
+
+    const loadData = useCallback(() => {
         axios
-            .get('http://localhost:8081/importlist/detail/', {
+            .get('http://localhost:8081/sell/ivdetail/', {
                 params: {
-                    isImported: 1,
                     isDeleted: 0,
                     numRecord: numRecord,
                     startRecord: startRecord,
@@ -130,7 +134,7 @@ function HisSaleDetail() {
                 setPageCount(Math.ceil(totalRecord / numRecord));
             })
             .catch((err) => console.log(err));
-    };
+    }, [startRecord]);
 
     const navigate = useNavigate();
     const routeChange = (path) => {
@@ -139,21 +143,7 @@ function HisSaleDetail() {
 
     useEffect(() => {
         loadData();
-    }, [startRecord]);
-
-    // const loadData = () => {
-    //     axios
-    //         .get('http://localhost:8081/sell/ivdetailcurr')
-    //         .then((res) => {
-    //             setDataDetailCurr(res.data);
-    //             setDataTb(res.data);
-    //         })
-    //         .catch((e) => console.log(e));
-    // };
-
-    // useEffect(() => {
-    //     loadData();
-    // }, []);
+    }, [loadData]);
 
     return (
         <div className={cx('content')}>
@@ -173,10 +163,13 @@ function HisSaleDetail() {
                             <FontAwesomeIcon icon={faSearch} />
                         </button>
                         <div className={cx('btn-action')}>
-                            <button className={cx('btn-add', 'btn-list')} onClick={routeChange}>
-                                Danh sách hóa đơn bán
+                            <button
+                                className={cx('btn-add', 'btn-list')}
+                                onClick={() => routeChange('/statistic/historyImport')}
+                            >
+                                Danh sách
                             </button>
-                            <button className={cx('btn-add')}>Xuất excel</button>
+                            <button className={cx('btn-add')}>Đã xóa</button>
                         </div>
                     </div>
 
@@ -194,7 +187,7 @@ function HisSaleDetail() {
             {showModalView && (
                 <Modal>
                     <div className={cx('wrap-modalview')}>
-                        <div className={cx('title-modalView')}>Thông tin dược nhập</div>
+                        <div className={cx('title-modalView')}>Thông tin chi tiết hóa đơn</div>
                         <span>Mã hóa đơn: {typeof idSelected === 'object' && idSelected.ma_hoa_don}</span>
 
                         <div className={cx('view-detail')}>
@@ -235,7 +228,12 @@ function HisSaleDetail() {
             )}
 
             <div className={cx('main-content')}>
-                <HisSaleDetailTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView }} />
+                <div className={cx('content-table')}>
+                    <HisSaleDetailTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView }} />
+                </div>
+                <div>
+                    <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />
+                </div>
             </div>
         </div>
     );

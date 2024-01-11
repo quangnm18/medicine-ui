@@ -174,27 +174,9 @@ function MedicineDel() {
         setNameSearchInput(value);
     }, []);
 
-    // const handleSearch = () => {
-    //     if (state) {
-    //         if (nameSearchInput.length) {
-    //             const arr = medicineCurrent.filter((med) => {
-    //                 return med.ten.toLowerCase().includes(nameSearchInput.toLocaleLowerCase());
-    //             });
-    //             setMedDataCur(arr);
-    //         } else {
-    //             setMedDataCur(medicineCurrent);
-    //         }
-    //     } else {
-    //         if (nameSearchInput.length) {
-    //             const arr = medicineDeleted.filter((med) => {
-    //                 return med.ten.toLocaleLowerCase().includes(nameSearchInput.toLocaleLowerCase());
-    //             });
-    //             setMedDataDel(arr);
-    //         } else {
-    //             setMedDataDel(medicineDeleted);
-    //         }
-    //     }
-    // };
+    const handleSearch = () => {
+        loadDataTbDel();
+    };
 
     //Method Toggle
 
@@ -270,6 +252,7 @@ function MedicineDel() {
         axios
             .get('http://localhost:8081/category/getallmed/', {
                 params: {
+                    search_value: nameSearchInput,
                     isDeleted: 1,
                     numRecord: numRecord,
                     startRecord: startRecord,
@@ -286,6 +269,7 @@ function MedicineDel() {
 
     useEffect(() => {
         loadDataTbDel();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [startRecord]);
 
     const navigate = useNavigate();
@@ -327,7 +311,7 @@ function MedicineDel() {
                                 />
                             </div>
 
-                            <button className={cx('btn-search', 'btn')}>
+                            <button className={cx('btn-search', 'btn')} onClick={handleSearch}>
                                 <FontAwesomeIcon icon={faSearch} className={cx('search-icon')} />
                             </button>
                         </div>

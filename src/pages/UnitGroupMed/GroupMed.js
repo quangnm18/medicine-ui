@@ -3,13 +3,12 @@ import style from './UnitGroupMed.module.scss';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import axios from 'axios';
 import GroupMedTb from '~/components/Table/GroupMedTb';
 import ModalAll from '~/components/ModalPage/ModalAll';
 import ModalGr from '~/components/ModalPage/ModalUnitGr/ModalGr';
-import GrMedTbDeleted from '~/components/Table/GrMedTbDeleted';
 import Pagination from '~/components/Pagination/Pagination';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,7 +17,7 @@ const cx = classNames.bind(style);
 function GroupMed() {
     const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
-    const [pageCount, setPageCount] = useState(1);
+    const [pageCount, setPageCount] = useState();
 
     const [dataTb, setDataTb] = useState([]);
 
@@ -121,32 +120,14 @@ function GroupMed() {
         setValueInputs({ ...valueInputs, [e.target.name]: e.target.value });
     };
 
-    // const handleFilter = () => {
-    //     if (stateBin) {
-    //         if (valuesSearch.length) {
-    //             const arr = dataGrMedDel.filter((gr) => {
-    //                 return gr.ten_nhom_thuoc.toLocaleLowerCase().includes(valuesSearch.toLocaleLowerCase());
-    //             });
-    //             setDataTbDel(arr);
-    //         } else {
-    //             setDataTbDel(dataGrMedDel);
-    //         }
-    //     } else {
-    //         if (valuesSearch.length) {
-    //             const arr = dataGrMed.filter((gr) => {
-    //                 return gr.ten_nhom_thuoc.toLocaleLowerCase().includes(valuesSearch.toLocaleLowerCase());
-    //             });
-    //             setDataTb(arr);
-    //         } else {
-    //             setDataTb(dataGrMed);
-    //         }
-    //     }
-    // };
+    const handleSearch = () => {
+        loadDataTb();
+    };
 
     const handleKeyPress = (e) => {
-        // if (e.code === 'Enter') {
-        //     handleFilter();
-        // }
+        if (e.code === 'Enter') {
+            handleSearch();
+        }
     };
 
     const handleChangePage = (e) => {
@@ -155,10 +136,11 @@ function GroupMed() {
 
     //call API
 
-    const loadDataTb = useCallback(() => {
+    const loadDataTb = () => {
         axios
             .get('http://localhost:8081/category/medicinegroup/', {
                 params: {
+                    search_value: valuesSearch,
                     isDeleted: 0,
                     numRecord: numRecord,
                     startRecord: startRecord,
@@ -166,16 +148,18 @@ function GroupMed() {
                 },
             })
             .then((res) => {
+                console.log(res.data);
                 setDataTb(res.data[0]);
                 const totalRecord = res.data[1][0].totalRecord;
                 setPageCount(Math.ceil(totalRecord / numRecord));
             })
             .catch((e) => console.log(e));
-    }, [startRecord]);
+    };
 
     useEffect(() => {
         loadDataTb();
-    }, [loadDataTb]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [startRecord]);
 
     const navigate = useNavigate();
     const routeChange = (path) => {
@@ -197,7 +181,7 @@ function GroupMed() {
                                 onChange={onChangeInputSearch}
                                 onKeyDown={handleKeyPress}
                             />
-                            <button className={cx('search-btn')}>
+                            <button className={cx('search-btn')} onClick={handleSearch}>
                                 <FontAwesomeIcon icon={faSearch} className={cx('search-icon')} />
                             </button>
                         </div>

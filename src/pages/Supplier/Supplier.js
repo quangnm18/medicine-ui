@@ -4,7 +4,7 @@ import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import SupplierTb from '~/components/Table/SupplierTb';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import axios from 'axios';
 import ModalAll from '~/components/ModalPage/ModalAll';
@@ -92,6 +92,10 @@ function Supplier() {
         setValuesSearch(e.target.value);
     };
 
+    const handleSearch = () => {
+        loadData();
+    };
+
     const handleChangePage = (e) => {
         setStartRecord(e.selected * numRecord);
     };
@@ -153,30 +157,9 @@ function Supplier() {
             .catch((e) => console.log(e));
     };
 
-    // const handleFilter = () => {
-    //     if (stateBin) {
-    //         if (valuesSearch.length) {
-    //             const arr = dataSupDel.filter((sup) => {
-    //                 return sup.ten_ncc.toLocaleLowerCase().includes(valuesSearch.toLocaleLowerCase());
-    //             });
-    //             setDataTbDel(arr);
-    //         } else {
-    //             setDataTbDel(dataSupDel);
-    //         }
-    //     } else {
-    //         if (valuesSearch.length) {
-    //             const arr = dataSupCurr.filter((sup) => {
-    //                 return sup.ten_ncc.toLocaleLowerCase().includes(valuesSearch.toLocaleLowerCase());
-    //             });
-    //             setDataTb(arr);
-    //         } else {
-    //             setDataTb(dataSupCurr);
-    //         }
-    //     }
-    // };
-
     const handleKeyPress = (e) => {
         if (e.code === 'Enter') {
+            handleSearch();
         }
     };
 
@@ -184,6 +167,7 @@ function Supplier() {
         axios
             .get('http://localhost:8081/category/supplier/', {
                 params: {
+                    search_value: valuesSearch,
                     isDeleted: 0,
                     numRecord: numRecord,
                     startRecord: startRecord,
@@ -205,6 +189,7 @@ function Supplier() {
 
     useEffect(() => {
         loadData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [startRecord]);
 
     return (
@@ -222,7 +207,7 @@ function Supplier() {
                                 onChange={onChangeInputSearch}
                                 onKeyDown={handleKeyPress}
                             />
-                            <button className={cx('search-btn')}>
+                            <button className={cx('search-btn')} onClick={handleSearch}>
                                 <FontAwesomeIcon icon={faSearch} className={cx('search-icon')} />
                             </button>
                         </div>

@@ -73,6 +73,16 @@ function UnitMed() {
         setValueInputs({ ...valueInputs, [e.target.name]: e.target.value });
     };
 
+    const handleSearch = () => {
+        loadData();
+    };
+
+    const handleKeyPress = (e) => {
+        if (e.code === 'Enter') {
+            handleSearch();
+        }
+    };
+
     const handleChangePage = (e) => {
         setStartRecord(e.selected * numRecord);
     };
@@ -148,6 +158,7 @@ function UnitMed() {
         axios
             .get('http://localhost:8081/category/medicineunit/', {
                 params: {
+                    search_value: valuesSearch,
                     isDeleted: 0,
                     numRecord: numRecord,
                     startRecord: startRecord,
@@ -169,6 +180,7 @@ function UnitMed() {
 
     useEffect(() => {
         loadData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [startRecord]);
 
     return (
@@ -184,9 +196,11 @@ function UnitMed() {
                                 value={valuesSearch}
                                 placeholder="Tìm kiếm theo tên..."
                                 onChange={onChangeInputSearch}
+                                onKeyUp={handleKeyPress}
+
                                 // onKeyDown={handleKeyPress}
                             />
-                            <button className={cx('search-btn')}>
+                            <button className={cx('search-btn')} onClick={handleSearch}>
                                 <FontAwesomeIcon icon={faSearch} className={cx('search-icon')} />
                             </button>
                         </div>
@@ -232,7 +246,7 @@ function UnitMed() {
                 />
             )}
             <div className={cx('main-content')}>
-                <div>
+                <div className={cx('content-table')}>
                     <UnitMedTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView }} />
                 </div>
                 <div>

@@ -18,15 +18,11 @@
     padding: 8px;
 
     input,
-    select {
+    selec {
         padding: 8px;
         font-size: 1.6rem;
         border: 1px solid #e4e4e4;
         width: 360px;
-    }
-
-    select {
-        min-width: 160px;
     }
 
     label {
@@ -135,4 +131,15 @@
 .btn-close {
     border-radius: 4px;
     padding: 8px;
+}
+
+//main content
+.main-content {
+    background-color: var(--white);
+}
+.content-table {
+    height: 600px;
+}
+
+.wrap-paginate {
 }
