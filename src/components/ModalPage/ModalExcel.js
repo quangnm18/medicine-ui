@@ -57,6 +57,7 @@ function ModalAddExcel({ methodToggle }) {
                     <input
                         id="file-upload"
                         type="file"
+                        accept=".xlsx"
                         className={cx('form-control')}
                         required
                         hidden

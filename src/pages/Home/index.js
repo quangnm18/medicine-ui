@@ -78,7 +78,9 @@ function Home() {
                     let due_day = day.getFullYear() * 12 * 30 + (day.getMonth() + 1) * 30 + day.getDate();
                     if (due_day - curr_day < 20) return item;
                 });
-                setCountWarning(arr.length);
+                if (arr.length) {
+                    setCountWarning(arr.length);
+                }
             })
             .catch((e) => console.log(e));
     }, []);
@@ -99,7 +101,7 @@ function Home() {
                             <FontAwesomeIcon className={cx('icon-med')} icon={faHouseChimneyMedical} />
                         </div>
                         <div className={cx('wrap-if')}>
-                            <span className={cx('if-count')}>{allDtImport.length}</span>
+                            <span className={cx('if-count')}>8</span>
                             <span>Danh mục dược</span>
                         </div>
                     </div>

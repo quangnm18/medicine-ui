@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import style from './ImportWh.module.scss';
@@ -22,8 +22,9 @@ function ListIptCp() {
 
     const [dataTb, setDataTb] = useState([]);
 
-    const [dateStart, setDateStart] = useState('');
-    const [dateEnd, setDateEnd] = useState('');
+    const [dateStart, setDateStart] = useState(null);
+    const [dateTo, setDateTo] = useState(null);
+    const [valuesSearch, setValuesSearch] = useState('');
 
     const [idSelected, setIdSelected] = useState('');
 
@@ -63,53 +64,27 @@ function ListIptCp() {
         axios
             .put('http://localhost:8081/importlist/acceptiv', { ma_hoa_don: data[0].ma_hoa_don })
             .then((res) => {
-                axios
-                    .put('http://localhost:8081/category/medicine/updatecount', { data })
-                    .then((res) => {
-                        setShowModalAccept(false);
-                        loadData();
-                    })
-                    .catch((e) => console.log(e));
+                setShowModalAccept(false);
+                loadData();
             })
             .catch((e) => console.log(e));
     };
-
-    const handleUpdateCount = (data) => {};
 
     //Method OnchangeInput
 
     const onchangeDateStart = (e) => {
         setDateStart(e.target.value);
     };
-    const onchangeDateEnd = (e) => {
-        setDateEnd(e.target.value);
+    const onchangeDateTo = (e) => {
+        setDateTo(e.target.value);
     };
 
-    const fillInvoice = () => {
-        // if (dateStart !== '' && dateEnd !== '') {
-        //     let filtered = dataListIptIv.filter((invoice) => {
-        //         let invoiceDate = invoice.createdDate;
-        //         return invoiceDate >= dateStart && invoiceDate <= dateEnd;
-        //     });
-        //     setDataTb(filtered);
-        // }
-        // if (dateStart !== '' && dateEnd === '') {
-        //     let filtered = dataListIptIv.filter((invoice) => {
-        //         let invoiceDate = invoice.createdDate;
-        //         return invoiceDate >= dateStart;
-        //     });
-        //     setDataTb(filtered);
-        // }
-        // if (dateStart === '' && dateEnd !== '') {
-        //     let filtered = dataListIptIv.filter((invoice) => {
-        //         let invoiceDate = invoice.createdDate;
-        //         return invoiceDate <= dateEnd;
-        //     });
-        //     setDataTb(filtered);
-        // }
-        // if (dateStart === '' && dateEnd === '') {
-        //     setDataTb(dataListIptIv);
-        // }
+    const onchangeSearch = (e) => {
+        setValuesSearch(e.target.value);
+    };
+
+    const handleSearch = () => {
+        loadData();
     };
 
     //call api
@@ -117,6 +92,9 @@ function ListIptCp() {
         axios
             .get('http://localhost:8081/importlist/alllistpaginate/', {
                 params: {
+                    date_start: dateStart,
+                    date_to: dateTo,
+                    search_value: valuesSearch,
                     isDeleted: 0,
                     numRecord: numRecord,
                     startRecord: startRecord,
@@ -138,6 +116,7 @@ function ListIptCp() {
 
     useEffect(() => {
         loadData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [startRecord]);
 
     const handleChangePage = (e) => {
@@ -167,12 +146,12 @@ function ListIptCp() {
                                 name="date-end"
                                 type="date"
                                 className={cx('input-name')}
-                                onChange={onchangeDateEnd}
-                                value={dateEnd}
+                                onChange={onchangeDateTo}
+                                value={dateTo}
                                 // onBlur={onchangeDate}
                             />
                         </div>
-                        <button className={cx('btn-search')} onClick={fillInvoice}>
+                        <button className={cx('btn-search')} onClick={handleSearch}>
                             <FontAwesomeIcon icon={faSearch} />
                         </button>
                         <div className={cx('btn-action')}>
@@ -186,6 +165,13 @@ function ListIptCp() {
                                 Đã xóa
                             </button>
                         </div>
+                    </div>
+                    <div className={cx('medicine-option', 'search-statistic')}>
+                        <input
+                            placeholder="Tìm kiếm theo tên, mã hóa đơn..."
+                            value={valuesSearch}
+                            onChange={onchangeSearch}
+                        />
                     </div>
                 </div>
             </div>

@@ -38,6 +38,8 @@ const routes = {
     historySaleStatisticDel: '/statistic/historySale/deleted',
 
     account: '/account',
+
+    other: '*',
 };
 
 export default routes;

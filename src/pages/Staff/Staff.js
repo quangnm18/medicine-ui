@@ -4,48 +4,22 @@ import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import StaffTb from '~/components/Table/StaffTb';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const cx = classNames.bind(style);
-const Data = [
-    {
-        id: 1,
-        name: 'Ampecilin',
-        unit: 'Hộp',
-        dueDate: '12/02/2023',
-        count: 20,
-        price: 20000,
-        totalPrice: 400000,
-    },
-    {
-        id: 2,
-        name: 'Ampecilin',
-        unit: 'Hộp',
-        dueDate: '12/02/2023',
-        count: 20,
-        price: 20000,
-        totalPrice: 400000,
-    },
-    {
-        id: 3,
-        name: 'Ampecilin',
-        unit: 'Hộp',
-        dueDate: '12/02/2023',
-        count: 20,
-        price: 20000,
-        totalPrice: 400000,
-    },
-    {
-        id: 4,
-        name: 'Ampecilin',
-        unit: 'Hộp',
-        dueDate: '12/02/2023',
-        count: 20,
-        price: 20000,
-        totalPrice: 400000,
-    },
-];
 
 function Staff() {
+    const [dataTb, setDataTb] = useState([]);
+
+    useEffect(() => {
+        axios
+            .get('http://localhost:8081/category/staff')
+            .then((res) => {
+                setDataTb(res.data);
+            })
+            .then((e) => console.log(e));
+    }, []);
     return (
         <div className={cx('content')}>
             <div className={cx('header-content')}>
@@ -65,7 +39,7 @@ function Staff() {
             </div>
 
             <div className={cx('main-content')}>
-                <StaffTb data={Data} />
+                <StaffTb data={dataTb} />
             </div>
         </div>
     );

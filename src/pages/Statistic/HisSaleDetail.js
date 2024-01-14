@@ -159,25 +159,28 @@ function HisSaleDetail() {
                             <label className={cx('label-option')}>Đến ngày</label>
                             <input type="date" onChange={onchangeDateEnd} />
                         </div>
-                        <button className={cx('btn-search')} onClick={fillInvoiceDetail}>
+                        <button className={cx('btn-search')}>
                             <FontAwesomeIcon icon={faSearch} />
                         </button>
                         <div className={cx('btn-action')}>
-                            <button
-                                className={cx('btn-add', 'btn-list')}
-                                onClick={() => routeChange('/statistic/historyImport')}
-                            >
-                                Danh sách
+                            {/* <button className={cx('btn-add')} onClick={() => routeChange('/warehouse/importcreate')}>
+                                Nhập tồn
                             </button>
-                            <button className={cx('btn-add')}>Đã xóa</button>
+                            <button
+                                className={cx('btn-add')}
+                                onClick={() => routeChange('/statistic/historyImport/deleted')}
+                            >
+                                Đã xóa
+                            </button> */}
                         </div>
                     </div>
 
                     <div className={cx('medicine-option', 'search-statistic')}>
                         <input
-                            placeholder="Tìm kiếm theo mã hóa đơn..."
+                            placeholder="Tìm kiếm theo tên, mã hóa đơn..."
                             value={valuesSearch}
                             onChange={onchangeSearch}
+                            // onKeyUp={handleKeyPress}
                         />
                     </div>
                 </div>

@@ -130,13 +130,13 @@ function CreateInvoiceIpt() {
             if (item.ck && item.vat) {
                 let a = (item.thanh_tien * item.ck) / 100;
                 let b = (item.thanh_tien * item.vat) / 100;
-                return result + a + b;
+                return result - a + b;
             } else if (!item.ck && item.vat) {
                 let a = (item.thanh_tien * item.vat) / 100;
                 return result + a;
             } else if (item.ck && !item.vat) {
                 let a = (item.thanh_tien * item.ck) / 100;
-                return result + a;
+                return result - a;
             } else return result;
         }, 0);
         return result;

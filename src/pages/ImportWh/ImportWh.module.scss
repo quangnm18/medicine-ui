@@ -34,6 +34,15 @@
     }
 }
 
+.search-statistic {
+    margin-left: 82px;
+    padding-top: 8px;
+    input {
+        width: 398px;
+        outline: none;
+    }
+}
+
 .search-filter {
     margin-left: 10px;
     label {
@@ -235,7 +244,7 @@ tbody {
 }
 
 .th-donggoi {
-    width: 180px;
+    width: 230px;
 }
 
 // .th-handung {

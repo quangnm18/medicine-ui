@@ -30,7 +30,7 @@ function InventoryWhTb({ data, method }) {
         {
             name: 'Tên thuốc',
             selector: (row) => row.ten,
-            width: '300px',
+            width: '250px',
         },
         {
             name: 'SL(ĐVLN)',
@@ -75,20 +75,20 @@ function InventoryWhTb({ data, method }) {
             width: '200px',
         },
         {
-            name: 'Đã bán',
-            selector: (row) => row.Name,
-            width: '100px',
+            name: 'Số lô',
+            selector: (row) => row.so_lo,
+            width: '160px',
         },
         {
             name: '#',
             cell: (row) => (
                 <div>
-                    <button className={cx('btn')}>
+                    <button className={cx('btn')} onClick={() => method(row.id)}>
                         <FontAwesomeIcon icon={faPenToSquare} className={cx('icon-view', 'icon-eye')} />
                     </button>
                 </div>
             ),
-            width: '100px',
+            width: '80px',
         },
     ];
     return (

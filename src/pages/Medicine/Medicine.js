@@ -285,6 +285,8 @@ function Medicine() {
         setMedSelected(selectedRows);
     };
 
+    console.log(medSelected);
+
     const handleChangePage = (e) => {
         setStartRecord(e.selected * numRecord);
     };

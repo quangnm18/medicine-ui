@@ -20,9 +20,10 @@ function HisIptDetail() {
 
     const [dataTb, setDataTb] = useState([]);
 
-    const [dateStart, setDateStart] = useState('');
-    const [dateEnd, setDateEnd] = useState('');
+    const [dateStart, setDateStart] = useState(null);
+    const [dateTo, setDateTo] = useState(null);
     const [valuesSearch, setValuesSearch] = useState('');
+    const [infoNum, setInfoNum] = useState({ han_dung: '', so_lo: '' });
 
     const [idSelected, setIdSelected] = useState('');
     const [showModalSoftDel, setShowModalSoftDel] = useState(false);
@@ -33,20 +34,32 @@ function HisIptDetail() {
         setIdSelected(id);
     };
 
+    const convert = (data) => {
+        const a = new Date(data);
+        return a.getFullYear() + '-' + (a.getMonth() + 1) + '-' + a.getDate();
+    };
+
     const toggleModalView = (data) => {
         setShowModalView(!showModalView);
         setIdSelected(data);
+        setInfoNum({ han_dung: convert(data.han_dung), so_lo: data.so_lo });
+        console.log(convert(data.han_dung));
     };
 
     const onchangeDateStart = (e) => {
         setDateStart(e.target.value);
     };
-    const onchangeDateEnd = (e) => {
-        setDateEnd(e.target.value);
+    const onchangeDateTo = (e) => {
+        setDateTo(e.target.value);
     };
 
     const onchangeSearch = (e) => {
         setValuesSearch(e.target.value);
+    };
+
+    const changeInfo = (e) => {
+        console.log(e.target.value);
+        setInfoNum({ ...infoNum, [e.target.name]: e.target.value });
     };
 
     const handleSearch = () => {
@@ -61,56 +74,6 @@ function HisIptDetail() {
 
     const handleChangePage = (e) => {
         setStartRecord(e.selected * numRecord);
-    };
-
-    const fillInvoiceDetail = () => {
-        // if (dateStart !== '' && dateEnd !== '' && valuesSearch.length) {
-        //     let arr = dataDetailCurr.filter((detail) => {
-        //         return detail.ma_hoa_don.toLocaleLowerCase().includes(valuesSearch.toLocaleLowerCase());
-        //     });
-        //     let filtered = dataDetailCurr.filter((detail) => {
-        //         let detailDate = detail.createdDt_at;
-        //         return detailDate >= dateStart && detailDate <= dateEnd;
-        //     });
-        //     let result = new Set(arr.concat(filtered));
-        //     setDataTb([...result]);
-        //     console.log([...result]);
-        //     console.log(123);
-        // }
-        // if (dateStart !== '' && dateEnd === '') {
-        //     let filtered = dataDetailCurr.filter((detail) => {
-        //         let detailDate = detail.createdDt_at;
-        //         return (
-        //             detailDate >= dateStart &&
-        //             detail.ma_hoa_don.toLocaleLowerCase().includes(valuesSearch.toLocaleLowerCase())
-        //         );
-        //     });
-        //     setDataTb(filtered);
-        // }
-        // if (dateStart === '' && dateEnd !== '') {
-        //     let filtered = dataDetailCurr.filter((detail) => {
-        //         let detailDate = detail.createdDt_at;
-        //         return (
-        //             detailDate <= dateEnd &&
-        //             detail.ma_hoa_don.toLocaleLowerCase().includes(valuesSearch.toLocaleLowerCase())
-        //         );
-        //     });
-        //     setDataTb(filtered);
-        // }
-        // if (dateStart === '' && dateEnd === '') {
-        //     setDataTb(dataDetailCurr);
-        // }
-    };
-
-    const handleFilter = () => {
-        // if (valuesSearch.length) {
-        //     const arr = dataDetailCurr.filter((detail) => {
-        //         return detail.ma_hoa_don.toLocaleLowerCase().includes(valuesSearch.toLocaleLowerCase());
-        //     });
-        //     setDataTb(arr);
-        // } else {
-        //     setDataTb(dataDetailCurr);
-        // }
     };
 
     const VND = new Intl.NumberFormat('vi-VN', {
@@ -129,10 +92,22 @@ function HisIptDetail() {
             .catch((e) => console.log(e));
     };
 
+    const handleUpdate = () => {
+        axios
+            .put('http://localhost:8081/importlist/detail/update', { ...infoNum, id: idSelected.id })
+            .then((res) => {
+                setShowModalView(false);
+                loadData();
+            })
+            .catch((e) => console.log(e));
+    };
+
     const loadData = () => {
         axios
             .get('http://localhost:8081/importlist/detail/', {
                 params: {
+                    date_start: dateStart,
+                    date_to: dateTo,
                     search_value: valuesSearch,
                     isImported: 1,
                     isDeleted: 0,
@@ -154,6 +129,8 @@ function HisIptDetail() {
         navigate(path);
     };
 
+    console.log(dateStart, dateTo);
+
     useEffect(() => {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -171,7 +148,7 @@ function HisIptDetail() {
                         </div>
                         <div className={cx('medicine-option')}>
                             <label className={cx('label-option')}>Đến ngày</label>
-                            <input type="date" onChange={onchangeDateEnd} />
+                            <input type="date" onChange={onchangeDateTo} />
                         </div>
                         <button className={cx('btn-search')} onClick={handleSearch}>
                             <FontAwesomeIcon icon={faSearch} />
@@ -222,6 +199,10 @@ function HisIptDetail() {
                             <input disabled value={typeof idSelected === 'object' && idSelected.sl_tong} />
                         </div>
                         <div className={cx('view-detail')}>
+                            <label>Đóng gói: </label>
+                            <input disabled value={typeof idSelected === 'object' && idSelected.dong_goi} />
+                        </div>
+                        <div className={cx('view-detail')}>
                             <label>Giá nhập đơn: </label>
                             <input
                                 disabled
@@ -260,14 +241,27 @@ function HisIptDetail() {
                         </div>
                         <div className={cx('view-detail')}>
                             <label>Hạn dùng: </label>
-                            <input disabled value={typeof idSelected === 'object' && idSelected.han_dung} />
+                            <input
+                                className={cx('infoNum-input')}
+                                name="han_dung"
+                                value={infoNum.han_dung}
+                                onChange={changeInfo}
+                            />
                         </div>
                         <div className={cx('view-detail')}>
                             <label>Số lô: </label>
-                            <input disabled value={typeof idSelected === 'object' && idSelected.so_lo} />
+                            <input
+                                className={cx('infoNum-input')}
+                                name="so_lo"
+                                value={infoNum.so_lo}
+                                onChange={changeInfo}
+                            />
                         </div>
 
                         <div className={cx('view-detailbtn')}>
+                            <button className={cx('btn-add', 'btn-close')} onClick={handleUpdate}>
+                                Cập nhật
+                            </button>
                             <button className={cx('btn-add', 'btn-close')} onClick={toggleModalView}>
                                 Đóng
                             </button>

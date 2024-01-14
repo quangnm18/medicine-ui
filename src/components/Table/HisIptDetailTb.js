@@ -74,7 +74,8 @@ function HisIptDetailTb({ data, method }) {
             name: 'Ngày nhập',
             selector: (row) => {
                 let date = new Date(row.createdDt_at);
-                return date.toLocaleDateString();
+
+                return date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear();
             },
             width: '140px',
         },
@@ -82,7 +83,7 @@ function HisIptDetailTb({ data, method }) {
             name: 'Hạn sử dụng',
             selector: (row) => {
                 let date = new Date(row.han_dung);
-                return date.toLocaleDateString();
+                return date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear();
             },
             width: '150px',
         },

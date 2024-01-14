@@ -208,7 +208,7 @@ function SellInvoiceCreate() {
         }
 
         const fetchApi = async () => {
-            const result = await searchServices.searchWh(debounced);
+            const result = await searchServices.searchWh(0, debounced);
             setSearchResult(result);
         };
         fetchApi();

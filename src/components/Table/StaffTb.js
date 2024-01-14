@@ -25,28 +25,28 @@ function StaffTb({ data }) {
 
     const columns = [
         {
-            name: 'STT',
-            cell: (row, index) => index + 1,
-        },
-        {
             name: 'Mã nhân viên',
-            selector: (row) => row.name,
+            selector: (row) => row.ID,
         },
         {
             name: 'Họ tên',
-            selector: (row) => row.unit,
+            selector: (row) => row.Name,
         },
         {
             name: 'Số điện thoại',
-            selector: (row) => row.dueDate,
+            selector: (row) => row.PhoneNumber,
+        },
+        {
+            name: 'Địa chỉ',
+            selector: (row) => row.Address,
         },
         {
             name: 'Email',
-            selector: (row) => row.count,
+            selector: (row) => row.Email,
         },
         {
             name: 'Chức vụ',
-            selector: (row) => row.count,
+            selector: (row) => row.ten_vai_tro,
         },
         {
             name: '#',
