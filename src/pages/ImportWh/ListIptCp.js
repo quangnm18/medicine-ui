@@ -22,8 +22,8 @@ function ListIptCp() {
 
     const [dataTb, setDataTb] = useState([]);
 
-    const [dateStart, setDateStart] = useState(null);
-    const [dateTo, setDateTo] = useState(null);
+    const [dateStart, setDateStart] = useState('');
+    const [dateTo, setDateTo] = useState('');
     const [valuesSearch, setValuesSearch] = useState('');
 
     const [idSelected, setIdSelected] = useState('');

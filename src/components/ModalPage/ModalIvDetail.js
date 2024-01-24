@@ -96,7 +96,6 @@ function ModalViewIvDetail({ label, data, methodToggle, methodHandle }) {
             .then((res) => setDataDetails(res.data))
             .catch((e) => console.log(e));
     }, []);
-
     return (
         <Modal>
             <div className={cx('modal-view')}>
@@ -105,7 +104,8 @@ function ModalViewIvDetail({ label, data, methodToggle, methodHandle }) {
                     <div className={cx('modal-if')}></div>
                     <div>Mã hóa đơn : {data.invoice_code}</div>
                     <div>Ngày tạo : {date.toLocaleDateString()}</div>
-                    <div>Tổng giá trị : {VND.format(data.thanh_tien - data.tong_ck)}</div>
+                    <div>Tổng giá trị : {VND.format(data.giatri_nhap)}</div>
+                    <div>Tổng VAT : {VND.format(data.tong_vat)}</div>
                     <div>Tổng CK : {VND.format(data.tong_ck)}</div>
                     <div>Thành tiền : {VND.format(data.thanh_tien)}</div>
                 </div>

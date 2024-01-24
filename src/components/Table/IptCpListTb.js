@@ -11,6 +11,7 @@ function IptCpListTb({ data, method }) {
         rows: {
             style: {
                 fontSize: '16px',
+                minHeight: '64px',
             },
         },
         headCells: {
@@ -103,7 +104,14 @@ function IptCpListTb({ data, method }) {
     ];
     return (
         <div>
-            <DataTable columns={columns} data={data} customStyles={tableStyle}></DataTable>
+            <DataTable
+                columns={columns}
+                data={data}
+                customStyles={tableStyle}
+                fixedHeader
+                fixedHeaderScrollHeight="620px"
+                className={cx('wrapper-tb')}
+            ></DataTable>
         </div>
     );
 }

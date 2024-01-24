@@ -85,6 +85,7 @@ function CreateInvoiceIpt() {
                 dvt: data.donvi_nho,
                 ten: data.ten,
                 med_id: data.id,
+                ma_ncc: chooseSup,
             },
         ]);
     };
@@ -125,18 +126,21 @@ function CreateInvoiceIpt() {
         setDataDetails([...temp]);
     };
 
-    const tong_ck = useMemo(() => {
+    const tong_vat = useMemo(() => {
         const result = dataDetails.reduce((result, item) => {
-            if (item.ck && item.vat) {
-                let a = (item.thanh_tien * item.ck) / 100;
-                let b = (item.thanh_tien * item.vat) / 100;
-                return result - a + b;
-            } else if (!item.ck && item.vat) {
+            if (item.vat) {
                 let a = (item.thanh_tien * item.vat) / 100;
                 return result + a;
-            } else if (item.ck && !item.vat) {
+            } else return result;
+        }, 0);
+        return result;
+    }, [dataDetails]);
+
+    const tong_ck = useMemo(() => {
+        const result = dataDetails.reduce((result, item) => {
+            if (item.ck) {
                 let a = (item.thanh_tien * item.ck) / 100;
-                return result - a;
+                return result + a;
             } else return result;
         }, 0);
         return result;
@@ -147,8 +151,8 @@ function CreateInvoiceIpt() {
             return result + item.thanh_tien;
         }, 0);
 
-        return total + tong_ck;
-    }, [dataDetails, tong_ck]);
+        return total - tong_ck + tong_vat;
+    }, [dataDetails, tong_ck, tong_vat]);
 
     const handleRemoveData = (data, index) => {
         let temp = [...dataDetails];
@@ -200,7 +204,7 @@ function CreateInvoiceIpt() {
             .then((res) => {
                 const newId = res.data[0].max_id + 1;
                 axios
-                    .post('http://localhost:8081/importlist/create', { dataDetails, total, tong_ck, newId })
+                    .post('http://localhost:8081/importlist/create', { dataDetails, total, tong_ck, tong_vat, newId })
                     .then((res1) => {
                         const invoice_code = newId;
                         axios
@@ -339,16 +343,6 @@ function CreateInvoiceIpt() {
                                                                 }
                                                             />
                                                         </td>
-                                                        // <td key={index2}>
-                                                        //     <input
-                                                        //         className={cx('table-input')}
-                                                        //         name={dataField}
-                                                        //         onChange={(e) => onchangeInputs(e, index1, dataField)}
-                                                        //         onBlur={(e) => onchangeInputs(e, index1, dataField)}
-                                                        //         value={item[dataField]}
-                                                        //         type="number"
-                                                        //     />
-                                                        // </td>
                                                     );
                                                 } else {
                                                     return (
@@ -381,12 +375,28 @@ function CreateInvoiceIpt() {
                             <tfoot className="foot-table">
                                 <tr className={cx('foot-tr')}>
                                     <td colSpan={13} className={cx('')}>
+                                        Tổng giá trị:{' '}
+                                        {Intl.NumberFormat().format(total + tong_ck - tong_vat)
+                                            ? Intl.NumberFormat().format(total + tong_ck - tong_vat)
+                                            : 0}
+                                    </td>
+                                </tr>
+                                <tr className={cx('foot-tr')}>
+                                    <td colSpan={13} className={cx('foot-ck')}>
                                         Tổng CK:{' '}
                                         {Intl.NumberFormat().format(tong_ck) ? Intl.NumberFormat().format(tong_ck) : 0}
                                     </td>
                                 </tr>
                                 <tr className={cx('foot-tr')}>
-                                    <td className={cx('')}>
+                                    <td colSpan={13} className={cx('')}>
+                                        Tổng VAT:{' '}
+                                        {Intl.NumberFormat().format(tong_vat)
+                                            ? Intl.NumberFormat().format(tong_vat)
+                                            : 0}
+                                    </td>
+                                </tr>
+                                <tr className={cx('foot-tr')}>
+                                    <td className={cx('foot-total')}>
                                         Tổng tiền:{' '}
                                         {Intl.NumberFormat().format(total) ? Intl.NumberFormat().format(total) : 0}
                                     </td>

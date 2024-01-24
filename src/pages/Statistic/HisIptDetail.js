@@ -129,8 +129,6 @@ function HisIptDetail() {
         navigate(path);
     };
 
-    console.log(dateStart, dateTo);
-
     useEffect(() => {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -192,6 +190,14 @@ function HisIptDetail() {
                         </div>
                         <div className={cx('view-detail')}>
                             <label>Số lượng nhập(ĐVL):</label>
+                            <input disabled value={typeof idSelected === 'object' && idSelected.soluong_lon} />
+                        </div>
+                        <div className={cx('view-detail')}>
+                            <label>Giá trị quy đổi(ĐVTB):</label>
+                            <input disabled value={typeof idSelected === 'object' && idSelected.soluong_lon} />
+                        </div>
+                        <div className={cx('view-detail')}>
+                            <label>Giá trị quy đổi(ĐVNN):</label>
                             <input disabled value={typeof idSelected === 'object' && idSelected.soluong_lon} />
                         </div>
                         <div className={cx('view-detail')}>

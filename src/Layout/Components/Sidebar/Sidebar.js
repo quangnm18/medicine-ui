@@ -34,8 +34,12 @@ function Sidebar() {
                             <div key={index}>
                                 <div>
                                     <NavLink
-                                        to={item.path}
-                                        className={(nav) => cx('menu-item', { active: nav.isActive })}
+                                        to={item.subNav ? null : item.path}
+                                        className={(nav) =>
+                                            cx('menu-item', {
+                                                active: nav.isActive,
+                                            })
+                                        }
                                         onClick={() => toggle(item.id)}
                                     >
                                         <div className={cx('menu-itemIf')}>

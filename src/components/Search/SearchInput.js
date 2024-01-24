@@ -30,34 +30,45 @@ function SearchInput({
         setShowResult(false);
     };
 
+    const formatDate = (date) => {
+        const d = new Date(date);
+        return d.toLocaleDateString();
+    };
+
     return (
         <Tippy
             interactive
             visible={showResult && dataSearchResult.length > 0}
             onClickOutside={handleHideResult}
-            placement="bottom"
+            placement="bottom-start"
             render={(attrs) => (
                 <div className={cx(classWidth)} tabIndex="-1" {...attrs}>
                     <Popper>
                         <div className={cx('result-list')}>
-                            {dataSearchResult.map((item) => {
+                            {dataSearchResult.map((item, index) => {
                                 if (classWidth === 'search-sellWh') {
                                     return (
                                         <div
-                                            key={item.id}
+                                            key={index}
                                             className={cx('result-item')}
                                             onClick={() => handleSelectedResult(item)}
                                         >
                                             <div>{item.ten}</div>
-                                            <span className={cx('result-itemmore')}>
-                                                {item.ten_nhom_thuoc} || {'   '} Đóng gói: {item.description_unit} ||
-                                                Tồn kho: {item.soluong_lon ? item.soluong_lon : 0} {item.donvi_lon} --
-                                                {item.soluong_lon * item.soluong_tb
-                                                    ? item.soluong_lon * item.soluong_tb
-                                                    : ''}{' '}
-                                                {item.soluong_lon * item.soluong_tb ? item.donvi_tb : ''} --{' '}
-                                                {item.sl_tong ? item.sl_tong : 0} {item.donvi_nho}
-                                            </span>
+                                            <div className={cx('result-span')}>
+                                                <span className={cx('result-itemmore')}>
+                                                    {item.ten_nhom_thuoc} || {'   '} Đóng gói: {item.description_unit}{' '}
+                                                    || Tồn kho: {item.soluong_lon ? item.soluong_lon : 0}{' '}
+                                                    {item.donvi_lon} --
+                                                    {item.soluong_lon * item.soluong_tb
+                                                        ? item.soluong_lon * item.soluong_tb
+                                                        : ''}{' '}
+                                                    {item.soluong_lon * item.soluong_tb ? item.donvi_tb : ''} --{' '}
+                                                    {item.sl_tong ? item.sl_tong : 0} {item.donvi_nho}
+                                                </span>
+                                                <span className={cx('result-itemmore')}>
+                                                    Hạn dùng: {formatDate(item.han_dung)} || Số lô: {item.so_lo}
+                                                </span>
+                                            </div>
                                         </div>
                                     );
                                 } else

@@ -65,9 +65,10 @@ function SellInvoiceCreate() {
                 dvl: medicine.description_unit,
                 dvqd_nn: medicine.soluong_nho,
                 sl_tong: '',
-                gia_ban: medicine.don_gia,
+                gia_ban: medicine.giaban_daqd,
                 thanh_tien: '',
                 donvinho: medicine.donvi_nho,
+                so_lo_hang: medicine.so_lo,
             },
         ]);
     };
@@ -178,20 +179,20 @@ function SellInvoiceCreate() {
             let tong = tong_giatri - (tong_giatri * valueInvoice.ck) / 100;
             return tong;
         } else return tong_giatri;
-    }, [dataInvoice, valueInvoice.ck]);
+    }, [valueInvoice.ck, tong_giatri]);
 
     let tong_ck = useMemo(() => {
         if (valueInvoice.ck) {
             let result = (tong_giatri * valueInvoice.ck) / 100;
             return result;
         } else return 0;
-    }, [dataInvoice, valueInvoice.ck]);
+    }, [valueInvoice.ck, tong_giatri]);
 
     let tien_du = useMemo(() => {
         if (valueInvoice.khach_tra && tong_phai_tra) {
             return valueInvoice.khach_tra - tong_phai_tra;
         } else return 0;
-    });
+    }, [valueInvoice, tong_phai_tra]);
 
     const navigate = useNavigate();
     const routeChange = () => {
@@ -209,7 +210,7 @@ function SellInvoiceCreate() {
 
         const fetchApi = async () => {
             const result = await searchServices.searchWh(0, debounced);
-            setSearchResult(result);
+            setSearchResult(result ? result[0] : []);
         };
         fetchApi();
     }, [debounced]);
@@ -264,7 +265,8 @@ function SellInvoiceCreate() {
                                         if (
                                             dataField !== 'dvqd_nn' &&
                                             dataField !== 'med_id' &&
-                                            dataField !== 'donvinho'
+                                            dataField !== 'donvinho' &&
+                                            dataField !== 'so_lo_hang'
                                         ) {
                                             if (dataField === 'ten_duoc' || dataField === 'dvl') {
                                                 return (

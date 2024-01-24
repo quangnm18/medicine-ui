@@ -37,6 +37,20 @@
     scrollbar-width: none; /* Firefox */
 }
 
+.wrapper-tb::-webkit-scrollbar {
+    width: 6px;
+}
+
+.wrapper-tb::-webkit-scrollbar-track {
+    background: var(--white);
+    border-radius: 10px;
+}
+
+.wrapper-tb::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+
 //table-input
 .table-input {
     width: 100%;

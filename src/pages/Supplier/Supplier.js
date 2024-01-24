@@ -13,6 +13,9 @@ import ModalAdd from '~/components/ModalPage/ModalAdd';
 import { useNavigate } from 'react-router-dom';
 import Pagination from '~/components/Pagination/Pagination';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const cx = classNames.bind(style);
 
 function Supplier() {
@@ -126,6 +129,18 @@ function Supplier() {
         setShowModalAdd(!showModalAdd);
     };
 
+    const notify = () => {
+        toast.success('🦄 Wow so easy!', {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
+    };
+
     //handleClick method
     const handleAdd = () => {
         axios
@@ -152,6 +167,7 @@ function Supplier() {
             .put(`http://localhost:8081/category/supplier/softdelete/${id}`)
             .then((res) => {
                 loadData();
+                notify();
                 setShowModalDelete(false);
             })
             .catch((e) => console.log(e));
@@ -258,15 +274,19 @@ function Supplier() {
             )}
 
             {showModalView && (
-                <ModalView
-                    label={'Thông tin chi tiết'}
-                    dataInputs={inputsSupplier}
-                    dataValueInputs={values}
-                    methodOnchange={onChangeInputSup}
-                    methodToggle={toggleModalView}
-                    methodHandle={handleUpdate}
-                />
+                <div className={cx('modal-viewclose')}>
+                    <ModalView
+                        label={'Thông tin chi tiết'}
+                        dataInputs={inputsSupplier}
+                        dataValueInputs={values}
+                        methodOnchange={onChangeInputSup}
+                        methodToggle={toggleModalView}
+                        methodHandle={handleUpdate}
+                    />
+                </div>
             )}
+
+            <ToastContainer />
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>
                     <SupplierTb data={dataTb} method={{ toggleModalSingleDelete, toggleModalView }} />

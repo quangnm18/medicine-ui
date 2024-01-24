@@ -7,15 +7,16 @@ import { useEffect, useState } from 'react';
 
 import axios from 'axios';
 import InventoryWhTb from '~/components/Table/InventoryWhTb';
-import ModalViewDetailWh from '~/components/ModalPage/ModalViewDetailWh';
+import Modal from '~/components/Modal';
+import Pagination from '~/components/Pagination/Pagination';
 
 const cx = classNames.bind(style);
 
 function InventoryWh() {
-    const [allDataImport, setAllDataImport] = useState([]);
-    const [allDataImportDel, setAllDataImportDel] = useState([]);
+    const numRecord = 10;
+    const [startRecord, setStartRecord] = useState(0);
+    const [pageCount, setPageCount] = useState(1);
 
-    const [allDataSale, setAllDataSale] = useState([]);
     const [showModalView, setShowModalView] = useState(false);
     const [idSelected, setIdSelected] = useState();
 
@@ -23,8 +24,14 @@ function InventoryWh() {
 
     const [dataWh, setDataWh] = useState([]);
 
+    const VND = new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+    });
+
     const toggleModalView = (id) => {
         setIdSelected(id);
+        console.log(id);
         setShowModalView(!showModalView);
     };
 
@@ -32,61 +39,51 @@ function InventoryWh() {
         setValuesSearch(e.target.value);
     };
 
-    const updateWh = () => {
-        if (allDataImport && allDataSale) {
-            const arrImport = allDataImport.map((item) => {
-                const arrImportDel = allDataImportDel.filter((item1) => item1.id === item.id);
+    const handleSearch = () => {
+        loadData();
+    };
 
-                const arrSale = allDataSale.filter((item2) => item2.med_id === item.id);
-
-                if (arrImportDel.length > 0 && arrSale.length > 0) {
-                    if (
-                        arrSale[0].so_luong_ban > arrImportDel[0].sl_tong ||
-                        arrSale[0].so_luong_ban === arrImportDel[0].sl_tong
-                    ) {
-                        return { ...item, sl_tong: item.sl_tong + arrImportDel[0].sl_tong - arrSale[0].so_luong_ban };
-                    }
-                }
-
-                if (arrSale.length > 0 && arrImportDel.length === 0) {
-                    return { ...item, sl_tong: item.sl_tong - arrSale[0].so_luong_ban };
-                }
-                return { ...item };
-            });
-
-            setDataWh(arrImport);
+    const handleKeyPress = (e) => {
+        if (e.code === 'Enter') {
+            handleSearch();
         }
     };
 
-    useEffect(() => {
+    const handleChangePage = (e) => {
+        setStartRecord(e.selected * numRecord);
+    };
+
+    const convertDate = (data) => {
+        let date = new Date(data);
+        return date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear();
+    };
+
+    const loadData = () => {
         axios
-            //full chi tiet nhap chua xoa
-            .get('http://localhost:8081/category/warehouse', { params: { isDeleted: 0 } })
+            .get('http://localhost:8081/warehouse', {
+                params: {
+                    search_value: valuesSearch,
+                    numRecord: numRecord,
+                    startRecord: startRecord,
+                    totalRecord: 0,
+                },
+            })
             .then((res) => {
-                setAllDataImport(res.data[0]);
-            })
-            .catch((e) => console.log(e));
+                const totalRecord = res.data[1][0].totalRecord;
+                setPageCount(Math.ceil(totalRecord / numRecord));
 
-        axios
-            //full chi tiet nhap da xoa
-            .get('http://localhost:8081/category/warehouse', { params: { isDeleted: 1 } })
-            .then((res) => {
-                setAllDataImportDel(res.data[0]);
+                let arr1 = res.data[0].map((item) => {
+                    return { ...item, so_luong_con: item.sl_tong - item.so_luong_ban };
+                });
+                setDataWh(arr1);
             })
             .catch((e) => console.log(e));
-
-        axios
-            //full chi tiet ban
-            .get('http://localhost:8081/sell/allivdetail/synthetic')
-            .then((res1) => {
-                setAllDataSale(res1.data[0]);
-            })
-            .catch((e) => console.log(e));
-    }, []);
+    };
 
     useEffect(() => {
-        updateWh();
-    }, [allDataSale, allDataImport, allDataImportDel]);
+        loadData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [startRecord]);
 
     return (
         <div className={cx('content')}>
@@ -101,24 +98,133 @@ function InventoryWh() {
                                 value={valuesSearch}
                                 placeholder="Tìm kiếm theo tên..."
                                 onChange={onChangeInputSearch}
-                                // onKeyDown={handleKeyPress}
+                                onKeyDown={handleKeyPress}
                             />
-                            <button className={cx('search-btn')}>
+                            <button className={cx('search-btn')} onClick={handleSearch}>
                                 <FontAwesomeIcon icon={faSearch} className={cx('search-icon')} />
                             </button>
                         </div>
-                        <button className={cx('btn-addstaff')} onClick={updateWh}>
-                            Xuất excel
-                        </button>
+                        <button className={cx('btn-addstaff')}>Xuất excel</button>
                     </div>
                 </div>
             </div>
             {showModalView && (
-                <ModalViewDetailWh label={'Thông tin lịch sử nhập'} methodToggle={toggleModalView} data={idSelected} />
+                <Modal>
+                    <div className={cx('wrap-modalview')}>
+                        <div className={cx('title-modalView')}>Thông tin chi tiết</div>
+
+                        <div className={cx('view-detail')}>
+                            <label>Tên dược: </label>
+                            <input disabled value={typeof idSelected === 'object' && idSelected.ten} />
+                        </div>
+                        <div className={cx('view-detail')}>
+                            <label>Số lượng nhập(ĐVLN):</label>
+                            <input
+                                disabled
+                                value={
+                                    typeof idSelected === 'object' &&
+                                    idSelected.soluong_lon + ' ' + idSelected.donvi_lon
+                                }
+                            />
+                        </div>
+                        <div className={cx('view-detail')}>
+                            <label>Quy đổi(ĐVNN):</label>
+                            <input
+                                disabled
+                                value={
+                                    typeof idSelected === 'object' && idSelected.sl_tong + ' ' + idSelected.donvi_nho
+                                }
+                            />
+                        </div>
+
+                        <div className={cx('view-detail')}>
+                            <label>Đóng gói: </label>
+                            <input disabled value={typeof idSelected === 'object' && idSelected.dong_goi} />
+                        </div>
+                        <div className={cx('view-detail')}>
+                            <label>Giá nhập đơn: </label>
+                            <input
+                                disabled
+                                value={typeof idSelected === 'object' && VND.format(idSelected.gianhap_chuaqd)}
+                            />
+                        </div>
+                        <div className={cx('view-detail')}>
+                            <label>Tổng giá trị: </label>
+                            <input
+                                disabled
+                                value={typeof idSelected === 'object' && VND.format(idSelected.thanh_tien)}
+                            />
+                        </div>
+
+                        <div className={cx('view-detail')}>
+                            <label>CK: </label>
+                            <input disabled value={typeof idSelected === 'object' && idSelected.ck} />
+                        </div>
+                        <div className={cx('view-detail')}>
+                            <label>VAT: </label>
+                            <input disabled value={typeof idSelected === 'object' && idSelected.vat} />
+                        </div>
+
+                        <div className={cx('view-detail')}>
+                            <label>Thành tiền: </label>
+                            <input
+                                disabled
+                                value={
+                                    typeof idSelected === 'object' &&
+                                    VND.format(
+                                        idSelected.thanh_tien +
+                                            (idSelected.thanh_tien * idSelected.vat) / 100 -
+                                            (idSelected.thanh_tien * idSelected.ck) / 100,
+                                    )
+                                }
+                            />
+                        </div>
+
+                        <div className={cx('view-detail')}>
+                            <label>Giá nhập đã quy đổi:</label>
+                            <input
+                                disabled
+                                value={typeof idSelected === 'object' && VND.format(idSelected.gianhap_daqd)}
+                            />
+                        </div>
+                        <div className={cx('view-detail')}>
+                            <label>Giá bán lẻ: </label>
+                            <input
+                                disabled
+                                value={typeof idSelected === 'object' && VND.format(idSelected.giaban_daqd)}
+                            />
+                        </div>
+
+                        <div className={cx('view-detail')}>
+                            <label>Hạn dùng: </label>
+                            <input
+                                className={cx('infoNum-input')}
+                                name="han_dung"
+                                value={convertDate(idSelected.han_dung)}
+                                disabled
+                            />
+                        </div>
+                        <div className={cx('view-detail')}>
+                            <label>Số lô: </label>
+                            <input className={cx('infoNum-input')} name="so_lo" value={idSelected.so_lo} disabled />
+                        </div>
+
+                        <div className={cx('view-detailbtn')}>
+                            <button className={cx('btn-add', 'btn-close')} onClick={toggleModalView}>
+                                Đóng
+                            </button>
+                        </div>
+                    </div>
+                </Modal>
             )}
 
             <div className={cx('main-content')}>
-                <InventoryWhTb data={dataWh} method={toggleModalView} />
+                <div className={cx('content-table')}>
+                    <InventoryWhTb data={dataWh} method={toggleModalView} />
+                </div>
+                <div className={cx('wrap-paginate')}>
+                    <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />
+                </div>
             </div>
         </div>
     );

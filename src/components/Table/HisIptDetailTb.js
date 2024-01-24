@@ -38,15 +38,16 @@ function HisIptDetailTb({ data, method }) {
             sortable: true,
         },
         {
+            name: 'Số lô',
+            selector: (row) => row.so_lo,
+            width: '150px',
+        },
+        {
             name: 'Số lượng',
             selector: (row) => row.soluong_lon,
             width: '100px',
         },
-        {
-            name: 'QĐ (TB)',
-            selector: (row) => row.soluong_tb,
-            width: '90px',
-        },
+
         {
             name: 'QĐ (NN)',
             selector: (row) => row.soluong_nho,
@@ -58,7 +59,7 @@ function HisIptDetailTb({ data, method }) {
             width: '100px',
         },
         {
-            name: 'ĐVT',
+            name: 'Đóng gói',
             selector: (row) => row.dong_goi,
             width: '180px',
         },
@@ -142,7 +143,7 @@ function HisIptDetailTb({ data, method }) {
     ];
     return (
         <div>
-            <DataTable columns={columns} data={data} customStyles={tableStyle}></DataTable>
+            <DataTable columns={columns} data={data} customStyles={tableStyle} highlightOnHover></DataTable>
         </div>
     );
 }

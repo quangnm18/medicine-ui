@@ -1,12 +1,12 @@
 //animation
-// @keyframes fadeIn {
-//     from {
-//         opacity: 0;
-//     }
-//     to {
-//         opacity: 1;
-//     }
-// }
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
 
 .header-content {
     margin-bottom: 4px;
@@ -74,12 +74,6 @@
 .content-table {
     min-height: 580px;
 }
-
-// .modal {
-//     position: fixed;
-//     animation: fadeIn linear 0.1s;
-//     z-index: 2 !important;
-// }
 
 //Modal view
 

@@ -11,6 +11,7 @@ import { faPenToSquare, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 const cx = classNames.bind(style);
 
 function ModalViewDetailWh({ label, data, methodToggle, methodHandle }) {
+    console.log(data);
     const VND = new Intl.NumberFormat('vi-VN', {
         style: 'currency',
         currency: 'VND',

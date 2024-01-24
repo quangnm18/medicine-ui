@@ -12,6 +12,7 @@ function InventoryWhTb({ data, method }) {
         rows: {
             style: {
                 fontSize: '16px',
+                minHeight: '60px',
             },
         },
         headCells: {
@@ -35,33 +36,33 @@ function InventoryWhTb({ data, method }) {
         {
             name: 'SL(ĐVLN)',
             selector: (row) => {
-                if (row.soluong_nho && row.sl_tong % row.soluong_nho !== 0) {
-                    let du = row.sl_tong % row.soluong_nho;
-                    let nguyen = (row.sl_tong - (row.sl_tong % row.soluong_nho)) / row.soluong_nho;
+                if (row.soluong_nho && row.so_luong_con % row.soluong_nho !== 0) {
+                    let du = row.so_luong_con % row.soluong_nho;
+                    let nguyen = (row.so_luong_con - (row.so_luong_con % row.soluong_nho)) / row.soluong_nho;
                     return nguyen + ' ' + row.donvi_lon + ' - ' + du + ' ' + row.donvi_nho;
-                } else return row.soluong_nho ? row.sl_tong / row.soluong_nho + ' ' + row.donvi_lon : 0;
+                } else return row.soluong_nho ? row.so_luong_con / row.soluong_nho + ' ' + row.donvi_lon : 0;
             },
             width: '180px',
         },
         {
             name: 'SL(ĐVTB)',
             selector: (row) => {
-                if (row.soluong_tb && row.sl_tong % (row.soluong_nho / row.soluong_tb) !== 0) {
-                    let du = row.sl_tong % (row.soluong_nho / row.soluong_tb);
+                if (row.soluong_tb && row.so_luong_con % (row.soluong_nho / row.soluong_tb) !== 0) {
+                    let du = row.so_luong_con % (row.soluong_nho / row.soluong_tb);
                     let nguyen =
-                        (row.sl_tong * row.soluong_tb - ((row.sl_tong * row.soluong_tb) % row.soluong_nho)) /
+                        (row.so_luong_con * row.soluong_tb - ((row.so_luong_con * row.soluong_tb) % row.soluong_nho)) /
                         row.soluong_nho;
 
                     return nguyen + ' ' + row.donvi_tb + ' - ' + du + ' ' + row.donvi_nho;
                 } else if (row.soluong_tb) {
-                    return (row.sl_tong * row.soluong_tb) / row.soluong_nho + ' ' + row.donvi_tb;
+                    return (row.so_luong_con * row.soluong_tb) / row.soluong_nho + ' ' + row.donvi_tb;
                 } else return 0;
             },
             width: '180px',
         },
         {
             name: 'SL(ĐVNN)',
-            selector: (row) => (row.sl_tong ? row.sl_tong : 0),
+            selector: (row) => (row.so_luong_con ? row.so_luong_con : 0),
             width: '140px',
         },
         {
@@ -83,7 +84,7 @@ function InventoryWhTb({ data, method }) {
             name: '#',
             cell: (row) => (
                 <div>
-                    <button className={cx('btn')} onClick={() => method(row.id)}>
+                    <button className={cx('btn')} onClick={() => method(row)}>
                         <FontAwesomeIcon icon={faPenToSquare} className={cx('icon-view', 'icon-eye')} />
                     </button>
                 </div>
@@ -97,7 +98,6 @@ function InventoryWhTb({ data, method }) {
                 columns={columns}
                 data={data}
                 customStyles={tableStyle}
-                pagination
                 expandableRows
                 expandableRowsComponent={(row) => <WarehouseExpander data={row} />}
                 highlightOnHover
