@@ -1,16 +1,16 @@
 import classNames from 'classnames/bind';
 import style from './Login.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope, faLock, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faLock, faUser } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const cx = classNames.bind(style);
 
 function Login() {
     const [values, setValues] = useState({
         username: '',
-        email: '',
         password: '',
     });
 
@@ -24,13 +24,6 @@ function Login() {
         },
         {
             id: 3,
-            name: 'email',
-            type: 'email',
-            placeholder: 'Email',
-            icon: faEnvelope,
-        },
-        {
-            id: 4,
             name: 'password',
             type: 'password',
             placeholder: 'Password',
@@ -39,8 +32,7 @@ function Login() {
     ];
 
     const navigate = useNavigate();
-    const routeChange = () => {
-        let path = `/register`;
+    const routeChange = (path) => {
         navigate(path);
     };
 
@@ -48,12 +40,25 @@ function Login() {
         setValues({ ...values, [e.target.name]: e.target.value });
     };
 
+    axios.defaults.withCredentials = true;
     const handleLogin = () => {
-        setValues({
-            username: '',
-            email: '',
-            password: '',
-        });
+        axios
+            .post('http://localhost:8081/authen/login', values)
+            .then((res) => {
+                if (res.data.status === 'loginSuccess') {
+                    localStorage.setItem('statusLogin', res.data.status);
+                    navigate('/');
+                } else {
+                    alert(res.data.status);
+                }
+            })
+            .catch((e) => console.log(e));
+
+        // setValues({
+        //     username: '',
+        //     email: '',
+        //     password: '',
+        // });
     };
 
     return (
@@ -81,7 +86,7 @@ function Login() {
             </div>
 
             <div className={cx('forgot-password')}>
-                Nếu bạn chưa có tài khoản? <span onClick={routeChange}>Đăng ký</span>
+                Nếu bạn chưa có tài khoản? <span onClick={() => routeChange('/register')}>Đăng ký</span>
             </div>
 
             <div className={cx('submit-container')}>

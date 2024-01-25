@@ -129,16 +129,28 @@ function Supplier() {
         setShowModalAdd(!showModalAdd);
     };
 
-    const notify = () => {
-        toast.success('🦄 Wow so easy!', {
-            position: 'top-right',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        });
+    const notify = (data, type) => {
+        if (type === 'success') {
+            toast.success(`${data} thành công`, {
+                position: 'top-right',
+                autoClose: 3000,
+                closeOnClick: true,
+                pauseOnHover: true,
+                hideProgressBar: true,
+                draggable: true,
+            });
+        }
+
+        if (type === 'error') {
+            toast.error(`${data} thất bại`, {
+                position: 'top-right',
+                autoClose: 3000,
+                closeOnClick: true,
+                pauseOnHover: true,
+                hideProgressBar: true,
+                draggable: true,
+            });
+        }
     };
 
     //handleClick method
@@ -148,6 +160,7 @@ function Supplier() {
             .then((res) => {
                 loadData();
                 setShowModalAdd(false);
+                notify('Thêm mới', 'success');
             })
             .catch((e) => console.log(e));
     };
@@ -158,6 +171,7 @@ function Supplier() {
             .then((res) => {
                 loadData();
                 setShowModalView(false);
+                notify('Cập nhật', 'success');
             })
             .catch((e) => console.log(e));
     };
@@ -167,7 +181,7 @@ function Supplier() {
             .put(`http://localhost:8081/category/supplier/softdelete/${id}`)
             .then((res) => {
                 loadData();
-                notify();
+                notify('Xóa', 'success');
                 setShowModalDelete(false);
             })
             .catch((e) => console.log(e));

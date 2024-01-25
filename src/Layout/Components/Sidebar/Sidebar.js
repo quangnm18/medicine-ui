@@ -26,7 +26,7 @@ function Sidebar() {
         <div className={cx('sidebar')}>
             <aside className={cx('wrapper')}>
                 <Link className={cx('sidebar-header')} to={routesConfig.home}>
-                    <img src={logo} className={cx('logo')} />
+                    <img src={logo} className={cx('logo')} alt="" />
                 </Link>
                 <nav className={cx('sidebar-nav')}>
                     {SidebarData.map((item, index) => {
@@ -37,7 +37,10 @@ function Sidebar() {
                                         to={item.subNav ? null : item.path}
                                         className={(nav) =>
                                             cx('menu-item', {
-                                                active: nav.isActive,
+                                                active:
+                                                    showSubnav && item.subNav && open === item.id
+                                                        ? nav.isActive
+                                                        : undefined,
                                             })
                                         }
                                         onClick={() => toggle(item.id)}

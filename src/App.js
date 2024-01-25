@@ -1,14 +1,78 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { privateRoutes, publicRoutes } from './routes';
+import { privateRoutes, publicRoutes, initRoutes } from './routes';
 import DefaultLayout from './Layout/DefaultLayout';
-import { Fragment } from 'react';
+import { Fragment, useEffect, useState } from 'react';
+import axios from 'axios';
 
 function App() {
-    return (
-        <Router>
-            <div className="App">
+    axios.defaults.withCredentials = true;
+    useEffect(() => {
+        axios
+            .get('http://localhost:8081')
+            .then((res) => {
+                console.log(res.data);
+            })
+            .catch((e) => console.log(e));
+    }, []);
+
+    if (document.cookie) {
+        return (
+            <Router>
+                <div className="App">
+                    <Routes>
+                        {publicRoutes.map((route, index) => {
+                            const Page = route.component;
+                            let Layout = DefaultLayout;
+                            if (route.layout) {
+                                Layout = route.layout;
+                            } else if (route.layout === null) {
+                                Layout = Fragment;
+                            }
+
+                            return (
+                                <Route
+                                    key={index}
+                                    path={route.path}
+                                    element={
+                                        <Layout>
+                                            <Page />
+                                        </Layout>
+                                    }
+                                />
+                            );
+                        })}
+                    </Routes>
+                    <Routes>
+                        {privateRoutes.map((route, index) => {
+                            const Page = route.component;
+                            let Layout = DefaultLayout;
+                            if (route.layout) {
+                                Layout = route.layout;
+                            } else if (route.layout === null) {
+                                Layout = Fragment;
+                            }
+
+                            return (
+                                <Route
+                                    key={index}
+                                    path={route.path}
+                                    element={
+                                        <Layout>
+                                            <Page />
+                                        </Layout>
+                                    }
+                                />
+                            );
+                        })}
+                    </Routes>
+                </div>
+            </Router>
+        );
+    } else
+        return (
+            <Router>
                 <Routes>
-                    {publicRoutes.map((route, index) => {
+                    {initRoutes.map((route, index) => {
                         const Page = route.component;
                         let Layout = DefaultLayout;
                         if (route.layout) {
@@ -30,33 +94,8 @@ function App() {
                         );
                     })}
                 </Routes>
-
-                <Routes>
-                    {privateRoutes.map((route, index) => {
-                        const Page = route.component;
-                        let Layout = DefaultLayout;
-                        if (route.layout) {
-                            Layout = route.layout;
-                        } else if (route.layout === null) {
-                            Layout = Fragment;
-                        }
-
-                        return (
-                            <Route
-                                key={index}
-                                path={route.path}
-                                element={
-                                    <Layout>
-                                        <Page />
-                                    </Layout>
-                                }
-                            />
-                        );
-                    })}
-                </Routes>
-            </div>
-        </Router>
-    );
+            </Router>
+        );
 }
 
 export default App;

@@ -10,7 +10,7 @@ const cx = classNames.bind(style);
 function SignUp() {
     const navigate = useNavigate();
     const routeChange = () => {
-        let path = `/`;
+        let path = `/login`;
         navigate(path);
     };
 

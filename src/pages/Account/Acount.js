@@ -7,6 +7,8 @@ import { faGear, faKey } from '@fortawesome/free-solid-svg-icons';
 const cx = classNames.bind(style);
 
 function Account() {
+    const handleLogOut = () => {};
+
     return (
         <div>
             <DirectionHeader>Tài khoản</DirectionHeader>
@@ -14,7 +16,7 @@ function Account() {
                 <div className={cx('content-left')}>
                     <div className={cx('info')}>
                         <div className={cx('avatar')}></div>
-                        <div className={cx('name')}>Nguyễn Kim Anh</div>
+                        <div className={cx('name')}>{localStorage.getItem('name')}</div>
                         <div className={cx('role')}>Nhân viên</div>
                         <button className={cx('btn-chinhsua')}>Chỉnh sửa Profile</button>
                     </div>

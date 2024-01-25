@@ -12,27 +12,14 @@ import UserHomeTb from '~/components/Table/UserHomeTb';
 const cx = classNames.bind(style);
 
 function Home() {
-    const [user, setUser] = useState({ id: 2, name: 'Nguyễn Kim Anh' });
-
-    const [allDtImport, setAllDtImport] = useState([]);
-    const [allDtSale, setAllDtSale] = useState([]);
     const [countRp, setCountRp] = useState();
     const [countSup, setCountSup] = useState();
     const [countWarning, setCountWarning] = useState();
-
-    const [giatrinhap, setGiatrinhap] = useState();
-    const [doanhthu, setDoanhthu] = useState();
 
     const navigate = useNavigate();
     const routeChange = (path) => {
         navigate(path);
     };
-
-    const calc = useMemo(() => {
-        const arr = allDtImport.reduce((result, item) => {
-            return (result += item.thanh_tien);
-        }, 0);
-    }, []);
 
     useEffect(() => {
         axios
@@ -46,22 +33,6 @@ function Home() {
             .get('http://localhost:8081/getcountsup')
             .then((res) => {
                 setCountSup(res.data[0].count_sup);
-            })
-            .catch((e) => console.log(e));
-
-        axios
-            //full chi tiet nhap
-            .get('http://localhost:8081/category/warehouse')
-            .then((res1) => {
-                setAllDtImport(res1.data[0]);
-            })
-            .catch((e) => console.log(e));
-
-        axios
-            //full chi tiet ban
-            .get('http://localhost:8081/sell/ivdetail/synthetic')
-            .then((res1) => {
-                setAllDtSale(res1.data[0]);
             })
             .catch((e) => console.log(e));
 
@@ -85,13 +56,23 @@ function Home() {
             .catch((e) => console.log(e));
     }, []);
 
-    useEffect(() => {}, []);
+    // axios.defaults.withCredentials = true;
+    // useEffect(() => {
+    //     axios
+    //         .get('http://localhost:8081')
+    //         .then((res) => {
+    //             localStorage.setItem('userId', res.data.userId);
+    //             localStorage.setItem('name', res.data.name);
+    //             localStorage.setItem('role', res.data.role);
+    //         })
+    //         .catch((e) => console.log(e));
+    // }, []);
 
     return (
         <div className={cx('wrapper')}>
             <div className={cx('header')}>
                 <div className={cx('header-hello')}>
-                    <h4>Xin chào, Kim Anh</h4>
+                    <h4>Xin chào, {localStorage.getItem('name')}</h4>
                     <span>Chúc một ngày tốt lành!</span>
                 </div>
 
