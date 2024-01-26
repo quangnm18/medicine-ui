@@ -30,8 +30,8 @@ function ModalAddMed({ dataInputs, dataValueInputs, methodOnchange, methodToggle
             validationError.nhom_thuoc = 'Phải chọn nhóm thuốc';
         }
 
-        if (dataValueInputs.don_gia === '' && !dataValueInputs.don_gia.trim()) {
-            validationError.don_gia = 'Phải nhập đơn giá bán';
+        if (dataValueInputs.dong_goi === '' && !dataValueInputs.dong_goi.trim()) {
+            validationError.dong_goi = 'Phải nhập mô tả đóng gói';
         }
 
         setError(validationError);

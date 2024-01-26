@@ -3,13 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DataTable from 'react-data-table-component';
 import classNames from 'classnames/bind';
 import style from './Table.module.scss';
-import { useState } from 'react';
 
 const cx = classNames.bind(style);
 
-function StaffTb({ data }) {
-    const [showScroll, setShowScroll] = useState(true);
-
+function StaffTb({ data, method }) {
     const tableStyle = {
         rows: {
             style: {
@@ -52,10 +49,13 @@ function StaffTb({ data }) {
             name: '#',
             cell: (row) => (
                 <div>
-                    <button className={cx('btn')}>
-                        <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
-                    </button>
-                    <button className={cx('btn')}>
+                    {JSON.parse(localStorage.getItem('data_user')).role === 'ADM' && (
+                        <button className={cx('btn')} onClick={() => method.toggleModalHardDel(row.ID)}>
+                            <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
+                        </button>
+                    )}
+
+                    <button className={cx('btn')} onClick={() => method.toggleModalView(row)}>
                         <FontAwesomeIcon icon={faPenToSquare} className={cx('icon-view')} />
                     </button>
                 </div>
@@ -63,15 +63,8 @@ function StaffTb({ data }) {
         },
     ];
     return (
-        <div onMouseLeave={() => setShowScroll(true)} onMouseEnter={() => setShowScroll(false)}>
-            <DataTable
-                columns={columns}
-                data={data}
-                customStyles={tableStyle}
-                fixedHeader={true}
-                fixedHeaderScrollHeight="60vh"
-                className={showScroll ? cx('table-staff', 'hideScroll') : cx('table-staff')}
-            ></DataTable>
+        <div>
+            <DataTable columns={columns} data={data} customStyles={tableStyle}></DataTable>
         </div>
     );
 }

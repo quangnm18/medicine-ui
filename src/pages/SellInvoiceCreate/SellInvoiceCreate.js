@@ -17,7 +17,10 @@ const cx = classNames.bind(style);
 
 function SellInvoiceCreate() {
     const dateCurr = new Date();
-    const [user, setUser] = useState({ name: 'Kim Anh', id: 2 });
+    const [user, setUser] = useState({
+        name: JSON.parse(localStorage.getItem('data_user')).name,
+        id: JSON.parse(localStorage.getItem('data_user')).userId,
+    });
     const [valueInvoice, setValueInvoice] = useState({ ck: 0, khach_tra: 0 });
 
     const [nameSearchInput, setNameSearchInput] = useState('');
@@ -53,6 +56,7 @@ function SellInvoiceCreate() {
     }, []);
 
     const handleSelectedMedicine = (medicine) => {
+        console.log(medicine);
         setNameSearchInput('');
 
         setDataInvoice([
@@ -98,34 +102,36 @@ function SellInvoiceCreate() {
     };
 
     const handleSaveIv = () => {
-        axios
-            .get('http://localhost:8081/sell/getmaxid')
-            .then((res) => {
-                const newId = res.data[0].max_id + 1;
-                axios
-                    .post('http://localhost:8081/sell/ivcreate', {
-                        user_id: user.id,
-                        tong_tien_hang: tong_giatri,
-                        ck: valueInvoice.ck,
-                        tong_ck: tong_ck,
-                        tong_phai_tra: valueInvoice.tong_phai_tra,
-                        khach_tra: valueInvoice.khach_tra,
-                        tien_du: tien_du,
-                        newId: newId,
-                    })
-                    .then((res1) => {
-                        const ma_hoa_don = newId;
-                        axios
-                            .post('http://localhost:8081/sell/ivdetail/create', { dataInvoice, ma_hoa_don })
-                            .then((res) => {
-                                setModalSave(false);
-                                setDataInvoice([]);
-                            })
-                            .catch((e) => console.log(e));
-                    })
-                    .catch((e) => console.log(e));
-            })
-            .catch((e) => console.log(e));
+        if (dataInvoice.length > 0) {
+            axios
+                .get('http://localhost:8081/sell/getmaxid')
+                .then((res) => {
+                    const newId = res.data[0].max_id + 1;
+                    axios
+                        .post('http://localhost:8081/sell/ivcreate', {
+                            user_id: user.id,
+                            tong_tien_hang: tong_giatri,
+                            ck: valueInvoice.ck,
+                            tong_ck: tong_ck,
+                            tong_phai_tra: valueInvoice.tong_phai_tra,
+                            khach_tra: valueInvoice.khach_tra,
+                            tien_du: tien_du,
+                            newId: newId,
+                        })
+                        .then((res1) => {
+                            const ma_hoa_don = newId;
+                            axios
+                                .post('http://localhost:8081/sell/ivdetail/create', { dataInvoice, ma_hoa_don })
+                                .then((res) => {
+                                    setModalSave(false);
+                                    setDataInvoice([]);
+                                })
+                                .catch((e) => console.log(e));
+                        })
+                        .catch((e) => console.log(e));
+                })
+                .catch((e) => console.log(e));
+        }
     };
 
     const handleSaveIvExport = () => {
@@ -149,14 +155,9 @@ function SellInvoiceCreate() {
                         axios
                             .post('http://localhost:8081/sell/ivdetail/create', { dataInvoice, ma_hoa_don })
                             .then((res) => {
-                                axios
-                                    .get('http://localhost:5000/invoice', { params: { id: ma_hoa_don } })
-                                    .then((res3) => {
-                                        setModalSaveExport(false);
-                                        setDataInvoice([]);
-                                        window.open(`http://localhost:5000/invoice?id=${ma_hoa_don}`);
-                                    })
-                                    .catch((e) => console.log(e));
+                                setModalSaveExport(false);
+                                setDataInvoice([]);
+                                window.open(`http://localhost:5000/invoice?id=${ma_hoa_don}`);
                             })
                             .catch((e) => console.log(e));
                     })

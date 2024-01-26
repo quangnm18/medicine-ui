@@ -87,6 +87,8 @@ function Supplier() {
 
     const [idSelected, setIdSelected] = useState();
 
+    axios.defaults.withCredentials = true;
+
     const onChangeInputSup = (e) => {
         setValues({ ...values, [e.target.name]: e.target.value });
     };
@@ -241,29 +243,34 @@ function Supplier() {
                                 <FontAwesomeIcon icon={faSearch} className={cx('search-icon')} />
                             </button>
                         </div>
-                        <button
-                            className={cx('btn-addstaff')}
-                            onClick={() => {
-                                setShowModalAdd(true);
-                                setValues({
-                                    ten_ncc: '',
-                                    PhoneNumber: '',
-                                    Email: '',
-                                    Address: '',
-                                    personRepresent: '',
-                                    TaxCode: '',
-                                });
-                            }}
-                        >
-                            Thêm
-                        </button>
-                        <button className={cx('btn-addstaff')}>Nhập excel</button>
-                        <button
-                            className={cx('btn-addstaff')}
-                            onClick={() => routeChange('/category/supplier/deleted')}
-                        >
-                            Đã xóa
-                        </button>
+                        {(JSON.parse(localStorage.getItem('data_user')).role === 'ADM' ||
+                            JSON.parse(localStorage.getItem('data_user')).role === 'STFW') && (
+                            <button
+                                className={cx('btn-addstaff')}
+                                onClick={() => {
+                                    setShowModalAdd(true);
+                                    setValues({
+                                        ten_ncc: '',
+                                        PhoneNumber: '',
+                                        Email: '',
+                                        Address: '',
+                                        personRepresent: '',
+                                        TaxCode: '',
+                                    });
+                                }}
+                            >
+                                Thêm
+                            </button>
+                        )}
+
+                        {JSON.parse(localStorage.getItem('data_user')).role === 'ADM' && (
+                            <button
+                                className={cx('btn-addstaff')}
+                                onClick={() => routeChange('/category/supplier/deleted')}
+                            >
+                                Đã xóa
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>

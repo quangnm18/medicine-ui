@@ -10,6 +10,7 @@ import ModalAll from '~/components/ModalPage/ModalAll';
 import Modal from '~/components/Modal';
 import { useNavigate } from 'react-router-dom';
 import Pagination from '~/components/Pagination/Pagination';
+import FormatInput from '~/components/format/FormatInput';
 
 const cx = classNames.bind(style);
 
@@ -24,6 +25,7 @@ function HisIptDetail() {
     const [dateTo, setDateTo] = useState(null);
     const [valuesSearch, setValuesSearch] = useState('');
     const [infoNum, setInfoNum] = useState({ han_dung: '', so_lo: '' });
+    const [giaban, setGiaBan] = useState();
 
     const [idSelected, setIdSelected] = useState('');
     const [showModalSoftDel, setShowModalSoftDel] = useState(false);
@@ -40,10 +42,11 @@ function HisIptDetail() {
     };
 
     const toggleModalView = (data) => {
+        console.log(data);
         setShowModalView(!showModalView);
         setIdSelected(data);
         setInfoNum({ han_dung: convert(data.han_dung), so_lo: data.so_lo });
-        console.log(convert(data.han_dung));
+        setGiaBan(data.giaban_daqd);
     };
 
     const onchangeDateStart = (e) => {
@@ -60,6 +63,10 @@ function HisIptDetail() {
     const changeInfo = (e) => {
         console.log(e.target.value);
         setInfoNum({ ...infoNum, [e.target.name]: e.target.value });
+    };
+
+    const onchangePrice = (value, name) => {
+        setGiaBan(value);
     };
 
     const handleSearch = () => {
@@ -94,7 +101,7 @@ function HisIptDetail() {
 
     const handleUpdate = () => {
         axios
-            .put('http://localhost:8081/importlist/detail/update', { ...infoNum, id: idSelected.id })
+            .put('http://localhost:8081/importlist/detail/update', { ...infoNum, id: idSelected.id, giaban: giaban })
             .then((res) => {
                 setShowModalView(false);
                 loadData();
@@ -225,10 +232,7 @@ function HisIptDetail() {
                         </div>
                         <div className={cx('view-detail')}>
                             <label>Giá bán tạm: </label>
-                            <input
-                                disabled
-                                value={typeof idSelected === 'object' && VND.format(idSelected.giaban_daqd)}
-                            />
+                            <FormatInput name={'gia_ban_tam'} value={giaban} methodOnchange={onchangePrice} />
                         </div>
                         <div className={cx('view-detail')}>
                             <label>Tổng giá trị: </label>

@@ -56,23 +56,14 @@ function Home() {
             .catch((e) => console.log(e));
     }, []);
 
-    // axios.defaults.withCredentials = true;
-    // useEffect(() => {
-    //     axios
-    //         .get('http://localhost:8081')
-    //         .then((res) => {
-    //             localStorage.setItem('userId', res.data.userId);
-    //             localStorage.setItem('name', res.data.name);
-    //             localStorage.setItem('role', res.data.role);
-    //         })
-    //         .catch((e) => console.log(e));
-    // }, []);
-
     return (
         <div className={cx('wrapper')}>
             <div className={cx('header')}>
                 <div className={cx('header-hello')}>
-                    <h4>Xin chào, {localStorage.getItem('name')}</h4>
+                    <h4>
+                        Xin chào,{' '}
+                        {localStorage.getItem('data_user') && JSON.parse(localStorage.getItem('data_user')).name}
+                    </h4>
                     <span>Chúc một ngày tốt lành!</span>
                 </div>
 

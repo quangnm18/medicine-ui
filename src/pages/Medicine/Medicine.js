@@ -44,7 +44,6 @@ function Medicine() {
         dchi_ctysx: '',
         don_vi_duoc: '',
         nhom_thuoc: '',
-        don_gia: '',
     });
 
     const inputsMedicine = [
@@ -146,13 +145,6 @@ function Medicine() {
             type: 'text',
             placeholder: 'Địa chỉ công ty sản xuất',
         },
-        {
-            id: 15,
-            label: 'Đơn giá bán',
-            name: 'don_gia',
-            type: 'number',
-            placeholder: 'Đơn giá bán',
-        },
     ];
 
     const [nameSearchInput, setNameSearchInput] = useState('');
@@ -168,6 +160,8 @@ function Medicine() {
     const [showModalView, setShowModalView] = useState(false);
     const [showModalAdd, setShowModalAdd] = useState(false);
     const [showModalExcel, setShowModalExcel] = useState(false);
+
+    axios.defaults.withCredentials = true;
 
     //search
     const handleSelectedMedicine = useCallback((medicine) => {
@@ -227,7 +221,6 @@ function Medicine() {
             dchi_ctysx: '',
             don_vi_duoc: '',
             nhom_thuoc: '',
-            don_gia: '',
         });
         setShowModalAdd(!showModalAdd);
     };

@@ -27,6 +27,8 @@ import HisIptDetailDel from '~/pages/Statistic/HisIptDetailDel';
 import InvoiceListDel from '~/pages/InvoiceList/InvoiceListDel';
 
 const publicRoutes = [
+    { path: routesConfig.login, component: Login, layout: LoginLayout },
+    { path: routesConfig.signUp, component: SignUp, layout: LoginLayout },
     { path: routesConfig.home, component: Home },
 
     { path: routesConfig.sell, component: SellInvoiceCreate },

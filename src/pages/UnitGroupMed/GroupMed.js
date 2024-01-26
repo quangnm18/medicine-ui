@@ -148,7 +148,6 @@ function GroupMed() {
                 },
             })
             .then((res) => {
-                console.log(res.data);
                 setDataTb(res.data[0]);
                 const totalRecord = res.data[1][0].totalRecord;
                 setPageCount(Math.ceil(totalRecord / numRecord));

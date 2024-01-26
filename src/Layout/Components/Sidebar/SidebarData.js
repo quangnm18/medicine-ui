@@ -6,15 +6,16 @@ import {
     faChartColumn,
     faChevronDown,
     faChevronUp,
-    faClipboardCheck,
     faClipboardList,
+    faCodeBranch,
     faFileExport,
     faHouse,
+    faHouseLaptop,
+    faLayerGroup,
     faList,
     faListCheck,
     faListUl,
     faPaste,
-    faRectangleList,
     faSquarePlus,
     faTruckMoving,
     faUser,
@@ -93,20 +94,10 @@ export const SidebarData = [
         id: 4,
         title: 'Quản lý danh mục',
         path: routesConfig.category,
-        icon: <FontAwesomeIcon icon={faRectangleList} />,
+        icon: <FontAwesomeIcon icon={faLayerGroup} />,
         iconClosed: <FontAwesomeIcon icon={faChevronDown} />,
         iconOpened: <FontAwesomeIcon icon={faChevronUp} />,
         subNav: [
-            {
-                title: 'Nhân viên',
-                path: routesConfig.categoryStaff,
-                icon: <FontAwesomeIcon icon={faUser} />,
-            },
-            {
-                title: 'Nhà cung cấp',
-                path: routesConfig.categorySupplier,
-                icon: <FontAwesomeIcon icon={faTruckMoving} />,
-            },
             {
                 title: 'Dược phẩm',
                 path: routesConfig.categoryMedicine,
@@ -122,11 +113,42 @@ export const SidebarData = [
                 path: routesConfig.categoryUnitMedicine,
                 icon: <FontAwesomeIcon icon={faUnity} />,
             },
+            {
+                title: 'Nhà cung cấp',
+                path: routesConfig.categorySupplier,
+                icon: <FontAwesomeIcon icon={faTruckMoving} />,
+            },
+            {
+                title: 'Thông tin nhân viên',
+                path: routesConfig.categoryStaff,
+                icon: <FontAwesomeIcon icon={faUser} />,
+            },
         ],
     },
 
     {
         id: 5,
+        title: 'Quản lý cơ sở',
+        path: routesConfig.categoryStaff,
+        icon: <FontAwesomeIcon icon={faHouseLaptop} />,
+        iconClosed: <FontAwesomeIcon icon={faChevronDown} />,
+        iconOpened: <FontAwesomeIcon icon={faChevronUp} />,
+        subNav: [
+            {
+                title: 'Nhân viên',
+                path: routesConfig.categoryStaff,
+                icon: <FontAwesomeIcon icon={faUser} />,
+            },
+            {
+                title: 'Danh sách chi nhánh',
+                path: routesConfig.categoryStaff,
+                icon: <FontAwesomeIcon icon={faCodeBranch} />,
+            },
+        ],
+    },
+
+    {
+        id: 6,
         title: 'Thống kê',
         path: routesConfig.statistic,
         icon: <FontAwesomeIcon icon={faChartColumn} />,
@@ -145,8 +167,9 @@ export const SidebarData = [
             },
         ],
     },
+
     {
-        id: 6,
+        id: 7,
         title: 'Báo cáo',
         path: routesConfig.report,
         icon: <FontAwesomeIcon icon={faPaste} />,
@@ -154,7 +177,7 @@ export const SidebarData = [
         iconOpened: <FontAwesomeIcon icon={faChevronUp} />,
     },
     {
-        id: 7,
+        id: 8,
         title: 'Tài khoản',
         path: routesConfig.account,
         icon: <FontAwesomeIcon icon={faUserGear} />,

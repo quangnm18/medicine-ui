@@ -1,27 +1,27 @@
 import classNames from 'classnames/bind';
 import style from './ModalPage.module.scss';
 
+import { useEffect, useState } from 'react';
 import Modal from '~/components/Modal';
-import { useState } from 'react';
+import axios from 'axios';
 
 const cx = classNames.bind(style);
 
-function ModalAdd({ label, dataInputs, dataValueInputs, methodOnchange, methodToggle, methodHandle }) {
+function ModalViewUser({ label, dataInputs, dataValueInputs, methodOnchange, methodToggle, methodHandle }) {
+    const [allRole, setAllRole] = useState([]);
     const [error, setError] = useState({});
-
-    //validate
     const validator = () => {
         const validationError = {};
-        if (dataValueInputs.ten_ncc === '' && !dataValueInputs.ten_ncc.trim()) {
-            validationError.ten_ncc = 'Phải nhập tên nhà cung cấp';
+        if (dataValueInputs.Name === '' && !dataValueInputs.Name.trim()) {
+            validationError.Name = 'Trường này là bắt buộc';
         }
 
         if (dataValueInputs.PhoneNumber === '' && !dataValueInputs.PhoneNumber.trim()) {
-            validationError.PhoneNumber = 'Phải nhập số điện thoại';
+            validationError.PhoneNumber = 'Trường này là bắt buộc';
         }
 
         if (dataValueInputs.Email === '' && !dataValueInputs.Email.trim()) {
-            validationError.Email = 'Phải nhập Email';
+            validationError.Email = 'Trường này là bắt buộc';
         } else if (!/\S+@\S+\.\S+/.test(dataValueInputs.Email)) {
             validationError.Email = 'Email không hợp lệ';
         }
@@ -32,6 +32,16 @@ function ModalAdd({ label, dataInputs, dataValueInputs, methodOnchange, methodTo
             methodHandle();
         }
     };
+
+    useEffect(() => {
+        axios
+            .get('http://localhost:8081/category/roles')
+            .then((res) => {
+                setAllRole(res.data);
+            })
+            .catch((e) => console.log(e));
+    }, []);
+
     return (
         <Modal>
             <div className={cx('modal-viewAll')}>
@@ -43,23 +53,39 @@ function ModalAdd({ label, dataInputs, dataValueInputs, methodOnchange, methodTo
                                 <div className={cx('label')}>{input.label}</div>
                                 <input
                                     name={input.name}
-                                    value={dataValueInputs[input.name]}
+                                    value={dataValueInputs[input.name] ? dataValueInputs[input.name] : ''}
                                     placeholder={input.placeholder}
                                     onChange={methodOnchange}
+                                    type={input.type}
                                 />
                                 {error[input.name] && <div className={cx('error-validate')}>{error[input.name]}</div>}
                             </div>
                         ))}
+                        <div>
+                            <label htmlFor="role-select">Vai trò</label>
+                            <select
+                                className={cx('role-select')}
+                                name="role-select"
+                                value={dataValueInputs.Role}
+                                onChange={(e) => console.log(e.target.value)}
+                            >
+                                {allRole.map((role) => (
+                                    <option key={role.id} className={cx('role-option')} value={role.id}>
+                                        {role.ten_vai_tro}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
                 </div>
 
                 <div className={cx('modalViewAll-action')}>
-                    {(JSON.parse(localStorage.getItem('data_user')).role === 'ADM' ||
-                        JSON.parse(localStorage.getItem('data_user')).role === 'STFW') && (
+                    {JSON.parse(localStorage.getItem('data_user')).role === 'ADM' && (
                         <button className={cx('btn-modal', 'btn-yes')} onClick={validator}>
-                            Thêm
+                            Cập nhật
                         </button>
                     )}
+
                     <button className={cx('btn-modal', 'btn-no')} onClick={methodToggle}>
                         Trở lại
                     </button>
@@ -69,4 +95,4 @@ function ModalAdd({ label, dataInputs, dataValueInputs, methodOnchange, methodTo
     );
 }
 
-export default ModalAdd;
+export default ModalViewUser;

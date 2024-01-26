@@ -36,6 +36,10 @@ textarea [tabindex] {
     font-family: 'Roboto', sans-serif;
 }
 
+input {
+    outline: none;
+}
+
 a[href] {
     color: var(--text-color);
     text-decoration: none;

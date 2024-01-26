@@ -69,7 +69,7 @@
         padding: 8px;
         color: var(--text-color);
         outline: none;
-        border: solid 2px #e0d9d9;
+        border: solid 1px #e0d9d9;
         border-radius: 4px;
         width: 95%;
     }
@@ -114,7 +114,6 @@
 
 //Modal Excel
 .wrapper-excel {
-    width: 100%;
     max-width: 1600px;
     margin: auto;
     overflow-x: hidden;
@@ -132,8 +131,12 @@
     display: flex;
     margin-bottom: 24px;
 }
-.form-control {
-    font-size: 1.6rem;
+
+.direct-action {
+    width: 98%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .btn-excel {
@@ -146,6 +149,20 @@
     width: 200px;
     text-align: center;
     margin-right: 8px;
+}
+
+.form-control {
+    font-size: 1.6rem;
+    margin-left: 20px;
+}
+
+.btn-label {
+    position: fixed;
+    width: 120px;
+}
+
+.btn-preview {
+    padding: 14px;
 }
 
 .modalEx-action {
@@ -163,16 +180,30 @@
     cursor: pointer;
 }
 
+.wrap-option {
+    padding-bottom: 8px;
+    input {
+        font-size: 1.6rem;
+        width: 280px;
+        border: 1px solid #e0d9d9;
+        padding: 8px;
+        margin-right: 20px;
+    }
+}
+
 .viewer {
     height: 600px;
     margin-top: 8px;
-    width: 100%;
     background-color: #e4e4e4;
     padding: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: scroll;
+    overflow: auto;
+}
+
+.table-excel {
+    width: 100%;
 }
 
 .alert-err {
@@ -244,4 +275,60 @@
 }
 .icon-remove {
     color: rgb(225, 22, 22);
+}
+
+//ModalViewAll
+
+.modal-viewAll {
+    min-width: 600px;
+    padding: 16px 16px 32px 16px;
+    position: relative;
+}
+
+.modalAll-if {
+    // padding-bottom: 32px;
+    flex-wrap: wrap;
+    width: 100%;
+    margin: 16px 8px 0 8px;
+    .label {
+        min-width: 148px;
+    }
+}
+
+.if-detailAll {
+    margin: 8px 0 20px 0;
+    align-items: center;
+
+    .label {
+        font-size: 1.6rem;
+    }
+
+    input {
+        font-size: 1.6rem;
+        padding: 8px;
+        color: var(--text-color);
+        outline: none;
+        border: solid 1px #e0d9d9;
+        border-radius: 4px;
+        width: 95%;
+    }
+}
+
+.modalViewAll-action {
+    text-align: right;
+    margin-right: 19px;
+    margin-top: 24px;
+}
+
+.role-select {
+    font-size: 1.6rem;
+    width: 95%;
+    padding: 10px 5px;
+    outline: none;
+    border: solid 1px #e0d9d9;
+    color: var(--text-color);
+    border-radius: 4px;
+
+    .role-option {
+    }
 }

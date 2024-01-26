@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import style from './Login.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock, faUser } from '@fortawesome/free-solid-svg-icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -41,25 +41,45 @@ function Login() {
     };
 
     axios.defaults.withCredentials = true;
+    const loadData = () => {
+        axios
+            .get('http://localhost:8081')
+            .then((res) => {
+                if (document.cookie) {
+                    const obj = {
+                        userId: res.data.userId,
+                        name: res.data.name,
+                        role: res.data.role,
+                        ten_role: res.data.ten_role,
+                    };
+                    localStorage.setItem('data_user', JSON.stringify(obj));
+                    routeChange('/');
+                } else {
+                }
+            })
+            .catch((e) => console.log(e));
+    };
+
     const handleLogin = () => {
         axios
             .post('http://localhost:8081/authen/login', values)
             .then((res) => {
                 if (res.data.status === 'loginSuccess') {
                     localStorage.setItem('statusLogin', res.data.status);
-                    navigate('/');
+                    loadData();
                 } else {
                     alert(res.data.status);
                 }
             })
             .catch((e) => console.log(e));
-
-        // setValues({
-        //     username: '',
-        //     email: '',
-        //     password: '',
-        // });
     };
+
+    useEffect(() => {
+        if (document.cookie) {
+            routeChange('/');
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
         <div className={cx('container')}>

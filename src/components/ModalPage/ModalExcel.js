@@ -4,6 +4,9 @@ import classNames from 'classnames/bind';
 import style from './ModalPage.module.scss';
 import { useState } from 'react';
 import * as XLSX from 'xlsx';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDownload } from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
 
 const cx = classNames.bind(style);
 
@@ -35,7 +38,7 @@ function ModalAddExcel({ methodToggle }) {
         }
     };
 
-    const handleFileSubmit = () => {
+    const handleFilePreview = () => {
         if (excelFile !== null) {
             const workbook = XLSX.read(excelFile, { type: 'buffer' });
             const worksheetName = workbook.SheetNames[0];
@@ -45,28 +48,63 @@ function ModalAddExcel({ methodToggle }) {
         }
     };
 
+    const getTemplate = () => {
+        window.open('http://localhost:5000/import/template?catalog=1');
+    };
+
+    const test = async () => {
+        const formData = new FormData();
+        formData.append('', excelFile);
+        try {
+            const response = await fetch('http://localhost:5000/import/validate?sheetName=Sheet1&header=2&catalog=1', {
+                method: 'POST',
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Headers': '*',
+                },
+                body: formData,
+            });
+            const result = await response.json();
+            console.log('Success:', result);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
     return (
         <Modal>
             <div className={cx('wrapper-excel')}>
                 <h4 className={cx('title-excel')}>Nhập khẩu Excel</h4>
 
                 <div className={cx('custom-form')}>
-                    <label htmlFor="file-upload" className={cx('btn-excel')}>
-                        Upload File
-                    </label>
-                    <input
-                        id="file-upload"
-                        type="file"
-                        accept=".xlsx"
-                        className={cx('form-control')}
-                        required
-                        hidden
-                        onChange={handleFile}
-                    />
-                    <button className={cx('btn-excel')} onClick={handleFileSubmit}>
-                        Prevew
-                    </button>
+                    <div className={cx('direct-action')}>
+                        <label htmlFor="file-upload" className={cx('btn-excel', 'btn-label')}>
+                            Upload File
+                        </label>
+                        <input
+                            id="file-upload"
+                            type="file"
+                            accept=".xlsx"
+                            className={cx('form-control')}
+                            required
+                            // hidden
+                            onChange={handleFile}
+                        />
+                        <div>
+                            <button className={cx('btn-excel', 'btn-preview')} onClick={getTemplate}>
+                                <FontAwesomeIcon icon={faDownload} /> Template
+                            </button>
+                            <button className={cx('btn-excel', 'btn-preview')} onClick={handleFilePreview}>
+                                Prevew
+                            </button>
+                        </div>
+                    </div>
                     {typeErrorr && <div className={cx('alert-err')}>{typeErrorr}</div>}
+                </div>
+
+                <div className={cx('wrap-option')}>
+                    <input placeholder="Nhập trang Sheet bạn muốn nhập..." />
+                    <input placeholder="Chọn dòng đầu tiên nhập..." />
                 </div>
 
                 <div className={cx('viewer')}>
@@ -98,7 +136,12 @@ function ModalAddExcel({ methodToggle }) {
                 </div>
 
                 <div className={cx('modalEx-action')}>
-                    <button className={cx('btn-modal')} onClick={methodToggle}>
+                    <button
+                        className={cx('btn-modal')}
+                        onClick={async () => {
+                            await test();
+                        }}
+                    >
                         Nhập
                     </button>
                     <button className={cx('btn-modal')} onClick={methodToggle}>

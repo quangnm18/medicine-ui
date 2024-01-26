@@ -16,6 +16,7 @@ import FormatInput from '~/components/format/FormatInput';
 const cx = classNames.bind(style);
 
 function CreateInvoiceIpt() {
+    const [role, setRole] = useState(JSON.parse(localStorage.getItem('data_user')).role);
     const [searchInput, setSearchInput] = useState('');
     const [searchResult, setSearchResult] = useState([]);
     const debounced = useDebounce(searchInput, 500);
@@ -247,104 +248,60 @@ function CreateInvoiceIpt() {
             .catch((e) => console.log(e));
     }, []);
 
-    return (
-        <div className={cx('content')}>
-            <div className={cx('header-content')}>
-                <DirectionHeader>Lập hóa đơn nhập kho</DirectionHeader>
-                <div className={cx('search-cpn')}>
-                    <SearchInput
-                        dataInputValue={searchInput}
-                        dataSearchResult={searchResult}
-                        methodOnchangeInput={onchangeSearch}
-                        methodSelectedResult={handleSelectedResult}
-                        classWidth={'search-resultIpt'}
-                    />
+    if (role === 'ADM' || role === 'STFW') {
+        return (
+            <div className={cx('content')}>
+                <div className={cx('header-content')}>
+                    <DirectionHeader>Lập hóa đơn nhập kho</DirectionHeader>
+                    <div className={cx('search-cpn')}>
+                        <SearchInput
+                            dataInputValue={searchInput}
+                            dataSearchResult={searchResult}
+                            methodOnchangeInput={onchangeSearch}
+                            methodSelectedResult={handleSelectedResult}
+                            classWidth={'search-resultIpt'}
+                        />
+                    </div>
                 </div>
-            </div>
 
-            {modalSave && dataDetails.length > 0 && (
-                <ModalAll
-                    methodToggle={toggleModalSave}
-                    methodHandle={handleCreatedCp}
-                    data={dataDetails}
-                    label={'Lưu lại hóa đơn?'}
-                />
-            )}
+                {modalSave && dataDetails.length > 0 && (
+                    <ModalAll
+                        methodToggle={toggleModalSave}
+                        methodHandle={handleCreatedCp}
+                        data={dataDetails}
+                        label={'Lưu lại hóa đơn?'}
+                    />
+                )}
 
-            <div className={cx('main-content')}>
-                <div className={cx('main-table')}>
-                    <div className={cx('table-content')}>
-                        <table className={cx('table-details')}>
-                            <thead>
-                                <tr>
-                                    <th className={cx('th-ten')}>Tên</th>
-                                    <th className={cx('th-sl')}>Số lượng nhập(1ĐV)</th>
-                                    <th className={cx('th-sltb')}>Quy đổi 1(/1ĐV)</th>
-                                    <th className={cx('th-slnn')}>Quy đổi 2(/1ĐV)</th>
-                                    <th className={cx('th-tn')}>Tổng nhập</th>
-                                    <th className={cx('th-dvt')}>Đơn vị tính</th>
-                                    <th className={cx('th-donggoi')}>Đóng gói</th>
-                                    <th className={cx('th-gia')}>Giá nhập(chưa Qđ)</th>
-                                    <th className={cx('th-gia')}>Giá nhập(đã Qđ)</th>
-                                    <th className={cx('th-gia')}>Giá bán(đã Qđ)</th>
-                                    <th className={cx('th-gia')}>Thành tiền</th>
-                                    <th className={cx('th-ckvat')}>CK(%)</th>
-                                    <th className={cx('th-ckvat')}>VAT(%)</th>
-                                    <th className={cx('th-handung')}>Hạn dùng</th>
-                                    <th className={cx('th-solo')}>Số lô</th>
-                                    <th className={cx('th-btn')}></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {dataDetails.map((item, index1) => (
-                                    <tr key={index1}>
-                                        {Object.keys(item).map((dataField, index2) => {
-                                            if (dataField === 'han_dung') {
-                                                return (
-                                                    <td key={index2}>
-                                                        <input
-                                                            className={cx('table-input')}
-                                                            name={dataField}
-                                                            onChange={(e) => onchangeInputs(e, index1, dataField)}
-                                                            onBlur={(e) => onchangeInputs(e, index1, dataField)}
-                                                            value={item[dataField]}
-                                                            type="date"
-                                                        />
-                                                    </td>
-                                                );
-                                            }
-                                            if (
-                                                dataField !== 'med_id' &&
-                                                dataField !== 'tong_ck' &&
-                                                dataField !== 'ma_ncc'
-                                            ) {
-                                                if (
-                                                    dataField !== 'ten' &&
-                                                    dataField !== 'dvt' &&
-                                                    dataField !== 'dong_goi' &&
-                                                    dataField !== 'han_dung' &&
-                                                    dataField !== 'so_lo'
-                                                ) {
-                                                    return (
-                                                        <td key={index2}>
-                                                            <FormatInput
-                                                                className={
-                                                                    dataField === 'soluong_lon' ||
-                                                                    dataField === 'soluong_tb' ||
-                                                                    dataField === 'soluong_nho' ||
-                                                                    dataField === 'sl_tong'
-                                                                        ? 'format-sl'
-                                                                        : 'format-price'
-                                                                }
-                                                                name={dataField}
-                                                                value={item[dataField]}
-                                                                methodOnchange={(e) =>
-                                                                    onchangeFormatInput(e, index1, dataField)
-                                                                }
-                                                            />
-                                                        </td>
-                                                    );
-                                                } else {
+                <div className={cx('main-content')}>
+                    <div className={cx('main-table')}>
+                        <div className={cx('table-content')}>
+                            <table className={cx('table-details')}>
+                                <thead>
+                                    <tr>
+                                        <th className={cx('th-ten')}>Tên</th>
+                                        <th className={cx('th-sl')}>Số lượng nhập(1ĐV)</th>
+                                        <th className={cx('th-sltb')}>Quy đổi 1(/1ĐV)</th>
+                                        <th className={cx('th-slnn')}>Quy đổi 2(/1ĐV)</th>
+                                        <th className={cx('th-tn')}>Tổng nhập</th>
+                                        <th className={cx('th-dvt')}>Đơn vị tính</th>
+                                        <th className={cx('th-donggoi')}>Đóng gói</th>
+                                        <th className={cx('th-gia')}>Giá nhập(chưa Qđ)</th>
+                                        <th className={cx('th-gia')}>Giá nhập(đã Qđ)</th>
+                                        <th className={cx('th-gia')}>Giá bán(đã Qđ)</th>
+                                        <th className={cx('th-gia')}>Thành tiền</th>
+                                        <th className={cx('th-ckvat')}>CK(%)</th>
+                                        <th className={cx('th-ckvat')}>VAT(%)</th>
+                                        <th className={cx('th-handung')}>Hạn dùng</th>
+                                        <th className={cx('th-solo')}>Số lô</th>
+                                        <th className={cx('th-btn')}></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {dataDetails.map((item, index1) => (
+                                        <tr key={index1}>
+                                            {Object.keys(item).map((dataField, index2) => {
+                                                if (dataField === 'han_dung') {
                                                     return (
                                                         <td key={index2}>
                                                             <input
@@ -353,79 +310,129 @@ function CreateInvoiceIpt() {
                                                                 onChange={(e) => onchangeInputs(e, index1, dataField)}
                                                                 onBlur={(e) => onchangeInputs(e, index1, dataField)}
                                                                 value={item[dataField]}
-                                                                type="text"
+                                                                type="date"
                                                             />
                                                         </td>
                                                     );
                                                 }
-                                            }
-                                            return '';
-                                        })}
-                                        <td>
-                                            <button
-                                                onClick={(e) => handleRemoveData(item, index1)}
-                                                className={cx('table-btn')}
-                                            >
-                                                <FontAwesomeIcon icon={faXmark} className={cx('table-icon')} />
-                                            </button>
+                                                if (
+                                                    dataField !== 'med_id' &&
+                                                    dataField !== 'tong_ck' &&
+                                                    dataField !== 'ma_ncc'
+                                                ) {
+                                                    if (
+                                                        dataField !== 'ten' &&
+                                                        dataField !== 'dvt' &&
+                                                        dataField !== 'dong_goi' &&
+                                                        dataField !== 'han_dung' &&
+                                                        dataField !== 'so_lo'
+                                                    ) {
+                                                        return (
+                                                            <td key={index2}>
+                                                                <FormatInput
+                                                                    className={
+                                                                        dataField === 'soluong_lon' ||
+                                                                        dataField === 'soluong_tb' ||
+                                                                        dataField === 'soluong_nho' ||
+                                                                        dataField === 'sl_tong'
+                                                                            ? 'format-sl'
+                                                                            : 'format-price'
+                                                                    }
+                                                                    name={dataField}
+                                                                    value={item[dataField]}
+                                                                    methodOnchange={(e) =>
+                                                                        onchangeFormatInput(e, index1, dataField)
+                                                                    }
+                                                                />
+                                                            </td>
+                                                        );
+                                                    } else {
+                                                        return (
+                                                            <td key={index2}>
+                                                                <input
+                                                                    className={cx('table-input')}
+                                                                    name={dataField}
+                                                                    onChange={(e) =>
+                                                                        onchangeInputs(e, index1, dataField)
+                                                                    }
+                                                                    onBlur={(e) => onchangeInputs(e, index1, dataField)}
+                                                                    value={item[dataField]}
+                                                                    type="text"
+                                                                />
+                                                            </td>
+                                                        );
+                                                    }
+                                                }
+                                                return '';
+                                            })}
+                                            <td>
+                                                <button
+                                                    onClick={(e) => handleRemoveData(item, index1)}
+                                                    className={cx('table-btn')}
+                                                >
+                                                    <FontAwesomeIcon icon={faXmark} className={cx('table-icon')} />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                                <tfoot className="foot-table">
+                                    <tr className={cx('foot-tr')}>
+                                        <td colSpan={13} className={cx('')}>
+                                            Tổng giá trị:{' '}
+                                            {Intl.NumberFormat().format(total + tong_ck - tong_vat)
+                                                ? Intl.NumberFormat().format(total + tong_ck - tong_vat)
+                                                : 0}
                                         </td>
                                     </tr>
-                                ))}
-                            </tbody>
-                            <tfoot className="foot-table">
-                                <tr className={cx('foot-tr')}>
-                                    <td colSpan={13} className={cx('')}>
-                                        Tổng giá trị:{' '}
-                                        {Intl.NumberFormat().format(total + tong_ck - tong_vat)
-                                            ? Intl.NumberFormat().format(total + tong_ck - tong_vat)
-                                            : 0}
-                                    </td>
-                                </tr>
-                                <tr className={cx('foot-tr')}>
-                                    <td colSpan={13} className={cx('foot-ck')}>
-                                        Tổng CK:{' '}
-                                        {Intl.NumberFormat().format(tong_ck) ? Intl.NumberFormat().format(tong_ck) : 0}
-                                    </td>
-                                </tr>
-                                <tr className={cx('foot-tr')}>
-                                    <td colSpan={13} className={cx('')}>
-                                        Tổng VAT:{' '}
-                                        {Intl.NumberFormat().format(tong_vat)
-                                            ? Intl.NumberFormat().format(tong_vat)
-                                            : 0}
-                                    </td>
-                                </tr>
-                                <tr className={cx('foot-tr')}>
-                                    <td className={cx('foot-total')}>
-                                        Tổng tiền:{' '}
-                                        {Intl.NumberFormat().format(total) ? Intl.NumberFormat().format(total) : 0}
-                                    </td>
-                                </tr>
-                            </tfoot>
-                        </table>
+                                    <tr className={cx('foot-tr')}>
+                                        <td colSpan={13} className={cx('foot-ck')}>
+                                            Tổng CK:{' '}
+                                            {Intl.NumberFormat().format(tong_ck)
+                                                ? Intl.NumberFormat().format(tong_ck)
+                                                : 0}
+                                        </td>
+                                    </tr>
+                                    <tr className={cx('foot-tr')}>
+                                        <td colSpan={13} className={cx('')}>
+                                            Tổng VAT:{' '}
+                                            {Intl.NumberFormat().format(tong_vat)
+                                                ? Intl.NumberFormat().format(tong_vat)
+                                                : 0}
+                                        </td>
+                                    </tr>
+                                    <tr className={cx('foot-tr')}>
+                                        <td className={cx('foot-total')}>
+                                            Tổng tiền:{' '}
+                                            {Intl.NumberFormat().format(total) ? Intl.NumberFormat().format(total) : 0}
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div className={cx('btn-desc')}>
-                <select className={cx('btn-select')} onChange={onchangeSelect}>
-                    <option>Chọn nhà cung cấp</option>
-                    {dataSup.map((sup) => (
-                        <option key={sup.ID} value={sup.ID}>
-                            {sup.ten_ncc}
-                        </option>
-                    ))}
-                </select>
+                <div className={cx('btn-desc')}>
+                    <select className={cx('btn-select')} onChange={onchangeSelect}>
+                        <option>Chọn nhà cung cấp</option>
+                        {dataSup.map((sup) => (
+                            <option key={sup.ID} value={sup.ID}>
+                                {sup.ten_ncc}
+                            </option>
+                        ))}
+                    </select>
 
-                <button className={cx('btn', 'btn-confirm')} onClick={handleValidate}>
-                    Lưu lại
-                </button>
+                    <button className={cx('btn', 'btn-confirm')} onClick={handleValidate}>
+                        Lưu lại
+                    </button>
 
-                <button className={cx('btn', 'btn-confirm')} onClick={() => routeChange('/warehouse/importlist')}>
-                    Danh sách
-                </button>
+                    <button className={cx('btn', 'btn-confirm')} onClick={() => routeChange('/warehouse/importlist')}>
+                        Danh sách
+                    </button>
+                </div>
             </div>
-        </div>
-    );
+        );
+    } else return <div>Bạn không có quyền thao tác!!</div>;
 }
 
 export default CreateInvoiceIpt;

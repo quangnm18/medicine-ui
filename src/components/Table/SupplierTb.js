@@ -45,9 +45,12 @@ function SupplierTb({ data, method }) {
             name: '',
             cell: (row) => (
                 <div>
-                    <button className={cx('btn')} onClick={() => method.toggleModalSingleDelete(row.ID)}>
-                        <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
-                    </button>
+                    {(JSON.parse(localStorage.getItem('data_user')).role === 'ADM' ||
+                        JSON.parse(localStorage.getItem('data_user')).role === 'STFW') && (
+                        <button className={cx('btn')} onClick={() => method.toggleModalSingleDelete(row.ID)}>
+                            <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
+                        </button>
+                    )}
                     <button className={cx('btn')} onClick={() => method.toggleModalView(row.ID)}>
                         <FontAwesomeIcon icon={faPenToSquare} className={cx('icon-view')} />
                     </button>

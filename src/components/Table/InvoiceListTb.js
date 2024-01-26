@@ -7,7 +7,6 @@ import style from './Table.module.scss';
 const cx = classNames.bind(style);
 
 function InvoiceListTb({ data, method }) {
-    console.log(data);
     const tableStyle = {
         rows: {
             style: {

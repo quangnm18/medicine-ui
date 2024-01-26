@@ -31,7 +31,6 @@ function InventoryWh() {
 
     const toggleModalView = (id) => {
         setIdSelected(id);
-        console.log(id);
         setShowModalView(!showModalView);
     };
 

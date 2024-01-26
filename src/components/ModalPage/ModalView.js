@@ -34,12 +34,12 @@ function ModalView({ label, dataInputs, dataValueInputs, methodOnchange, methodT
     };
     return (
         <Modal>
-            <div className={cx('modal-view')}>
+            <div className={cx('modal-viewAll')}>
                 <div className={cx('modal-title')}>{label}</div>
                 <div className={cx('modal-form')}>
-                    <div className={cx('modal-if')}>
+                    <div className={cx('modalAll-if')}>
                         {dataInputs.map((input) => (
-                            <div key={input.id} className={cx('if-detail')}>
+                            <div key={input.id} className={cx('if-detailAll')}>
                                 <div className={cx('label')}>{input.label}</div>
                                 <input
                                     name={input.name}
@@ -53,10 +53,13 @@ function ModalView({ label, dataInputs, dataValueInputs, methodOnchange, methodT
                     </div>
                 </div>
 
-                <div className={cx('modal-actionAll')}>
-                    <button className={cx('btn-modal', 'btn-yes')} onClick={validator}>
-                        Cập nhật
-                    </button>
+                <div className={cx('modalViewAll-action')}>
+                    {(JSON.parse(localStorage.getItem('data_user')).role === 'ADM' ||
+                        JSON.parse(localStorage.getItem('data_user')).role === 'STFW') && (
+                        <button className={cx('btn-modal', 'btn-yes')} onClick={validator}>
+                            Cập nhật
+                        </button>
+                    )}
                     <button className={cx('btn-modal', 'btn-no')} onClick={methodToggle}>
                         Trở lại
                     </button>

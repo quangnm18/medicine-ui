@@ -16,6 +16,8 @@ import ModalAccept from '~/components/ModalPage/ModalAccept';
 const cx = classNames.bind(style);
 
 function ListIptCp() {
+    const [role, setRole] = useState(JSON.parse(localStorage.getItem('data_user')).role);
+
     const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState(1);
@@ -123,94 +125,102 @@ function ListIptCp() {
         setStartRecord(e.selected * numRecord);
     };
 
-    return (
-        <div className={cx('content')}>
-            <div className={cx('header-content')}>
-                <DirectionHeader>Quản lý nhập kho</DirectionHeader>
-                <div>
-                    <div className={cx('choose-medicine')}>
-                        <div className={cx('medicine-option')}>
-                            <label className={cx('label-option')}>Từ ngày</label>
-                            <input
-                                name="date-start"
-                                type="date"
-                                className={cx('input-name')}
-                                onChange={onchangeDateStart}
-                                value={dateStart}
-                                // onBlur={onchangeDate}
-                            />
-                        </div>
-                        <div className={cx('medicine-option')}>
-                            <label className={cx('label-option')}>Đến ngày</label>
-                            <input
-                                name="date-end"
-                                type="date"
-                                className={cx('input-name')}
-                                onChange={onchangeDateTo}
-                                value={dateTo}
-                                // onBlur={onchangeDate}
-                            />
-                        </div>
-                        <button className={cx('btn-search')} onClick={handleSearch}>
-                            <FontAwesomeIcon icon={faSearch} />
-                        </button>
-                        <div className={cx('btn-action')}>
-                            <button className={cx('btn-add')} onClick={() => routeChange('/warehouse/importcreate')}>
-                                Nhập tồn
+    if (role === 'ADM' || role === 'STFW') {
+        return (
+            <div className={cx('content')}>
+                <div className={cx('header-content')}>
+                    <DirectionHeader>Quản lý nhập kho</DirectionHeader>
+                    <div>
+                        <div className={cx('choose-medicine')}>
+                            <div className={cx('medicine-option')}>
+                                <label className={cx('label-option')}>Từ ngày</label>
+                                <input
+                                    name="date-start"
+                                    type="date"
+                                    className={cx('input-name')}
+                                    onChange={onchangeDateStart}
+                                    value={dateStart}
+                                    // onBlur={onchangeDate}
+                                />
+                            </div>
+                            <div className={cx('medicine-option')}>
+                                <label className={cx('label-option')}>Đến ngày</label>
+                                <input
+                                    name="date-end"
+                                    type="date"
+                                    className={cx('input-name')}
+                                    onChange={onchangeDateTo}
+                                    value={dateTo}
+                                    // onBlur={onchangeDate}
+                                />
+                            </div>
+                            <button className={cx('btn-search')} onClick={handleSearch}>
+                                <FontAwesomeIcon icon={faSearch} />
                             </button>
-                            <button
-                                className={cx('btn-add')}
-                                onClick={() => routeChange('/warehouse/importlist/deleted')}
-                            >
-                                Đã xóa
-                            </button>
+                            <div className={cx('btn-action')}>
+                                <button
+                                    className={cx('btn-add')}
+                                    onClick={() => routeChange('/warehouse/importcreate')}
+                                >
+                                    Nhập tồn
+                                </button>
+                                <button
+                                    className={cx('btn-add')}
+                                    onClick={() => routeChange('/warehouse/importlist/deleted')}
+                                >
+                                    Đã xóa
+                                </button>
+                            </div>
+                        </div>
+                        <div className={cx('medicine-option', 'search-statistic')}>
+                            <input
+                                placeholder="Tìm kiếm theo tên, mã hóa đơn..."
+                                value={valuesSearch}
+                                onChange={onchangeSearch}
+                            />
                         </div>
                     </div>
-                    <div className={cx('medicine-option', 'search-statistic')}>
-                        <input
-                            placeholder="Tìm kiếm theo tên, mã hóa đơn..."
-                            value={valuesSearch}
-                            onChange={onchangeSearch}
+                </div>
+
+                {showModalSoftDel && (
+                    <ModalAll
+                        label={'Bạn có muốn xóa?'}
+                        methodToggle={toggleModalSoftDel}
+                        methodHandle={handleSoftDel}
+                        data={idSelected}
+                    />
+                )}
+                {showModalView && (
+                    <ModalIvDetail
+                        label={'Thông tin chi tiết hóa đơn nhập'}
+                        methodToggle={toggleModalView}
+                        data={idSelected}
+                    />
+                )}
+
+                {showModalAccept && (
+                    <ModalAccept
+                        label={'Xác nhận đơn nhập?'}
+                        methodToggle={toggleModalAccept}
+                        methodHandle={handleAcceptIv}
+                        data={idSelected}
+                    />
+                )}
+
+                <div className={cx('main-content')}>
+                    <div className={cx('content-table')}>
+                        <IptCpListTb
+                            data={dataTb}
+                            method={{ toggleModalSoftDel, toggleModalView, toggleModalAccept }}
                         />
                     </div>
+                    <div className={cx('wrap-paginate')}>
+                        <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />
+                    </div>
                 </div>
             </div>
-
-            {showModalSoftDel && (
-                <ModalAll
-                    label={'Bạn có muốn xóa?'}
-                    methodToggle={toggleModalSoftDel}
-                    methodHandle={handleSoftDel}
-                    data={idSelected}
-                />
-            )}
-            {showModalView && (
-                <ModalIvDetail
-                    label={'Thông tin chi tiết hóa đơn nhập'}
-                    methodToggle={toggleModalView}
-                    data={idSelected}
-                />
-            )}
-
-            {showModalAccept && (
-                <ModalAccept
-                    label={'Xác nhận đơn nhập?'}
-                    methodToggle={toggleModalAccept}
-                    methodHandle={handleAcceptIv}
-                    data={idSelected}
-                />
-            )}
-
-            <div className={cx('main-content')}>
-                <div className={cx('content-table')}>
-                    <IptCpListTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView, toggleModalAccept }} />
-                </div>
-                <div className={cx('wrap-paginate')}>
-                    <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />
-                </div>
-            </div>
-        </div>
-    );
+        );
+    } else return <div>Bạn không có quyền thao tác</div>;
 }
 
 export default ListIptCp;
