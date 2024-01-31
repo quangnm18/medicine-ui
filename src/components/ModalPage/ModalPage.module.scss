@@ -55,6 +55,12 @@
     }
 }
 
+.required::after {
+    content: ' *';
+    color: red;
+    font-size: 1.6rem;
+}
+
 .if-detail {
     width: 50%;
     margin: 8px 0 20px 0;
@@ -318,6 +324,10 @@
     text-align: right;
     margin-right: 19px;
     margin-top: 24px;
+}
+
+.if-detailAlluser {
+    margin-bottom: 28px;
 }
 
 .role-select {

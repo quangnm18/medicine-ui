@@ -8,6 +8,7 @@ import axios from 'axios';
 const cx = classNames.bind(style);
 
 function ModalViewUser({ label, dataInputs, dataValueInputs, methodOnchange, methodToggle, methodHandle }) {
+    console.log(dataValueInputs);
     const [allRole, setAllRole] = useState([]);
     const [error, setError] = useState({});
     const validator = () => {
@@ -26,6 +27,18 @@ function ModalViewUser({ label, dataInputs, dataValueInputs, methodOnchange, met
             validationError.Email = 'Email không hợp lệ';
         }
 
+        if (dataValueInputs.Role === '' && !dataValueInputs.Role.trim()) {
+            validationError.Role = 'Trường này là bắt buộc';
+        }
+
+        if (dataValueInputs.user_name === '' && !dataValueInputs.user_name.trim()) {
+            validationError.user_name = 'Trường này là bắt buộc';
+        }
+
+        if (dataValueInputs.password === '' && !dataValueInputs.password.trim()) {
+            validationError.password = 'Trường này là bắt buộc';
+        }
+
         setError(validationError);
 
         if (Object.keys(validationError).length === 0) {
@@ -34,8 +47,9 @@ function ModalViewUser({ label, dataInputs, dataValueInputs, methodOnchange, met
     };
 
     useEffect(() => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get('http://localhost:8081/category/roles')
+            .get(`${baseUrl}category/roles`)
             .then((res) => {
                 setAllRole(res.data);
             })
@@ -49,32 +63,47 @@ function ModalViewUser({ label, dataInputs, dataValueInputs, methodOnchange, met
                 <div className={cx('modal-form')}>
                     <div className={cx('modalAll-if')}>
                         {dataInputs.map((input) => (
-                            <div key={input.id} className={cx('if-detailAll')}>
-                                <div className={cx('label')}>{input.label}</div>
+                            <div key={input.id} className={cx('if-detailAll', 'if-detailAlluser')}>
+                                <div
+                                    className={cx(
+                                        'label',
+                                        (input.name === 'Name' ||
+                                            input.name === 'PhoneNumber' ||
+                                            input.name === 'Email') &&
+                                            'required',
+                                    )}
+                                >
+                                    {input.label}
+                                </div>
                                 <input
                                     name={input.name}
                                     value={dataValueInputs[input.name] ? dataValueInputs[input.name] : ''}
                                     placeholder={input.placeholder}
                                     onChange={methodOnchange}
                                     type={input.type}
+                                    disabled={input.name === 'branch' && true}
                                 />
                                 {error[input.name] && <div className={cx('error-validate')}>{error[input.name]}</div>}
                             </div>
                         ))}
-                        <div>
-                            <label htmlFor="role-select">Vai trò</label>
+                        <div className={cx('if-detailAll', 'if-detailAlluser')}>
+                            <label htmlFor="Role" className={cx('required')}>
+                                Vai trò
+                            </label>
                             <select
                                 className={cx('role-select')}
-                                name="role-select"
+                                name="Role"
                                 value={dataValueInputs.Role}
-                                onChange={(e) => console.log(e.target.value)}
+                                onChange={methodOnchange}
                             >
+                                <option>--Chọn vai trò--</option>
                                 {allRole.map((role) => (
                                     <option key={role.id} className={cx('role-option')} value={role.id}>
                                         {role.ten_vai_tro}
                                     </option>
                                 ))}
                             </select>
+                            {error['Role'] && <div className={cx('error-validate')}>{error['Role']}</div>}
                         </div>
                     </div>
                 </div>
@@ -82,7 +111,7 @@ function ModalViewUser({ label, dataInputs, dataValueInputs, methodOnchange, met
                 <div className={cx('modalViewAll-action')}>
                     {JSON.parse(localStorage.getItem('data_user')).role === 'ADM' && (
                         <button className={cx('btn-modal', 'btn-yes')} onClick={validator}>
-                            Cập nhật
+                            {label === 'Thông tin người dùng' ? 'Cập nhật' : 'Thêm'}
                         </button>
                     )}
 

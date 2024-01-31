@@ -53,8 +53,9 @@ function ListIptCp() {
     //Method handle
 
     const handleSoftDel = (id) => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put(`http://localhost:8081/importlist/softdelete/${id}`)
+            .put(`${baseUrl}importlist/softdelete/${id}`)
             .then((res) => {
                 setShowModalSoftDel(false);
                 loadData();
@@ -63,8 +64,9 @@ function ListIptCp() {
     };
 
     const handleAcceptIv = (data) => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put('http://localhost:8081/importlist/acceptiv', { ma_hoa_don: data[0].ma_hoa_don })
+            .put(`${baseUrl}importlist/acceptiv`, { ma_hoa_don: data[0].ma_hoa_don })
             .then((res) => {
                 setShowModalAccept(false);
                 loadData();
@@ -91,9 +93,11 @@ function ListIptCp() {
 
     //call api
     const loadData = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get('http://localhost:8081/importlist/alllistpaginate/', {
+            .get(`${baseUrl}importlist/alllistpaginate/`, {
                 params: {
+                    branch_id: JSON.parse(localStorage.getItem('data_user')).id_chi_nhanh,
                     date_start: dateStart,
                     date_to: dateTo,
                     search_value: valuesSearch,

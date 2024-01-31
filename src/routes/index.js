@@ -56,6 +56,19 @@ const publicRoutes = [
     { path: routesConfig.historySaleStatistic, component: HisSaleDetail },
 
     { path: routesConfig.account, component: Account },
+
+    //private routes
+    { path: routesConfig.categoryMedicineDel, component: MedicineDel },
+    { path: routesConfig.categoryGroupMedicineDel, component: GroupMedDel },
+    { path: routesConfig.categoryUnitMedicineDel, component: UnitMedDel },
+    { path: routesConfig.categorySupplierDel, component: SupplierDel },
+    { path: routesConfig.categoryGroupMedicineDel, component: GroupMedDel },
+
+    { path: routesConfig.importListDel, component: ListIptCpDel },
+    { path: routesConfig.sellListDel, component: InvoiceListDel },
+
+    { path: routesConfig.historyImportStatisticDel, component: HisIptDetailDel },
+    { path: routesConfig.historySaleStatisticDel, component: HisSaleDetail },
 ];
 
 const privateRoutes = [
@@ -72,9 +85,4 @@ const privateRoutes = [
     { path: routesConfig.historySaleStatisticDel, component: HisSaleDetail },
 ];
 
-const initRoutes = [
-    { path: routesConfig.login, component: Login, layout: LoginLayout },
-    { path: routesConfig.signUp, component: SignUp, layout: LoginLayout },
-];
-
-export { publicRoutes, privateRoutes, initRoutes };
+export { publicRoutes, privateRoutes };

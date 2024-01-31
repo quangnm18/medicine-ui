@@ -51,6 +51,9 @@ function Login() {
                         name: res.data.name,
                         role: res.data.role,
                         ten_role: res.data.ten_role,
+                        ma_chi_nhanh: res.data.ma_chi_nhanh,
+                        ten_chi_nhanh: res.data.ten_chi_nhanh,
+                        id_chi_nhanh: res.data.id_chi_nhanh,
                     };
                     localStorage.setItem('data_user', JSON.stringify(obj));
                     routeChange('/');

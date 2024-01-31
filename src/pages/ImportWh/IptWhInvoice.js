@@ -200,16 +200,21 @@ function CreateInvoiceIpt() {
     };
 
     const handleCreatedCp = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get('http://localhost:8081/importlist/getmaxid')
+            .get(`${baseUrl}importlist/getmaxid`)
             .then((res) => {
                 const newId = res.data[0].max_id + 1;
                 axios
-                    .post('http://localhost:8081/importlist/create', { dataDetails, total, tong_ck, tong_vat, newId })
+                    .post(`${baseUrl}importlist/create`, { dataDetails, total, tong_ck, tong_vat, newId })
                     .then((res1) => {
                         const invoice_code = newId;
                         axios
-                            .post('http://localhost:8081/importlist/createdetail', { dataDetails, invoice_code })
+                            .post(`${baseUrl}importlist/createdetail`, {
+                                dataDetails: dataDetails,
+                                invoice_code: invoice_code,
+                                branch_id: JSON.parse(localStorage.getItem('data_user')).id_chi_nhanh,
+                            })
                             .then((res) => {
                                 setModalSave(false);
                                 setDataDetails([]);
@@ -242,8 +247,9 @@ function CreateInvoiceIpt() {
     }, [debounced]);
 
     useEffect(() => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get('http://localhost:8081/category/supplierall')
+            .get(`${baseUrl}category/supplierall`)
             .then((res) => setDataSup(res.data))
             .catch((e) => console.log(e));
     }, []);

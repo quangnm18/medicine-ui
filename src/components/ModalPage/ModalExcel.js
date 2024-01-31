@@ -6,7 +6,6 @@ import { useState } from 'react';
 import * as XLSX from 'xlsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload } from '@fortawesome/free-solid-svg-icons';
-import axios from 'axios';
 
 const cx = classNames.bind(style);
 
@@ -15,6 +14,9 @@ function ModalAddExcel({ methodToggle }) {
     const [typeErrorr, setTypeError] = useState(null);
 
     const [excelData, setExcelData] = useState(null);
+
+    const [optionSheet, setOptionSheet] = useState({ sheetPage: '', header: '' });
+    const [stateImport, setStateImport] = useState(0);
 
     const handleFile = (e) => {
         let fileType = [
@@ -48,24 +50,37 @@ function ModalAddExcel({ methodToggle }) {
         }
     };
 
+    const onChangeOption = (e) => {
+        setOptionSheet({ ...optionSheet, [e.target.name]: e.target.value });
+    };
+
+    console.log(optionSheet);
+
     const getTemplate = () => {
-        window.open('http://localhost:5000/import/template?catalog=1');
+        let url = process.env.REACT_SERVER_INVOICE_URL + 'import/template?catalog=1';
+        window.open(url);
     };
 
     const test = async () => {
+        var fileInput = document.getElementById('file-upload');
+        const file = fileInput.files[0];
         const formData = new FormData();
-        formData.append('', excelFile);
+        formData.append('file', file);
+        let path =
+            stateImport === 0
+                ? 'import/validate?sheetName=Sheet1&header=2&catalog=1'
+                : 'import/save?sheetName=Sheet1&header=2&catalog=1';
+        let url = process.env.REACT_SERVER_INVOICE_URL + path;
         try {
-            const response = await fetch('http://localhost:5000/import/validate?sheetName=Sheet1&header=2&catalog=1', {
+            const response = await fetch(url, {
                 method: 'POST',
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Headers': '*',
-                },
                 body: formData,
             });
             const result = await response.json();
             console.log('Success:', result);
+            if (stateImport === 0) {
+                setStateImport(1);
+            }
         } catch (error) {
             console.error('Error:', error);
         }
@@ -81,15 +96,26 @@ function ModalAddExcel({ methodToggle }) {
                         <label htmlFor="file-upload" className={cx('btn-excel', 'btn-label')}>
                             Upload File
                         </label>
-                        <input
-                            id="file-upload"
-                            type="file"
-                            accept=".xlsx"
-                            className={cx('form-control')}
-                            required
-                            // hidden
-                            onChange={handleFile}
-                        />
+                        <form enctype="multipart/form-data">
+                            <input
+                                id="file-upload"
+                                type="file"
+                                accept=".xlsx"
+                                className={cx('form-control')}
+                                required
+                                // hidden
+                                onChange={handleFile}
+                            />
+                            <button
+                                type="button"
+                                onClick={async () => {
+                                    await test();
+                                }}
+                            >
+                                Upload
+                            </button>
+                        </form>
+
                         <div>
                             <button className={cx('btn-excel', 'btn-preview')} onClick={getTemplate}>
                                 <FontAwesomeIcon icon={faDownload} /> Template
@@ -103,8 +129,18 @@ function ModalAddExcel({ methodToggle }) {
                 </div>
 
                 <div className={cx('wrap-option')}>
-                    <input placeholder="Nhập trang Sheet bạn muốn nhập..." />
-                    <input placeholder="Chọn dòng đầu tiên nhập..." />
+                    <input
+                        placeholder="Nhập trang Sheet bạn muốn nhập..."
+                        name="sheetPage"
+                        value={optionSheet.sheetPage}
+                        onChange={onChangeOption}
+                    />
+                    <input
+                        placeholder="Chọn dòng đầu tiên nhập..."
+                        name="header"
+                        value={optionSheet.header}
+                        onChange={onChangeOption}
+                    />
                 </div>
 
                 <div className={cx('viewer')}>

@@ -48,8 +48,9 @@ function ListIptCpDel() {
 
     //Method handle
     const handleRes = (id) => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put(`http://localhost:8081/importlist/restorecp/${id}`)
+            .put(`${baseUrl}importlist/restorecp/${id}`)
             .then((res) => {
                 setShowModalRes(false);
                 loadData();
@@ -58,8 +59,9 @@ function ListIptCpDel() {
     };
 
     const handleHardDel = (id) => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .delete(`http://localhost:8081/importlist/harddelete/${id}`)
+            .delete(`${baseUrl}importlist/harddelete/${id}`)
             .then((res) => {
                 setShowModalHardDel(false);
                 loadData();
@@ -78,9 +80,11 @@ function ListIptCpDel() {
 
     //call api
     const loadData = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get('http://localhost:8081/importlist/alllistpaginate/', {
+            .get(`${baseUrl}importlist/alllistpaginate/`, {
                 params: {
+                    branch_id: JSON.parse(localStorage.getItem('data_user')).id_chi_nhanh,
                     isDeleted: 1,
                     numRecord: numRecord,
                     startRecord: startRecord,

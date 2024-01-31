@@ -7,7 +7,7 @@ export const search = async (q) => {
                 q,
             },
         });
-        return res.data;
+        return res.data[0];
     } catch (e) {
         console.log(e);
     }

@@ -24,6 +24,7 @@ function Staff() {
     const [valuesSearch, setValuesSearch] = useState('');
     const [showModalHardDel, setShowModalHardDel] = useState(false);
     const [showModalView, setShowModalView] = useState(false);
+    const [showModalAdd, setShowModalAdd] = useState(false);
     const [idSelected, setIdSelected] = useState();
 
     axios.defaults.withCredentials = true;
@@ -66,13 +67,65 @@ function Staff() {
             type: 'text',
             placeholder: 'abc@gmail.com,...',
         },
-        // {
-        //     id: 6,
-        //     label: 'Vai trò',
-        //     name: 'Role',
-        //     type: 'text',
-        //     placeholder: 'Nhân viên bán hàng,...',
-        // },
+        {
+            id: 6,
+            label: 'Chi nhánh',
+            name: 'branch',
+            type: 'text',
+            placeholder: '',
+        },
+    ];
+
+    const inputsUserAdd = [
+        {
+            id: 1,
+            label: 'Họ và tên',
+            name: 'Name',
+            type: 'text',
+            placeholder: 'Nguyễn Văn C...',
+        },
+        {
+            id: 2,
+            label: 'Ngày sinh',
+            name: 'DateOfBirth',
+            type: 'date',
+            placeholder: '',
+        },
+        {
+            id: 3,
+            label: 'Địa chỉ',
+            name: 'Address',
+            type: 'text',
+            placeholder: 'Đống Đa, Hà Nội,...',
+        },
+        {
+            id: 4,
+            label: 'Số điện thoại',
+            name: 'PhoneNumber',
+            type: 'number',
+            placeholder: '012358745,...',
+        },
+        {
+            id: 5,
+            label: 'Email',
+            name: 'Email',
+            type: 'text',
+            placeholder: 'abc@gmail.com,...',
+        },
+        {
+            id: 6,
+            label: 'Tên đăng nhập',
+            name: 'user_name',
+            type: 'text',
+            placeholder: '',
+        },
+        {
+            id: 7,
+            label: 'Mật khẩu',
+            name: 'password',
+            type: 'password',
+            placeholder: '',
+        },
     ];
 
     const getBirth = (data) => {
@@ -86,7 +139,13 @@ function Staff() {
     };
 
     const onChangeInputUser = (e) => {
-        setValues({ ...values, [e.target.name]: e.target.value });
+        if (e.target.name === 'Role') {
+            setValues({ ...values, [e.target.name]: Number.parseInt(e.target.value) });
+        } else if (e.target.name === 'password') {
+            setValues({ ...values, [e.target.name]: e.target.value });
+        } else {
+            setValues({ ...values, [e.target.name]: e.target.value });
+        }
     };
 
     const notify = (data, type) => {
@@ -129,12 +188,45 @@ function Staff() {
             PhoneNumber: data.PhoneNumber,
             Email: data.Email,
             Role: data.role_id,
+            branch: data.name,
         });
     };
 
-    const handleUpdate = () => {
+    const toggleModalAdd = () => {
+        setShowModalAdd(!showModalAdd);
+        setValues({
+            Name: '',
+            DateOfBirth: '0000-00-00',
+            Address: '',
+            PhoneNumber: '',
+            Email: '',
+            Role: '',
+            user_name: '',
+            password: '',
+            branch_id: JSON.parse(localStorage.getItem('data_user')).id_chi_nhanh,
+        });
+    };
+
+    const handleAdd = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put('http://localhost:8081/category/updateuser', values)
+            .post(`${baseUrl}category/adduser`, values)
+            .then((res) => {
+                if (res.data === 'fail') {
+                    notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    notify('Thêm mới thành công', 'success');
+                }
+                setShowModalAdd(false);
+                loadData();
+            })
+            .catch((e) => console.log(e));
+    };
+
+    const handleUpdate = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
+        axios
+            .put(`${baseUrl}category/updateuser`, values)
             .then((res) => {
                 if (res.data === 'fail') {
                     notify('Bạn không có quyền thao tác', 'error');
@@ -148,8 +240,9 @@ function Staff() {
     };
 
     const handleDelete = (id) => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .delete(`http://localhost:8081/category/users/delete/${idSelected}`)
+            .delete(`${baseUrl}category/users/delete/${idSelected}`)
             .then((res) => {
                 setShowModalHardDel(false);
                 loadData();
@@ -177,9 +270,11 @@ function Staff() {
     };
 
     const loadData = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get('http://localhost:8081/category/users', {
+            .get(`${baseUrl}category/users`, {
                 params: {
+                    branch_code: JSON.parse(localStorage.getItem('data_user')).ma_chi_nhanh,
                     search_value: valuesSearch,
                     numRecord: numRecord,
                     startRecord: startRecord,
@@ -216,7 +311,9 @@ function Staff() {
                                 <FontAwesomeIcon icon={faSearch} className={cx('search-icon')} />
                             </button>
                         </div>
-                        <button className={cx('btn-addstaff')}>Thêm thành viên</button>
+                        <button className={cx('btn-addstaff')} onClick={toggleModalAdd}>
+                            Thêm thành viên
+                        </button>
                     </div>
                 </div>
             </div>
@@ -238,6 +335,17 @@ function Staff() {
                     methodToggle={toggleModalView}
                     methodOnchange={onChangeInputUser}
                     methodHandle={handleUpdate}
+                />
+            )}
+
+            {showModalAdd && (
+                <ModalViewUser
+                    label={'Nhập thông tin người dùng'}
+                    dataInputs={inputsUserAdd}
+                    dataValueInputs={values}
+                    methodToggle={toggleModalAdd}
+                    methodOnchange={onChangeInputUser}
+                    methodHandle={handleAdd}
                 />
             )}
             <ToastContainer />

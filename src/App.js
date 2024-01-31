@@ -30,7 +30,7 @@ function App() {
                         );
                     })}
                 </Routes>
-                <Routes>
+                {/* <Routes>
                     {privateRoutes.map((route, index) => {
                         const Page = route.component;
                         let Layout = DefaultLayout;
@@ -52,7 +52,7 @@ function App() {
                             />
                         );
                     })}
-                </Routes>
+                </Routes> */}
             </div>
         </Router>
     );

@@ -102,13 +102,14 @@ function SellInvoiceCreate() {
     };
 
     const handleSaveIv = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         if (dataInvoice.length > 0) {
             axios
-                .get('http://localhost:8081/sell/getmaxid')
+                .get(`${baseUrl}sell/getmaxid`)
                 .then((res) => {
                     const newId = res.data[0].max_id + 1;
                     axios
-                        .post('http://localhost:8081/sell/ivcreate', {
+                        .post(`${baseUrl}sell/ivcreate`, {
                             user_id: user.id,
                             tong_tien_hang: tong_giatri,
                             ck: valueInvoice.ck,
@@ -121,7 +122,7 @@ function SellInvoiceCreate() {
                         .then((res1) => {
                             const ma_hoa_don = newId;
                             axios
-                                .post('http://localhost:8081/sell/ivdetail/create', { dataInvoice, ma_hoa_don })
+                                .post(`${baseUrl}sell/ivdetail/create`, { dataInvoice, ma_hoa_don })
                                 .then((res) => {
                                     setModalSave(false);
                                     setDataInvoice([]);
@@ -135,12 +136,14 @@ function SellInvoiceCreate() {
     };
 
     const handleSaveIvExport = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
+        let invoiceUrl = process.env.REACT_SERVER_INVOICE_URL;
         axios
-            .get('http://localhost:8081/sell/getmaxid')
+            .get(`${baseUrl}sell/getmaxid`)
             .then((res) => {
                 const newId = res.data[0].max_id + 1;
                 axios
-                    .post('http://localhost:8081/sell/ivcreate', {
+                    .post(`${baseUrl}sell/ivcreate`, {
                         user_id: user.id,
                         tong_tien_hang: tong_giatri,
                         ck: valueInvoice.ck,
@@ -153,11 +156,11 @@ function SellInvoiceCreate() {
                     .then((res1) => {
                         const ma_hoa_don = newId;
                         axios
-                            .post('http://localhost:8081/sell/ivdetail/create', { dataInvoice, ma_hoa_don })
+                            .post(`${baseUrl}sell/ivdetail/create`, { dataInvoice, ma_hoa_don })
                             .then((res) => {
                                 setModalSaveExport(false);
                                 setDataInvoice([]);
-                                window.open(`http://localhost:5000/invoice?id=${ma_hoa_don}`);
+                                window.open(`${invoiceUrl}invoice?id=${ma_hoa_don}`);
                             })
                             .catch((e) => console.log(e));
                     })
