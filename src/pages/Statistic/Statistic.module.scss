@@ -85,7 +85,22 @@
     width: 363px;
     margin-left: 82px;
     padding-top: 8px;
-    input {
+    input,
+    select {
+        outline: none;
+    }
+}
+
+.wrap-searchBot {
+    width: 911px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.content-table {
+    margin-left: 28px;
+
+    select {
         outline: none;
     }
 }
@@ -143,5 +158,5 @@
     background-color: var(--white);
 }
 .content-table {
-    height: 600px;
+    height: 570px;
 }

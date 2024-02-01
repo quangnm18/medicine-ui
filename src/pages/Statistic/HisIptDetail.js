@@ -15,15 +15,22 @@ import FormatInput from '~/components/format/FormatInput';
 const cx = classNames.bind(style);
 
 function HisIptDetail() {
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
+
     const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState(1);
 
     const [dataTb, setDataTb] = useState([]);
+    const [dataBranch, setDataBranch] = useState([]);
+    const [dataGrMed, setDataGrMed] = useState([]);
 
     const [dateStart, setDateStart] = useState(null);
     const [dateTo, setDateTo] = useState(null);
     const [valuesSearch, setValuesSearch] = useState('');
+    const [selectBranch, setSelectBranch] = useState(undefined);
+    const [selectGrMed, setSelectGrMed] = useState();
+
     const [infoNum, setInfoNum] = useState({ han_dung: '', so_lo: '' });
     const [giaban, setGiaBan] = useState();
 
@@ -31,21 +38,27 @@ function HisIptDetail() {
     const [showModalSoftDel, setShowModalSoftDel] = useState(false);
     const [showModalView, setShowModalView] = useState(false);
 
+    axios.defaults.withCredentials = true;
+
     const toggleModalSoftDel = (id) => {
         setShowModalSoftDel(!showModalSoftDel);
         setIdSelected(id);
     };
 
-    const convert = (data) => {
-        const a = new Date(data);
-        return a.getFullYear() + '-' + (a.getMonth() + 1) + '-' + a.getDate();
+    const formatDate = (data) => {
+        const date = new Date(data);
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1;
+        const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
+
+        const dateFormat = year + '-' + month + '-' + day;
+        return dateFormat;
     };
 
     const toggleModalView = (data) => {
-        console.log(data);
         setShowModalView(!showModalView);
         setIdSelected(data);
-        setInfoNum({ han_dung: convert(data.han_dung), so_lo: data.so_lo });
+        setInfoNum({ han_dung: formatDate(data.han_dung), so_lo: data.so_lo });
         setGiaBan(data.giaban_daqd);
     };
 
@@ -61,12 +74,19 @@ function HisIptDetail() {
     };
 
     const changeInfo = (e) => {
-        console.log(e.target.value);
         setInfoNum({ ...infoNum, [e.target.name]: e.target.value });
     };
 
     const onchangePrice = (value, name) => {
         setGiaBan(value);
+    };
+
+    const onchangeBranch = (e) => {
+        setSelectBranch(e.target.value);
+    };
+
+    const onchangeGrMed = (e) => {
+        setSelectGrMed(e.target.value);
     };
 
     const handleSearch = () => {
@@ -90,8 +110,9 @@ function HisIptDetail() {
 
     //method handle
     const handleSoftDel = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put(`http://localhost:8081/importlist/detail/softdelete/${idSelected}`)
+            .put(`${baseUrl}importlist/detail/softdelete/${idSelected}`)
             .then((res) => {
                 setShowModalSoftDel(false);
                 loadData();
@@ -100,8 +121,9 @@ function HisIptDetail() {
     };
 
     const handleUpdate = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put('http://localhost:8081/importlist/detail/update', { ...infoNum, id: idSelected.id, giaban: giaban })
+            .put(`${baseUrl}importlist/detail/update`, { ...infoNum, id: idSelected.id, giaban: giaban })
             .then((res) => {
                 setShowModalView(false);
                 loadData();
@@ -110,9 +132,12 @@ function HisIptDetail() {
     };
 
     const loadData = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get('http://localhost:8081/importlist/detail/', {
+            .get(`${baseUrl}importlist/detail/`, {
                 params: {
+                    group_id: selectGrMed,
+                    branch_id: user.id_chi_nhanh ? user.id_chi_nhanh : selectBranch,
                     date_start: dateStart,
                     date_to: dateTo,
                     search_value: valuesSearch,
@@ -140,6 +165,25 @@ function HisIptDetail() {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [startRecord]);
+
+    useEffect(() => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
+        axios
+            .get(`${baseUrl}branch`)
+            .then((res) => {
+                if (res.data === 'fail') {
+                    setDataBranch([]);
+                } else setDataBranch(res.data);
+            })
+            .catch((e) => console.log(e));
+
+        axios
+            .get(`${baseUrl}category/medicine/group`)
+            .then((res) => {
+                setDataGrMed(res.data);
+            })
+            .catch((e) => console.log(e));
+    }, []);
 
     return (
         <div className={cx('content')}>
@@ -171,13 +215,41 @@ function HisIptDetail() {
                         </div>
                     </div>
 
-                    <div className={cx('medicine-option', 'search-statistic')}>
-                        <input
-                            placeholder="Tìm kiếm theo tên, mã hóa đơn..."
-                            value={valuesSearch}
-                            onChange={onchangeSearch}
-                            onKeyUp={handleKeyPress}
-                        />
+                    <div className={cx('wrap-searchBot')}>
+                        <div>
+                            <div className={cx('medicine-option', 'search-statistic')}>
+                                <input
+                                    placeholder="Tìm kiếm theo tên, mã hóa đơn..."
+                                    value={valuesSearch}
+                                    onChange={onchangeSearch}
+                                    onKeyUp={handleKeyPress}
+                                />
+                            </div>
+                            {user.role === 'ADMA' && (
+                                <div className={cx('medicine-option', 'search-statistic')}>
+                                    <select value={selectBranch} onChange={onchangeBranch}>
+                                        <option value={0}>--Chọn cơ sở--</option>
+                                        {dataBranch.map((branch) => (
+                                            <option key={branch.id} value={branch.id}>
+                                                {branch.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            )}
+                        </div>
+                        <div>
+                            <div className={cx('medicine-option', 'search-statistic', 'wrap-select')}>
+                                <select value={selectGrMed} onChange={onchangeGrMed}>
+                                    <option value={0}>--Chọn nhóm thuốc--</option>
+                                    {dataGrMed.map((gr) => (
+                                        <option key={gr.id} value={gr.id}>
+                                            {gr.ten_nhom_thuoc}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -256,6 +328,7 @@ function HisIptDetail() {
                                 name="han_dung"
                                 value={infoNum.han_dung}
                                 onChange={changeInfo}
+                                type="date"
                             />
                         </div>
                         <div className={cx('view-detail')}>

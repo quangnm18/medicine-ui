@@ -4,7 +4,7 @@ import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ModalAll from '~/components/ModalPage/ModalAll';
 import Modal from '~/components/Modal';
 import HisSaleDetailTb from '~/components/Table/HisSaleDetailTb';
@@ -14,19 +14,26 @@ import Pagination from '~/components/Pagination/Pagination';
 const cx = classNames.bind(style);
 
 function HisSaleDetail() {
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
     const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState(1);
 
     const [dataTb, setDataTb] = useState([]);
+    const [dataBranch, setDataBranch] = useState([]);
+    const [dataGrMed, setDataGrMed] = useState([]);
 
-    const [dateStart, setDateStart] = useState('');
-    const [dateEnd, setDateEnd] = useState('');
+    const [dateStart, setDateStart] = useState(null);
+    const [dateTo, setDateTo] = useState(null);
     const [valuesSearch, setValuesSearch] = useState('');
+    const [selectBranch, setSelectBranch] = useState(undefined);
+    const [selectGrMed, setSelectGrMed] = useState();
 
     const [idSelected, setIdSelected] = useState('');
     const [showModalSoftDel, setShowModalSoftDel] = useState(false);
     const [showModalView, setShowModalView] = useState(false);
+
+    axios.defaults.withCredentials = true;
 
     const toggleModalSoftDel = (id) => {
         setShowModalSoftDel(!showModalSoftDel);
@@ -41,62 +48,30 @@ function HisSaleDetail() {
     const onchangeDateStart = (e) => {
         setDateStart(e.target.value);
     };
-    const onchangeDateEnd = (e) => {
-        setDateEnd(e.target.value);
+    const onchangeDateTo = (e) => {
+        setDateTo(e.target.value);
     };
 
     const onchangeSearch = (e) => {
         setValuesSearch(e.target.value);
     };
 
-    const fillInvoiceDetail = () => {
-        // if (dateStart !== '' && dateEnd !== '' && valuesSearch.length) {
-        //     let arr = dataDetailCurr.filter((detail) => {
-        //         return detail.ma_hoa_don.toLocaleLowerCase().includes(valuesSearch.toLocaleLowerCase());
-        //     });
-        //     let filtered = dataDetailCurr.filter((detail) => {
-        //         let detailDate = detail.createdDt_at;
-        //         return detailDate >= dateStart && detailDate <= dateEnd;
-        //     });
-        //     let result = new Set(arr.concat(filtered));
-        //     setDataTb([...result]);
-        //     console.log([...result]);
-        //     console.log(123);
-        // }
-        // if (dateStart !== '' && dateEnd === '') {
-        //     let filtered = dataDetailCurr.filter((detail) => {
-        //         let detailDate = detail.createdDt_at;
-        //         return (
-        //             detailDate >= dateStart &&
-        //             detail.ma_hoa_don.toLocaleLowerCase().includes(valuesSearch.toLocaleLowerCase())
-        //         );
-        //     });
-        //     setDataTb(filtered);
-        // }
-        // if (dateStart === '' && dateEnd !== '') {
-        //     let filtered = dataDetailCurr.filter((detail) => {
-        //         let detailDate = detail.createdDt_at;
-        //         return (
-        //             detailDate <= dateEnd &&
-        //             detail.ma_hoa_don.toLocaleLowerCase().includes(valuesSearch.toLocaleLowerCase())
-        //         );
-        //     });
-        //     setDataTb(filtered);
-        // }
-        // if (dateStart === '' && dateEnd === '') {
-        //     setDataTb(dataDetailCurr);
-        // }
+    const onchangeBranch = (e) => {
+        setSelectBranch(e.target.value);
     };
 
-    const handleFilter = () => {
-        // if (valuesSearch.length) {
-        //     const arr = dataDetailCurr.filter((detail) => {
-        //         return detail.ma_hoa_don.toLocaleLowerCase().includes(valuesSearch.toLocaleLowerCase());
-        //     });
-        //     setDataTb(arr);
-        // } else {
-        //     setDataTb(dataDetailCurr);
-        // }
+    const onchangeGrMed = (e) => {
+        setSelectGrMed(e.target.value);
+    };
+
+    const handleSearch = () => {
+        loadData();
+    };
+
+    const handleKeyPress = (e) => {
+        if (e.code === 'Enter') {
+            handleSearch();
+        }
     };
 
     const VND = new Intl.NumberFormat('vi-VN', {
@@ -118,10 +93,16 @@ function HisSaleDetail() {
         setStartRecord(e.selected * numRecord);
     };
 
-    const loadData = useCallback(() => {
+    const loadData = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get('http://localhost:8081/sell/ivdetail/', {
+            .get(`${baseUrl}sell/ivdetail/`, {
                 params: {
+                    group_id: selectGrMed,
+                    branch_id: user.id_chi_nhanh ? user.id_chi_nhanh : selectBranch,
+                    date_start: dateStart,
+                    date_to: dateTo,
+                    search_value: valuesSearch,
                     isDeleted: 0,
                     numRecord: numRecord,
                     startRecord: startRecord,
@@ -134,7 +115,7 @@ function HisSaleDetail() {
                 setPageCount(Math.ceil(totalRecord / numRecord));
             })
             .catch((err) => console.log(err));
-    }, [startRecord]);
+    };
 
     const navigate = useNavigate();
     const routeChange = (path) => {
@@ -143,7 +124,27 @@ function HisSaleDetail() {
 
     useEffect(() => {
         loadData();
-    }, [loadData]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [startRecord]);
+
+    useEffect(() => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
+        axios
+            .get(`${baseUrl}branch`)
+            .then((res) => {
+                if (res.data === 'fail') {
+                    setDataBranch([]);
+                } else setDataBranch(res.data);
+            })
+            .catch((e) => console.log(e));
+
+        axios
+            .get(`${baseUrl}category/medicine/group`)
+            .then((res) => {
+                setDataGrMed(res.data);
+            })
+            .catch((e) => console.log(e));
+    }, []);
 
     return (
         <div className={cx('content')}>
@@ -157,31 +158,57 @@ function HisSaleDetail() {
                         </div>
                         <div className={cx('medicine-option')}>
                             <label className={cx('label-option')}>Đến ngày</label>
-                            <input type="date" onChange={onchangeDateEnd} />
+                            <input type="date" onChange={onchangeDateTo} />
                         </div>
-                        <button className={cx('btn-search')}>
+                        <button className={cx('btn-search')} onClick={handleSearch}>
                             <FontAwesomeIcon icon={faSearch} />
                         </button>
                         <div className={cx('btn-action')}>
-                            {/* <button className={cx('btn-add')} onClick={() => routeChange('/warehouse/importcreate')}>
-                                Nhập tồn
+                            <button className={cx('btn-add')} onClick={() => routeChange('/sell/create')}>
+                                Lập hóa đơn
                             </button>
                             <button
                                 className={cx('btn-add')}
-                                onClick={() => routeChange('/statistic/historyImport/deleted')}
+                                onClick={() => routeChange('/statistic/historySale/deleted')}
                             >
                                 Đã xóa
-                            </button> */}
+                            </button>
                         </div>
                     </div>
 
-                    <div className={cx('medicine-option', 'search-statistic')}>
-                        <input
-                            placeholder="Tìm kiếm theo tên, mã hóa đơn..."
-                            value={valuesSearch}
-                            onChange={onchangeSearch}
-                            // onKeyUp={handleKeyPress}
-                        />
+                    <div className={cx('wrap-searchBot')}>
+                        <div>
+                            <div className={cx('medicine-option', 'search-statistic')}>
+                                <input
+                                    placeholder="Tìm kiếm theo tên, mã hóa đơn..."
+                                    value={valuesSearch}
+                                    onChange={onchangeSearch}
+                                    onKeyUp={handleKeyPress}
+                                />
+                            </div>
+                            {user.role === 'ADMA' && (
+                                <div className={cx('medicine-option', 'search-statistic')}>
+                                    <select value={selectBranch} onChange={onchangeBranch}>
+                                        <option value={0}>--Chọn cơ sở--</option>
+                                        {dataBranch.map((branch) => (
+                                            <option key={branch.id} value={branch.id}>
+                                                {branch.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            )}
+                        </div>
+                        <div className={cx('medicine-option', 'search-statistic', 'wrap-select')}>
+                            <select value={selectGrMed} onChange={onchangeGrMed}>
+                                <option value={0}>--Chọn nhóm thuốc--</option>
+                                {dataGrMed.map((gr) => (
+                                    <option key={gr.id} value={gr.id}>
+                                        {gr.ten_nhom_thuoc}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>

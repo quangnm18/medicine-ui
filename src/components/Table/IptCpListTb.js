@@ -84,22 +84,42 @@ function IptCpListTb({ data, method }) {
                     </button>
                 </div>
             ),
+            width: '100px',
+            center: true,
         },
 
         {
             name: 'Trạng thái',
             cell: (row) => (
                 <div>
-                    {row.status === 2 && <button className={cx('btn-status')}>Đang chờ</button>}
+                    {row.status === 2 &&
+                        (JSON.parse(localStorage.getItem('data_user')).role === 'STFW' ||
+                            JSON.parse(localStorage.getItem('data_user')).role === 'STFS' ||
+                            JSON.parse(localStorage.getItem('data_user')).role === 'ADMA') && (
+                            <button className={cx('btn-status')}>Đang chờ</button>
+                        )}
                     {row.status === 0 && <button className={cx('btn-status', 'btn-reject')}>Từ chối</button>}
                     {row.status === 1 && <button className={cx('btn-status', 'btn-okay')}>Đã duyệt</button>}
-                    {row.status === 2 && (
-                        <button className={cx('btn-status')} onClick={() => method.toggleModalAccept(row.invoice_code)}>
-                            Phê duyệt
-                        </button>
+                    {row.status === 2 && JSON.parse(localStorage.getItem('data_user')).role === 'ADM' && (
+                        <div>
+                            <button
+                                className={cx('btn-status', 'btn-reject', 'btn-click')}
+                                onClick={() => method.toggleModalReject(row.invoice_code)}
+                            >
+                                Từ chối
+                            </button>
+                            <button
+                                className={cx('btn-status', 'btn-click')}
+                                onClick={() => method.toggleModalAccept(row.invoice_code)}
+                            >
+                                Phê duyệt
+                            </button>
+                        </div>
                     )}
                 </div>
             ),
+            width: '260px',
+            center: true,
         },
     ];
     return (

@@ -16,7 +16,7 @@ import ModalAccept from '~/components/ModalPage/ModalAccept';
 const cx = classNames.bind(style);
 
 function ListIptCp() {
-    const [role, setRole] = useState(JSON.parse(localStorage.getItem('data_user')).role);
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
 
     const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
@@ -33,6 +33,8 @@ function ListIptCp() {
     const [showModalSoftDel, setShowModalSoftDel] = useState(false);
     const [showModalView, setShowModalView] = useState(false);
     const [showModalAccept, setShowModalAccept] = useState(false);
+    const [showModalReject, setShowModalReject] = useState(false);
+    axios.defaults.withCredentials = true;
 
     //Method Toggle
     const toggleModalSoftDel = (id) => {
@@ -47,6 +49,11 @@ function ListIptCp() {
 
     const toggleModalAccept = (invoice_code) => {
         setShowModalAccept(!showModalAccept);
+        setIdSelected(invoice_code);
+    };
+
+    const toggleModalReject = (invoice_code) => {
+        setShowModalReject(!showModalReject);
         setIdSelected(invoice_code);
     };
 
@@ -69,6 +76,17 @@ function ListIptCp() {
             .put(`${baseUrl}importlist/acceptiv`, { ma_hoa_don: data[0].ma_hoa_don })
             .then((res) => {
                 setShowModalAccept(false);
+                loadData();
+            })
+            .catch((e) => console.log(e));
+    };
+
+    const handleRejectIv = (data) => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
+        axios
+            .put(`${baseUrl}importlist/rejectiv`, { ma_hoa_don: data[0].ma_hoa_don })
+            .then((res) => {
+                setShowModalReject(false);
                 loadData();
             })
             .catch((e) => console.log(e));
@@ -97,7 +115,7 @@ function ListIptCp() {
         axios
             .get(`${baseUrl}importlist/alllistpaginate/`, {
                 params: {
-                    branch_id: JSON.parse(localStorage.getItem('data_user')).id_chi_nhanh,
+                    branch_id: user.id_chi_nhanh ? user.id_chi_nhanh : null,
                     date_start: dateStart,
                     date_to: dateTo,
                     search_value: valuesSearch,
@@ -129,7 +147,7 @@ function ListIptCp() {
         setStartRecord(e.selected * numRecord);
     };
 
-    if (role === 'ADM' || role === 'STFW') {
+    if (user.role === 'ADM' || user.role === 'STFW' || user.role === 'ADMA') {
         return (
             <div className={cx('content')}>
                 <div className={cx('header-content')}>
@@ -211,11 +229,20 @@ function ListIptCp() {
                     />
                 )}
 
+                {showModalReject && (
+                    <ModalAccept
+                        label={'Từ chối đơn nhập?'}
+                        methodToggle={toggleModalReject}
+                        methodHandle={handleRejectIv}
+                        data={idSelected}
+                    />
+                )}
+
                 <div className={cx('main-content')}>
                     <div className={cx('content-table')}>
                         <IptCpListTb
                             data={dataTb}
-                            method={{ toggleModalSoftDel, toggleModalView, toggleModalAccept }}
+                            method={{ toggleModalSoftDel, toggleModalView, toggleModalAccept, toggleModalReject }}
                         />
                     </div>
                     <div className={cx('wrap-paginate')}>

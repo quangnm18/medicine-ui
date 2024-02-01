@@ -17,10 +17,7 @@ const cx = classNames.bind(style);
 
 function SellInvoiceCreate() {
     const dateCurr = new Date();
-    const [user, setUser] = useState({
-        name: JSON.parse(localStorage.getItem('data_user')).name,
-        id: JSON.parse(localStorage.getItem('data_user')).userId,
-    });
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
     const [valueInvoice, setValueInvoice] = useState({ ck: 0, khach_tra: 0 });
 
     const [nameSearchInput, setNameSearchInput] = useState('');
@@ -110,7 +107,7 @@ function SellInvoiceCreate() {
                     const newId = res.data[0].max_id + 1;
                     axios
                         .post(`${baseUrl}sell/ivcreate`, {
-                            user_id: user.id,
+                            user_id: user.userId,
                             tong_tien_hang: tong_giatri,
                             ck: valueInvoice.ck,
                             tong_ck: tong_ck,
@@ -134,6 +131,8 @@ function SellInvoiceCreate() {
                 .catch((e) => console.log(e));
         }
     };
+    console.log(process.env.REACT_APP_BASE_URL);
+    console.log(process.env.REACT_SERVER_INVOICE_URL);
 
     const handleSaveIvExport = () => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
@@ -144,7 +143,7 @@ function SellInvoiceCreate() {
                 const newId = res.data[0].max_id + 1;
                 axios
                     .post(`${baseUrl}sell/ivcreate`, {
-                        user_id: user.id,
+                        user_id: user.userId,
                         tong_tien_hang: tong_giatri,
                         ck: valueInvoice.ck,
                         tong_ck: tong_ck,
@@ -156,7 +155,11 @@ function SellInvoiceCreate() {
                     .then((res1) => {
                         const ma_hoa_don = newId;
                         axios
-                            .post(`${baseUrl}sell/ivdetail/create`, { dataInvoice, ma_hoa_don })
+                            .post(`${baseUrl}sell/ivdetail/create`, {
+                                dataInvoice: dataInvoice,
+                                ma_hoa_don: ma_hoa_don,
+                                branch_id: user.id_chi_nhanh,
+                            })
                             .then((res) => {
                                 setModalSaveExport(false);
                                 setDataInvoice([]);

@@ -16,7 +16,7 @@ import FormatInput from '~/components/format/FormatInput';
 const cx = classNames.bind(style);
 
 function CreateInvoiceIpt() {
-    const [role, setRole] = useState(JSON.parse(localStorage.getItem('data_user')).role);
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
     const [searchInput, setSearchInput] = useState('');
     const [searchResult, setSearchResult] = useState([]);
     const debounced = useDebounce(searchInput, 500);
@@ -49,6 +49,8 @@ function CreateInvoiceIpt() {
     const [errors, setErrors] = useState([]);
 
     const [modalSave, setModalSave] = useState(false);
+
+    axios.defaults.withCredentials = true;
 
     //method toggle
     const toggleModalSave = () => {
@@ -205,8 +207,9 @@ function CreateInvoiceIpt() {
             .get(`${baseUrl}importlist/getmaxid`)
             .then((res) => {
                 const newId = res.data[0].max_id + 1;
+                const userId = user.userId;
                 axios
-                    .post(`${baseUrl}importlist/create`, { dataDetails, total, tong_ck, tong_vat, newId })
+                    .post(`${baseUrl}importlist/create`, { dataDetails, total, tong_ck, tong_vat, newId, userId })
                     .then((res1) => {
                         const invoice_code = newId;
                         axios
@@ -254,7 +257,7 @@ function CreateInvoiceIpt() {
             .catch((e) => console.log(e));
     }, []);
 
-    if (role === 'ADM' || role === 'STFW') {
+    if (user.role === 'ADM' || user.role === 'STFW') {
         return (
             <div className={cx('content')}>
                 <div className={cx('header-content')}>

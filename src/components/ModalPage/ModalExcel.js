@@ -54,8 +54,7 @@ function ModalAddExcel({ methodToggle }) {
         setOptionSheet({ ...optionSheet, [e.target.name]: e.target.value });
     };
 
-    console.log(optionSheet);
-
+    console.log(process.env.REACT_SERVER_INVOICE_URL);
     const getTemplate = () => {
         let url = process.env.REACT_SERVER_INVOICE_URL + 'import/template?catalog=1';
         window.open(url);
@@ -70,7 +69,7 @@ function ModalAddExcel({ methodToggle }) {
             stateImport === 0
                 ? 'import/validate?sheetName=Sheet1&header=2&catalog=1'
                 : 'import/save?sheetName=Sheet1&header=2&catalog=1';
-        let url = process.env.REACT_SERVER_INVOICE_URL + path;
+        let url = 'http://localhost:5000/' + path;
         try {
             const response = await fetch(url, {
                 method: 'POST',
@@ -96,23 +95,23 @@ function ModalAddExcel({ methodToggle }) {
                         <label htmlFor="file-upload" className={cx('btn-excel', 'btn-label')}>
                             Upload File
                         </label>
-                        <form enctype="multipart/form-data">
+                        <form encType="multipart/form-data">
                             <input
                                 id="file-upload"
                                 type="file"
                                 accept=".xlsx"
                                 className={cx('form-control')}
                                 required
-                                // hidden
                                 onChange={handleFile}
                             />
                             <button
+                                className={cx('btn-modal')}
                                 type="button"
                                 onClick={async () => {
                                     await test();
                                 }}
                             >
-                                Upload
+                                {stateImport === 0 ? 'Kiểm tra' : 'Nhập khẩu'}
                             </button>
                         </form>
 

@@ -12,8 +12,8 @@ function FormatInput({ className, name, value, methodOnchange }) {
             value={value}
             onValueChange={methodOnchange}
             decimalsLimit={5}
-            groupSeparator="."
-            decimalSeparator=","
+            groupSeparator={name === 'ck' || name === 'vat' ? ',' : '.'}
+            decimalSeparator={name === 'ck' || name === 'vat' ? '.' : ','}
         />
     );
 }
