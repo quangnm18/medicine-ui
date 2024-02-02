@@ -15,7 +15,9 @@
 }
 
 .header-action {
+    width: 100%;
     display: flex;
+    justify-content: space-between;
     align-items: center;
     margin-right: 36px;
 }
@@ -40,6 +42,34 @@
 
     .search-icon {
         color: var(--primary);
+    }
+}
+
+.header-right {
+    align-items: center;
+    display: flex;
+}
+
+.wrap-searchBot {
+    display: flex;
+    justify-content: space-between;
+}
+
+.medicine-option {
+    padding: 8px;
+
+    input,
+    select {
+        outline: none;
+        padding: 8px;
+        font-size: 1.6rem;
+        border: 1px solid #e4e4e4;
+        width: 360px;
+    }
+
+    label {
+        padding: 0 16px 0 8px;
+        min-width: 100px;
     }
 }
 

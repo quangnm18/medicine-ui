@@ -156,12 +156,12 @@ export const SidebarData = [
         iconOpened: <FontAwesomeIcon icon={faChevronUp} />,
         subNav: [
             {
-                title: 'Lịch sử nhập hàng',
+                title: 'Chi tiết nhập thuốc',
                 path: routesConfig.historyImportStatistic,
                 icon: <FontAwesomeIcon icon={faTruckMoving} />,
             },
             {
-                title: 'Lịch sử bán hàng',
+                title: 'Chi tiết bán thuốc',
                 path: routesConfig.historySaleStatistic,
                 icon: <FontAwesomeIcon icon={faClipboardList} />,
             },

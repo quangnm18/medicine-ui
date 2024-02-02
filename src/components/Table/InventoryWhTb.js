@@ -8,6 +8,10 @@ import style from './Table.module.scss';
 const cx = classNames.bind(style);
 
 function InventoryWhTb({ data, method }) {
+    const handleSort = (obj, type, data) => {
+        method.setSort({ sort_col: obj.col, sort_type: type });
+    };
+
     const tableStyle = {
         rows: {
             style: {
@@ -30,8 +34,10 @@ function InventoryWhTb({ data, method }) {
         },
         {
             name: 'Tên thuốc',
+            col: 24,
             selector: (row) => row.ten,
             width: '250px',
+            sortable: true,
         },
         {
             name: 'SL(ĐVLN)',
@@ -62,8 +68,10 @@ function InventoryWhTb({ data, method }) {
         },
         {
             name: 'SL(ĐVNN)',
+            col: 10,
             selector: (row) => (row.so_luong_con ? row.so_luong_con : 0),
             width: '140px',
+            sortable: true,
         },
         {
             name: 'Đơn vị tính',
@@ -84,7 +92,7 @@ function InventoryWhTb({ data, method }) {
             name: '#',
             cell: (row) => (
                 <div>
-                    <button className={cx('btn')} onClick={() => method(row)}>
+                    <button className={cx('btn')} onClick={() => method.toggleModalView(row)}>
                         <FontAwesomeIcon icon={faPenToSquare} className={cx('icon-view', 'icon-eye')} />
                     </button>
                 </div>
@@ -101,6 +109,7 @@ function InventoryWhTb({ data, method }) {
                 expandableRows
                 expandableRowsComponent={(row) => <WarehouseExpander data={row} />}
                 highlightOnHover
+                onSort={handleSort}
             ></DataTable>
         </div>
     );

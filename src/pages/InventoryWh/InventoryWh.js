@@ -13,6 +13,13 @@ import Pagination from '~/components/Pagination/Pagination';
 const cx = classNames.bind(style);
 
 function InventoryWh() {
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
+    const [dataBranch, setDataBranch] = useState([]);
+    const [dataGrMed, setDataGrMed] = useState([]);
+    const [selectBranch, setSelectBranch] = useState(undefined);
+    const [selectGrMed, setSelectGrMed] = useState();
+    const [sort, setSort] = useState({ sort_col: 24, sort_type: 'asc' });
+
     const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState(1);
@@ -23,6 +30,8 @@ function InventoryWh() {
     const [valuesSearch, setValuesSearch] = useState('');
 
     const [dataWh, setDataWh] = useState([]);
+
+    axios.defaults.withCredentials = true;
 
     const VND = new Intl.NumberFormat('vi-VN', {
         style: 'currency',
@@ -36,6 +45,14 @@ function InventoryWh() {
 
     const onChangeInputSearch = (e) => {
         setValuesSearch(e.target.value);
+    };
+
+    const onchangeBranch = (e) => {
+        setSelectBranch(e.target.value);
+    };
+
+    const onchangeGrMed = (e) => {
+        setSelectGrMed(e.target.value);
     };
 
     const handleSearch = () => {
@@ -58,9 +75,14 @@ function InventoryWh() {
     };
 
     const loadData = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get('http://localhost:8081/warehouse', {
+            .get(`${baseUrl}warehouse`, {
                 params: {
+                    sort_col: sort.sort_col,
+                    sort_type: sort.sort_type,
+                    group_id: selectGrMed,
+                    branch_id: user.id_chi_nhanh ? user.id_chi_nhanh : selectBranch,
                     search_value: valuesSearch,
                     numRecord: numRecord,
                     startRecord: startRecord,
@@ -82,28 +104,77 @@ function InventoryWh() {
     useEffect(() => {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord]);
+    }, [startRecord, selectBranch, selectGrMed, sort]);
+
+    useEffect(() => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
+        axios
+            .get(`${baseUrl}branch`)
+            .then((res) => {
+                if (res.data === 'fail') {
+                    setDataBranch([]);
+                } else setDataBranch(res.data);
+            })
+            .catch((e) => console.log(e));
+
+        axios
+            .get(`${baseUrl}category/medicine/group`)
+            .then((res) => {
+                setDataGrMed(res.data);
+            })
+            .catch((e) => console.log(e));
+    }, []);
 
     return (
         <div className={cx('content')}>
             <div className={cx('header-content')}>
-                <DirectionHeader>Danh mục</DirectionHeader>
+                <DirectionHeader>Kho dược</DirectionHeader>
                 <div className={cx('choose-medicine')}>
-                    <h4 className={cx('header-title')}>Kho dược</h4>
                     <div className={cx('header-action')}>
-                        <div className={cx('header-search')}>
-                            <input
-                                type="text"
-                                value={valuesSearch}
-                                placeholder="Tìm kiếm theo tên..."
-                                onChange={onChangeInputSearch}
-                                onKeyDown={handleKeyPress}
-                            />
-                            <button className={cx('search-btn')} onClick={handleSearch}>
-                                <FontAwesomeIcon icon={faSearch} className={cx('search-icon')} />
-                            </button>
+                        <div className={cx('wrap-searchBot')}>
+                            <div>
+                                {user.role === 'ADMA' && (
+                                    <div className={cx('medicine-option', 'search-statistic')}>
+                                        <select value={selectBranch} onChange={onchangeBranch}>
+                                            <option value={0}>--Chọn cơ sở--</option>
+                                            {dataBranch.map((branch) => (
+                                                <option key={branch.id} value={branch.id}>
+                                                    {branch.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                )}
+                            </div>
+                            <div>
+                                <div className={cx('medicine-option', 'search-statistic', 'wrap-select')}>
+                                    <select value={selectGrMed} onChange={onchangeGrMed}>
+                                        <option value={0}>--Chọn nhóm thuốc--</option>
+                                        {dataGrMed.map((gr) => (
+                                            <option key={gr.id} value={gr.id}>
+                                                {gr.ten_nhom_thuoc}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-                        <button className={cx('btn-addstaff')}>Xuất excel</button>
+                        <div className={cx('header-right')}>
+                            <div className={cx('header-search')}>
+                                <input
+                                    type="text"
+                                    value={valuesSearch}
+                                    placeholder="Tìm kiếm theo tên..."
+                                    onChange={onChangeInputSearch}
+                                    onKeyDown={handleKeyPress}
+                                />
+                                <button className={cx('search-btn')} onClick={handleSearch}>
+                                    <FontAwesomeIcon icon={faSearch} className={cx('search-icon')} />
+                                </button>
+                            </div>
+
+                            <button className={cx('btn-addstaff')}>Xuất excel</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -151,11 +222,14 @@ function InventoryWh() {
                             <label>Tổng giá trị: </label>
                             <input
                                 disabled
-                                value={typeof idSelected === 'object' && VND.format(idSelected.thanh_tien)}
+                                value={
+                                    typeof idSelected === 'object' &&
+                                    VND.format(idSelected.gianhap_chuaqd * idSelected.soluong_lon)
+                                }
                             />
                         </div>
 
-                        <div className={cx('view-detail')}>
+                        {/* <div className={cx('view-detail')}>
                             <label>CK: </label>
                             <input disabled value={typeof idSelected === 'object' && idSelected.ck} />
                         </div>
@@ -177,7 +251,7 @@ function InventoryWh() {
                                     )
                                 }
                             />
-                        </div>
+                        </div> */}
 
                         <div className={cx('view-detail')}>
                             <label>Giá nhập đã quy đổi:</label>
@@ -219,7 +293,7 @@ function InventoryWh() {
 
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>
-                    <InventoryWhTb data={dataWh} method={toggleModalView} />
+                    <InventoryWhTb data={dataWh} method={{ toggleModalView, setSort }} />
                 </div>
                 <div className={cx('wrap-paginate')}>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />

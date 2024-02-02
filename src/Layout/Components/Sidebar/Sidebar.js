@@ -13,6 +13,8 @@ function Sidebar() {
     const [open, setOpen] = useState('');
     const [showSubnav, setShowSubnav] = useState(false);
 
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
+
     const toggle = (id) => {
         setOpen(id);
         if (id === open) {
@@ -71,7 +73,22 @@ function Sidebar() {
                                         {item.subNav.map((subItem, index) => (
                                             <NavLink
                                                 key={index}
-                                                className={(nav) => cx('subMenu-item', { active2: nav.isActive })}
+                                                className={(nav) => {
+                                                    if (
+                                                        item.id === 3 &&
+                                                        (subItem.title === 'Nhập kho' ||
+                                                            subItem.title === 'Xuất kho') &&
+                                                        (user.role === 'STFS' || user.role === 'ADMA')
+                                                    ) {
+                                                        return cx(
+                                                            'subMenu-item',
+                                                            { active2: nav.isActive },
+                                                            'sub-hidden',
+                                                        );
+                                                    } else {
+                                                        return cx('subMenu-item', { active2: nav.isActive });
+                                                    }
+                                                }}
                                                 to={subItem.path}
                                             >
                                                 <div className={cx('menu-itemIf')}>
