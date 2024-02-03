@@ -43,6 +43,20 @@ function GroupMedDel() {
             type: 'text',
             placeholder: 'Thuốc dạ dày,...',
         },
+        {
+            id: 2,
+            label: 'Người xóa',
+            name: 'Name',
+            type: 'text',
+            placeholder: '',
+        },
+        {
+            id: 3,
+            label: 'Mã nhân viên',
+            name: 'userId_del',
+            type: 'text',
+            placeholder: '',
+        },
     ];
 
     //method toggle
@@ -67,8 +81,9 @@ function GroupMedDel() {
     //method handle
 
     const handleRes = (id) => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put(`http://localhost:8081/category/medicine/group/restore/${id}`)
+            .put(`${baseUrl}category/medicine/group/restore/${id}`)
             .then((res) => {
                 setShowModalRes(false);
                 loadDataTbDel();
@@ -77,8 +92,9 @@ function GroupMedDel() {
     };
 
     const handleHardDel = (id) => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .delete(`http://localhost:8081/category/medicine/group/harddelete/${id}`)
+            .delete(`${baseUrl}category/medicine/group/harddelete/${id}`)
             .then((res) => {
                 setShowModalHarDel(false);
                 loadDataTbDel();
@@ -87,8 +103,9 @@ function GroupMedDel() {
     };
 
     const handleUpdate = (id) => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put(`http://localhost:8081/category/medicine/group/update/${idSelected}`, valueInputs)
+            .put(`${baseUrl}category/medicine/group/update/${idSelected}`, valueInputs)
             .then((res) => {
                 setShowModalView(false);
                 loadDataTbDel();
@@ -123,8 +140,9 @@ function GroupMedDel() {
     //call API
 
     const loadDataTbDel = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get('http://localhost:8081/category/medicinegroup/', {
+            .get(`${baseUrl}category/medicinegroup/`, {
                 params: {
                     search_value: valuesSearch,
                     isDeleted: 1,

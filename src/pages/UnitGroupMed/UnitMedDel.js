@@ -15,6 +15,8 @@ import Pagination from '~/components/Pagination/Pagination';
 const cx = classNames.bind(style);
 
 function UnitMedDel() {
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
+
     const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState(1);
@@ -63,6 +65,20 @@ function UnitMedDel() {
             type: 'text',
             placeholder: 'Hộp-Vỉ-Viên',
         },
+        {
+            id: 6,
+            label: 'Người xóa',
+            name: 'Name',
+            type: 'text',
+            placeholder: '',
+        },
+        {
+            id: 7,
+            label: 'Mã nhân viên',
+            name: 'userId_del',
+            type: 'text',
+            placeholder: '',
+        },
     ];
 
     const onChangeInputSearch = (e) => {
@@ -109,8 +125,9 @@ function UnitMedDel() {
     //method handle
 
     const handleRes = (id) => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put(`http://localhost:8081/category/medicine/unit/restore/${id}`)
+            .put(`${baseUrl}category/medicine/unit/restore/${id}`)
             .then((res) => {
                 setShowModalRes(false);
                 loadData();
@@ -119,8 +136,9 @@ function UnitMedDel() {
     };
 
     const handleHardDel = (id) => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .delete(`http://localhost:8081/category/medicine/unit/harddelete/${id}`)
+            .delete(`${baseUrl}category/medicine/unit/harddelete/${id}`)
             .then((res) => {
                 setShowModalHarDel(false);
                 loadData();
@@ -129,8 +147,9 @@ function UnitMedDel() {
     };
 
     const handleUpdate = (id) => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put(`http://localhost:8081/category/medicine/unit/update/${idSelected}`, valueInputs)
+            .put(`${baseUrl}category/medicine/unit/update/${idSelected}`, valueInputs)
             .then((res) => {
                 setShowModalView(false);
                 loadData();
@@ -140,8 +159,9 @@ function UnitMedDel() {
 
     //method call api
     const loadData = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get('http://localhost:8081/category/medicineunit/', {
+            .get(`${baseUrl}category/medicineunit/`, {
                 params: {
                     search_value: valuesSearch,
                     isDeleted: 1,
@@ -179,7 +199,7 @@ function UnitMedDel() {
                             <input
                                 type="text"
                                 value={valuesSearch}
-                                placeholder="Tìm kiếm theo tên..."
+                                placeholder="Tìm kiếm theo tên đơn vị..."
                                 onChange={onChangeInputSearch}
                                 onKeyDown={handleKeyPress}
                             />
@@ -226,7 +246,11 @@ function UnitMedDel() {
 
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>
-                    <UnitMedDelTb data={dataTb} method={{ toggleModalRes, toggleModalView, toggleModalHardDel }} />
+                    <UnitMedDelTb
+                        data={dataTb}
+                        method={{ toggleModalRes, toggleModalView, toggleModalHardDel }}
+                        role={user.role}
+                    />
                 </div>
                 <div>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />

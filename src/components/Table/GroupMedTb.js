@@ -7,6 +7,10 @@ import style from './Table.module.scss';
 const cx = classNames.bind(style);
 
 function GroupMedTb({ data, method }) {
+    const handleSelectRow = (a) => {
+        method.setListSelected(a.selectedRows);
+    };
+
     const tableStyle = {
         table: {
             style: {
@@ -26,13 +30,11 @@ function GroupMedTb({ data, method }) {
     };
 
     const columns = [
-        // {
-        //     name: 'ID',
-        //     cell: (row, index) => {
-        //
-        //     },
-        //     width: '100px',
-        // },
+        {
+            name: 'ID',
+            cell: (row, index) => index + 1,
+            width: '100px',
+        },
         {
             name: 'Tên nhóm thuốc',
             selector: (row) => row.ten_nhom_thuoc,
@@ -75,7 +77,8 @@ function GroupMedTb({ data, method }) {
                 selectableRows
                 fixedHeader
                 fixedHeaderScrollHeight="700px"
-                onSort={(e) => console.log(e)}
+                // onSort={(e) => console.log(e)}
+                onSelectedRowsChange={handleSelectRow}
             ></DataTable>
         </div>
     );

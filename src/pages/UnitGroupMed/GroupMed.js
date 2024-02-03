@@ -15,6 +15,8 @@ import { useNavigate } from 'react-router-dom';
 const cx = classNames.bind(style);
 
 function GroupMed() {
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
+
     const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState();
@@ -22,6 +24,7 @@ function GroupMed() {
     const [dataTb, setDataTb] = useState([]);
 
     const [idSelected, setIdSelected] = useState('');
+    const [listSelected, setListSelected] = useState([]);
 
     const [valuesSearch, setValuesSearch] = useState('');
 
@@ -35,6 +38,8 @@ function GroupMed() {
         group_code: '',
         description: '',
     });
+
+    axios.defaults.withCredentials = true;
 
     const dataInputs = [
         {
@@ -72,8 +77,9 @@ function GroupMed() {
 
     //method handle
     const handleSingleSoftDel = (id) => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put(`http://localhost:8081/category/medicine/group/softdelete/${id}`)
+            .put(`${baseUrl}category/medicine/group/softdelete/${id}`)
             .then((res) => {
                 setShowModalSofDel(false);
                 loadDataTb();
@@ -82,12 +88,13 @@ function GroupMed() {
     };
 
     const handleAdd = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get('http://localhost:8081/category/maxidgr')
+            .get(`${baseUrl}category/maxidgr`)
             .then((res) => {
                 const group_code = `N${res.data[0].max_id + 1}`;
                 axios
-                    .post('http://localhost:8081/category/medicine/group/add', {
+                    .post(`${baseUrl}category/medicine/group/add`, {
                         ...valueInputs,
                         group_code: group_code,
                     })
@@ -101,8 +108,9 @@ function GroupMed() {
     };
 
     const handleUpdate = (id) => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put(`http://localhost:8081/category/medicine/group/update/${idSelected}`, valueInputs)
+            .put(`${baseUrl}category/medicine/group/update/${idSelected}`, valueInputs)
             .then((res) => {
                 setShowModalView(false);
                 loadDataTb();
@@ -137,8 +145,9 @@ function GroupMed() {
     //call API
 
     const loadDataTb = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get('http://localhost:8081/category/medicinegroup/', {
+            .get(`${baseUrl}category/medicinegroup/`, {
                 params: {
                     search_value: valuesSearch,
                     isDeleted: 0,
@@ -187,12 +196,19 @@ function GroupMed() {
                         <button className={cx('btn-addstaff')} onClick={toggleModalAdd}>
                             Thêm
                         </button>
-                        <button
-                            className={cx('btn-addstaff')}
-                            onClick={() => routeChange('/category/grmedicine/deleted')}
-                        >
-                            Đã xóa
-                        </button>
+
+                        {(user.role === 'ADM' || user.role === 'ADMA') && (
+                            <button
+                                className={cx('btn-addstaff')}
+                                onClick={() => routeChange('/category/grmedicine/deleted')}
+                            >
+                                Đã xóa
+                            </button>
+                        )}
+
+                        {listSelected.length > 0 && (
+                            <button className={cx('btn-addstaff', 'btn-delMulti')}>Xóa mục đã chọn</button>
+                        )}
                     </div>
                 </div>
             </div>
@@ -229,7 +245,7 @@ function GroupMed() {
 
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>
-                    <GroupMedTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView }} />
+                    <GroupMedTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView, setListSelected }} />
                 </div>
                 <div className={cx('wrap-pagination')}>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />

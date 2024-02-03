@@ -35,14 +35,22 @@ function GrMedTbDeleted({ data, method }) {
         {
             name: 'Mô tả',
             selector: (row) => row.description,
-            width: '400px',
         },
         {
-            name: 'Mã nhóm thuốc',
+            name: 'Mã nhóm',
             selector: (row) => row.group_code,
             sortable: true,
-            width: '180px',
-            // center: true,
+            width: '120px',
+        },
+        {
+            name: 'Nguời xóa',
+            selector: (row) => row.Name,
+            sortable: true,
+        },
+        {
+            name: 'Thời gian xóa',
+            selector: (row) => new Date(row.deletedAt).toLocaleString(),
+            sortable: true,
         },
         {
             name: '',
@@ -51,29 +59,20 @@ function GrMedTbDeleted({ data, method }) {
                     <button className={cx('btn')} onClick={() => method.toggleModalHardDel(row.id)}>
                         <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
                     </button>
-                </div>
-            ),
-            width: '200px',
-            right: true,
-        },
-        {
-            name: '',
-            cell: (row) => (
-                <div>
                     <button className={cx('btn')} onClick={() => method.toggleModalView(row)}>
                         <FontAwesomeIcon icon={faPenToSquare} className={cx('icon-view')} />
                     </button>
                     <button className={cx('btn')} onClick={() => method.toggleModalRes(row.id)}>
-                        <FontAwesomeIcon icon={faRotateLeft} className={cx('icon-view')} />
+                        <FontAwesomeIcon icon={faRotateLeft} className={cx('icon-eye')} />
                     </button>
                 </div>
             ),
-            width: '200px',
+            center: true,
         },
     ];
     return (
         <div>
-            <DataTable columns={columns} data={data} customStyles={tableStyle} selectableRows></DataTable>
+            <DataTable columns={columns} data={data} customStyles={tableStyle}></DataTable>
         </div>
     );
 }

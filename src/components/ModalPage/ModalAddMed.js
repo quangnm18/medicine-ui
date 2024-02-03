@@ -50,15 +50,16 @@ function ModalAddMed({ dataInputs, dataValueInputs, methodOnchange, methodToggle
     };
 
     useEffect(() => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get('http://localhost:8081/category/medicineunitall')
+            .get(`${baseUrl}category/medicineunitall`)
             .then((res) => {
                 setDataUnitMed(res.data);
             })
             .catch((e) => console.log(e));
 
         axios
-            .get('http://localhost:8081/category/medicine/group')
+            .get(`${baseUrl}category/medicine/group`)
             .then((res) => {
                 setDataGrMed(res.data);
             })

@@ -7,6 +7,9 @@ import style from './Table.module.scss';
 const cx = classNames.bind(style);
 
 function UnitMedTb({ data, method }) {
+    const handleSelectRow = (a) => {
+        method.setListSelected(a.selectedRows);
+    };
     const tableStyle = {
         rows: {
             style: {
@@ -72,7 +75,13 @@ function UnitMedTb({ data, method }) {
     ];
     return (
         <div>
-            <DataTable columns={columns} data={data} customStyles={tableStyle} selectableRows></DataTable>
+            <DataTable
+                columns={columns}
+                data={data}
+                customStyles={tableStyle}
+                selectableRows
+                onSelectedRowsChange={handleSelectRow}
+            ></DataTable>
         </div>
     );
 }

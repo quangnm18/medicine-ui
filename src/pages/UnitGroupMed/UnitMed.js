@@ -15,12 +15,16 @@ import Pagination from '~/components/Pagination/Pagination';
 const cx = classNames.bind(style);
 
 function UnitMed() {
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
+
     const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState(1);
     const [dataTb, setDataTb] = useState([]);
 
     const [idSelected, setIdSelected] = useState('');
+    const [listSelected, setListSelected] = useState([]);
+
     const [showModalSofDel, setShowModalSofDel] = useState(false);
     const [showModalView, setShowModalView] = useState(false);
     const [showModalAdd, setShowModalAdd] = useState(false);
@@ -33,6 +37,8 @@ function UnitMed() {
         unit_code: '',
         description_unit: '',
     });
+
+    axios.defaults.withCredentials = true;
 
     const dataInputs = [
         {
@@ -63,6 +69,13 @@ function UnitMed() {
             type: 'text',
             placeholder: 'Hộp-Vỉ-Viên',
         },
+        // {
+        //     id: 6,
+        //     label: 'Mã đơn vị',
+        //     name: 'unit_code',
+        //     type: 'text',
+        //     placeholder: 'UC1',
+        // },
     ];
 
     const onChangeInputSearch = (e) => {
@@ -115,8 +128,20 @@ function UnitMed() {
 
     //method handle
     const handleSingleSoftDel = (id) => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
+        // axios
+        //     .put(`${baseUrl}category/medicine/unit/softdelete/${id}`)
+        //     .then((res) => {
+        //         setShowModalSofDel(false);
+        //         loadData();
+        //     })
+        //     .catch((e) => console.log(e));
+
         axios
-            .put(`http://localhost:8081/category/medicine/unit/softdelete/${id}`)
+            .put(`${baseUrl}category/medicine/unit/softdelete`, {
+                userId_del: user.userId,
+                id: id,
+            })
             .then((res) => {
                 setShowModalSofDel(false);
                 loadData();
@@ -125,12 +150,13 @@ function UnitMed() {
     };
 
     const handleAdd = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get('http://localhost:8081/category/maxidunit')
+            .get(`${baseUrl}category/maxidunit`)
             .then((res) => {
                 const unit_code = `UC${res.data[0].max_id + 1}`;
                 axios
-                    .post('http://localhost:8081/category/medicine/unit/add', {
+                    .post(`${baseUrl}category/medicine/unit/add`, {
                         ...valueInputs,
                         unit_code: unit_code,
                     })
@@ -144,8 +170,9 @@ function UnitMed() {
     };
 
     const handleUpdate = (id) => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put(`http://localhost:8081/category/medicine/unit/update/${idSelected}`, valueInputs)
+            .put(`${baseUrl}category/medicine/unit/update/${idSelected}`, valueInputs)
             .then((res) => {
                 setShowModalView(false);
                 loadData();
@@ -155,8 +182,9 @@ function UnitMed() {
 
     //method call api
     const loadData = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get('http://localhost:8081/category/medicineunit/', {
+            .get(`${baseUrl}category/medicineunit`, {
                 params: {
                     search_value: valuesSearch,
                     isDeleted: 0,
@@ -194,11 +222,9 @@ function UnitMed() {
                             <input
                                 type="text"
                                 value={valuesSearch}
-                                placeholder="Tìm kiếm theo tên..."
+                                placeholder="Tìm kiếm theo tên đơn vị..."
                                 onChange={onChangeInputSearch}
                                 onKeyUp={handleKeyPress}
-
-                                // onKeyDown={handleKeyPress}
                             />
                             <button className={cx('search-btn')} onClick={handleSearch}>
                                 <FontAwesomeIcon icon={faSearch} className={cx('search-icon')} />
@@ -207,12 +233,19 @@ function UnitMed() {
                         <button className={cx('btn-addstaff')} onClick={toggleModalAdd}>
                             Thêm
                         </button>
-                        <button
-                            className={cx('btn-addstaff')}
-                            onClick={() => routeChange('/category/unitmedicine/deleted')}
-                        >
-                            Đã xóa
-                        </button>
+
+                        {(user.role === 'ADM' || user.role === 'ADMA') && (
+                            <button
+                                className={cx('btn-addstaff')}
+                                onClick={() => routeChange('/category/unitmedicine/deleted')}
+                            >
+                                Đã xóa
+                            </button>
+                        )}
+
+                        {listSelected.length > 0 && (
+                            <button className={cx('btn-addstaff', 'btn-delMulti')}>Xóa mục đã chọn</button>
+                        )}
                     </div>
                 </div>
             </div>
@@ -247,7 +280,7 @@ function UnitMed() {
             )}
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>
-                    <UnitMedTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView }} />
+                    <UnitMedTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView, setListSelected }} />
                 </div>
                 <div>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />
