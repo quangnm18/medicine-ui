@@ -136,12 +136,12 @@ export const SidebarData = [
         subNav: [
             {
                 title: 'Nhân viên',
-                path: routesConfig.categoryStaff,
+                path: routesConfig.users,
                 icon: <FontAwesomeIcon icon={faUser} />,
             },
             {
                 title: 'Danh sách chi nhánh',
-                path: routesConfig.categoryStaff,
+                path: routesConfig.branchs,
                 icon: <FontAwesomeIcon icon={faCodeBranch} />,
             },
         ],

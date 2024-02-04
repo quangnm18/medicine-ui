@@ -10,9 +10,13 @@ import classNames from 'classnames/bind';
 import SearchInput from '~/components/Search/SearchInput';
 import useDebounce from '~/hooks/useDebounce';
 import * as searchServices from '~/apiServices/searchServices';
+import * as format from '~/utils/format';
+import * as toast from '~/utils/toast';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import ModalAll from '~/components/ModalPage/ModalAll';
 import ModalAddMed from '~/components/ModalPage/ModalAddMed';
-import ModalViewMed from '~/components/ModalPage/ModalViewMed';
 import ModalAddExcel from '~/components/ModalPage/ModalExcel';
 import Pagination from '~/components/Pagination/Pagination';
 import { useNavigate } from 'react-router-dom';
@@ -20,6 +24,8 @@ import { useNavigate } from 'react-router-dom';
 const cx = classNames.bind(style);
 
 function Medicine() {
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
+
     const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState(1);
@@ -72,7 +78,7 @@ function Medicine() {
             id: 4,
             label: 'Hạn số đăng ký',
             name: 'han_sdk',
-            type: 'text',
+            type: 'date',
             placeholder: 'YYYY-MM-DD',
         },
         {
@@ -86,60 +92,74 @@ function Medicine() {
             id: 6,
             label: 'Năm cấp',
             name: 'nam_cap',
-            type: 'text',
+            type: 'date',
             placeholder: 'YYYY-MM-DD',
         },
         {
             id: 7,
+            label: 'Đợt cấp',
+            name: 'dot_cap',
+            type: 'text',
+            placeholder: '',
+        },
+        {
+            id: 8,
+            label: 'Tiêu chuẩn',
+            name: 'tieu_chuan',
+            type: 'text',
+            placeholder: '',
+        },
+        {
+            id: 9,
             label: 'Hoạt chất',
             name: 'hoat_chat',
             type: 'text',
             placeholder: 'Hoạt chất',
         },
         {
-            id: 8,
+            id: 10,
             label: 'Hàm lượng',
             name: 'ham_luong',
             type: 'text',
             placeholder: 'Hàm lượng',
         },
         {
-            id: 9,
+            id: 11,
             label: 'Dạng bào chế',
             name: 'dang_bao_che',
             type: 'text',
             placeholder: 'Dạng bào chế',
         },
         {
-            id: 10,
+            id: 12,
             label: 'Quy cách đóng gói',
             name: 'dong_goi',
             type: 'text',
             placeholder: 'Quy cách đóng gói',
         },
         {
-            id: 11,
+            id: 13,
             label: 'Công ty đăng ký',
             name: 'cty_dk',
             type: 'text',
             placeholder: 'Công ty đăng ký',
         },
         {
-            id: 12,
+            id: 14,
             label: 'Địa chỉ công ty đăng ký',
             name: 'dchi_ctydk',
             type: 'text',
             placeholder: 'Địa chỉ công ty đăng ký',
         },
         {
-            id: 13,
+            id: 15,
             label: 'Công ty sản xuất',
             name: 'cty_sx',
             type: 'text',
             placeholder: 'Công ty sản xuất',
         },
         {
-            id: 14,
+            id: 16,
             label: 'Địa chỉ công ty sản xuất',
             name: 'dchi_ctysx',
             type: 'text',
@@ -151,8 +171,12 @@ function Medicine() {
     const [searchResult, setSearchResult] = useState([]);
     const debounced = useDebounce(nameSearchInput, 500);
 
+    const [dataGrMed, setDataGrMed] = useState([]);
+    const [selectGrMed, setSelectGrMed] = useState();
+
     const [idSelected, setIdSelected] = useState({});
     const [medSelected, setMedSelected] = useState([]);
+    const [listSelected, setListSelected] = useState([]);
 
     const [showModalSingleDelete, setShowModalSingleDelete] = useState(false);
     const [showModalMultiDelete, setShowModalMultiDelete] = useState(false);
@@ -172,6 +196,10 @@ function Medicine() {
         setNameSearchInput(value);
     }, []);
 
+    const onchangeGrMed = (e) => {
+        setSelectGrMed(e.target.value);
+    };
+
     const handleSearch = () => {
         loadData();
     };
@@ -183,20 +211,13 @@ function Medicine() {
         setMedSelected([med]);
     };
 
-    const toggleModalMultiDelete = (arrMed) => {
+    const toggleModalMultiDelete = () => {
         setShowModalMultiDelete(!showModalMultiDelete);
-        setMedSelected(arrMed);
+        // setListSelected(arrMed);
     };
 
     const toggleModalView = (med) => {
-        const date_sdk = new Date(med.han_sdk);
-        const date_namcap = new Date(med.nam_cap);
-
-        let datetimeSdk = date_sdk.getFullYear() + '-' + (date_sdk.getMonth() + 1) + '-' + date_sdk.getDate();
-        let datetimeNamCap =
-            date_namcap.getFullYear() + '-' + (date_namcap.getMonth() + 1) + '-' + date_namcap.getDate();
-
-        setValues({ ...med, han_sdk: datetimeSdk, nam_cap: datetimeNamCap });
+        setValues({ ...med, han_sdk: format.formatDate(med.han_sdk), nam_cap: format.formatDate(med.nam_cap) });
         setIdSelected(med.id);
         setShowModalView(!showModalView);
     };
@@ -204,12 +225,12 @@ function Medicine() {
     const toggleModalAdd = () => {
         setValues({
             sdk: '',
-            han_sdk: '0000-00-00',
+            han_sdk: format.formatDate('1970-01-01'),
             ten: '',
             hoat_chat: '',
             ham_luong: '',
             sqd: '',
-            nam_cap: '0000-00-00',
+            nam_cap: format.formatDate('1970-01-01'),
             dot_cap: '',
             dang_bao_che: '',
             dong_goi: '',
@@ -231,41 +252,71 @@ function Medicine() {
 
     //Method Handle
 
-    const addMedicine = (valueUnit, valueGroup) => {
+    const addMedicine = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .post('http://localhost:8081/category/medicine/add', {
-                ...values,
-                don_vi_duoc: valueUnit,
-                nhom_thuoc: valueGroup,
-            })
+            .post(`${baseUrl}category/medicine/add`, values)
             .then((res) => {
                 if (res.data.errno) {
                     console.log(res.data);
                 } else {
                     setShowModalAdd(false);
                     loadData();
+                    if (res.data === 'fail') {
+                        toast.notify('Bạn không có quyền thao tác', 'error');
+                    } else {
+                        toast.notify('Thêm thành công', 'success');
+                    }
                 }
             })
             .catch((e) => console.log(e));
     };
 
     const softDeleteMed = (data) => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put('http://localhost:8081/category/medicine/update/softdelete', { data })
+            .put(`${baseUrl}category/medicine/update/softdelete`, { data })
             .then((res) => {
                 setShowModalSingleDelete(false);
-                setShowModalMultiDelete(false);
                 loadData();
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Xóa thành công', 'success');
+                }
+            })
+            .catch((e) => console.log(e));
+    };
+
+    const softMultiDeleteMed = (data) => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
+        axios
+            .put(`${baseUrl}category/medicine/update/softdelete`, { data })
+            .then((res) => {
+                setShowModalMultiDelete(false);
+                setListSelected([]);
+                loadData();
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Xóa thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
 
     const updateMedicine = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put(`http://localhost:8081/category/medicine/update/${idSelected}`, values)
+            .put(`${baseUrl}category/medicine/update/${idSelected}`, values)
             .then((res) => {
                 setShowModalView(false);
                 loadData();
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Cập nhật thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
@@ -275,7 +326,7 @@ function Medicine() {
     };
 
     const handleChooseRow = ({ selectedRows }) => {
-        setMedSelected(selectedRows);
+        setListSelected(selectedRows);
     };
 
     const handleChangePage = (e) => {
@@ -284,9 +335,11 @@ function Medicine() {
 
     //Call API Render
     const loadData = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get('http://localhost:8081/category/getallmed/', {
+            .get(`${baseUrl}category/getallmed/`, {
                 params: {
+                    group_id: selectGrMed,
                     search_value: nameSearchInput,
                     isDeleted: 0,
                     numRecord: numRecord,
@@ -310,7 +363,7 @@ function Medicine() {
     useEffect(() => {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord]);
+    }, [startRecord, selectGrMed]);
 
     //search
     useEffect(() => {
@@ -325,6 +378,16 @@ function Medicine() {
         };
         fetchApi();
     }, [debounced]);
+
+    useEffect(() => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
+        axios
+            .get(`${baseUrl}category/medicine/group`)
+            .then((res) => {
+                setDataGrMed(res.data);
+            })
+            .catch((e) => console.log(e));
+    }, []);
 
     return (
         <div className={cx('content')}>
@@ -350,6 +413,7 @@ function Medicine() {
                                 <FontAwesomeIcon icon={faSearch} className={cx('search-icon')} />
                             </button>
                         </div>
+
                         <span className={cx('control-action')}>
                             <button className={cx('btn-action', 'btn')} onClick={toggleModalAdd}>
                                 Thêm mới
@@ -363,16 +427,29 @@ function Medicine() {
                     </div>
 
                     <div className={cx('action-bin')}>
-                        <button className={cx('btn-delete', 'btn')} onClick={() => toggleModalMultiDelete(medSelected)}>
-                            Xóa dược
-                        </button>
                         <button
                             className={cx('btn-delete', 'btn')}
                             onClick={() => routeChange('/category/medicine/deleted')}
                         >
                             Đã xóa
                         </button>
+                        {listSelected.length > 0 && (
+                            <button className={cx('btn-delete', 'btn')} onClick={toggleModalMultiDelete}>
+                                Xóa dược
+                            </button>
+                        )}
                     </div>
+                </div>
+                <div className={cx('medicine-option')}>
+                    <label className={cx('label-option')}>Nhóm thuốc</label>
+                    <select className={cx('group-select')} value={selectGrMed} onChange={onchangeGrMed}>
+                        <option value={0}>--Chọn nhóm thuốc--</option>
+                        {dataGrMed.map((gr) => (
+                            <option key={gr.id} value={gr.id}>
+                                {gr.ten_nhom_thuoc}
+                            </option>
+                        ))}
+                    </select>
                 </div>
             </div>
 
@@ -385,23 +462,25 @@ function Medicine() {
                 />
             )}
 
-            {medSelected.length > 0 && showModalMultiDelete && (
+            {listSelected.length > 0 && showModalMultiDelete && (
                 <ModalAll
                     label={'Xóa các mục đã chọn?'}
                     methodToggle={toggleModalMultiDelete}
-                    methodHandle={softDeleteMed}
-                    data={medSelected}
+                    methodHandle={softMultiDeleteMed}
+                    data={listSelected}
                 />
             )}
 
             {showModalView && (
                 <div>
-                    <ModalViewMed
+                    <ModalAddMed
+                        label={'Thông tin chi tiết dược phẩm'}
                         dataInputs={inputsMedicine}
                         dataValueInputs={values}
                         methodOnchange={onChange}
                         methodToggle={toggleModalView}
                         methodHandle={updateMedicine}
+                        methodValueSelect={setValues}
                     />
                 </div>
             )}
@@ -409,16 +488,19 @@ function Medicine() {
             {showModalAdd && (
                 <div>
                     <ModalAddMed
+                        label={'Thêm mới dược phẩm'}
                         dataInputs={inputsMedicine}
                         dataValueInputs={values}
                         methodOnchange={onChange}
                         methodToggle={toggleModalAdd}
                         methodHandle={addMedicine}
+                        methodValueSelect={setValues}
                     />
                 </div>
             )}
 
             {showModalExcel && <ModalAddExcel methodToggle={toggleModalExcel} />}
+            <ToastContainer />
 
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>

@@ -4,6 +4,10 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import * as toast from '~/utils/toast';
+
 import DirectionHeader from '~/components/DirectionHeader/DirectionHeader';
 import style from './UnitGroupMed.module.scss';
 import ModalAll from '~/components/ModalPage/ModalAll';
@@ -67,15 +71,8 @@ function UnitMed() {
             label: 'Mô tả',
             name: 'description_unit',
             type: 'text',
-            placeholder: 'Hộp-Vỉ-Viên',
+            placeholder: 'Hộp x 5 Vỉ x 10 Viên',
         },
-        // {
-        //     id: 6,
-        //     label: 'Mã đơn vị',
-        //     name: 'unit_code',
-        //     type: 'text',
-        //     placeholder: 'UC1',
-        // },
     ];
 
     const onChangeInputSearch = (e) => {
@@ -145,6 +142,11 @@ function UnitMed() {
             .then((res) => {
                 setShowModalSofDel(false);
                 loadData();
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Xóa thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
@@ -163,6 +165,11 @@ function UnitMed() {
                     .then((res1) => {
                         setShowModalAdd(false);
                         loadData();
+                        if (res.data === 'fail') {
+                            toast.notify('Bạn không có quyền thao tác', 'error');
+                        } else {
+                            toast.notify('Thêm mới thành công', 'success');
+                        }
                     })
                     .catch((e) => console.log(e));
             })
@@ -176,6 +183,11 @@ function UnitMed() {
             .then((res) => {
                 setShowModalView(false);
                 loadData();
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Cập nhật thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
@@ -278,6 +290,9 @@ function UnitMed() {
                     methodHandle={handleAdd}
                 />
             )}
+
+            <ToastContainer />
+
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>
                     <UnitMedTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView, setListSelected }} />

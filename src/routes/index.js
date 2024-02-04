@@ -25,13 +25,15 @@ import UnitMedDel from '~/pages/UnitGroupMed/UnitMedDel';
 import ListIptCpDel from '~/pages/ImportWh/ListIptCpDel';
 import HisIptDetailDel from '~/pages/Statistic/HisIptDetailDel';
 import InvoiceListDel from '~/pages/InvoiceList/InvoiceListDel';
+import Branch from '~/pages/Branch/Branch';
+import AllStaff from '~/pages/Branch/AllStaff';
 
 const publicRoutes = [
     { path: routesConfig.login, component: Login, layout: LoginLayout },
     { path: routesConfig.signUp, component: SignUp, layout: LoginLayout },
     { path: routesConfig.home, component: Home },
 
-    { path: routesConfig.sell, component: SellInvoiceCreate },
+    // { path: routesConfig.sell, component: SellInvoiceCreate },
     { path: routesConfig.sellCreate, component: SellInvoiceCreate },
     { path: routesConfig.sellList, component: InvoiceList },
 
@@ -48,6 +50,9 @@ const publicRoutes = [
     { path: routesConfig.checkInventory, component: InventoryWh },
     { path: routesConfig.exportCreate, component: InventoryWh },
     { path: routesConfig.exportList, component: InventoryWh },
+
+    { path: routesConfig.branchs, component: Branch },
+    { path: routesConfig.users, component: AllStaff },
 
     { path: routesConfig.report, component: Report },
 

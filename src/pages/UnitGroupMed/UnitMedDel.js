@@ -4,6 +4,10 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import * as toast from '~/utils/toast';
+
 import DirectionHeader from '~/components/DirectionHeader/DirectionHeader';
 import style from './UnitGroupMed.module.scss';
 import ModalAll from '~/components/ModalPage/ModalAll';
@@ -131,6 +135,11 @@ function UnitMedDel() {
             .then((res) => {
                 setShowModalRes(false);
                 loadData();
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Khôi phục thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
@@ -142,6 +151,11 @@ function UnitMedDel() {
             .then((res) => {
                 setShowModalHarDel(false);
                 loadData();
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Xóa thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
@@ -153,6 +167,11 @@ function UnitMedDel() {
             .then((res) => {
                 setShowModalView(false);
                 loadData();
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Cập nhật thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
@@ -214,6 +233,8 @@ function UnitMedDel() {
                     </div>
                 </div>
             </div>
+
+            <ToastContainer />
 
             {showModalRes && (
                 <ModalAll

@@ -28,6 +28,10 @@ const routes = {
     categoryUnitMedicine: '/category/unitmedicine',
     categoryUnitMedicineDel: '/category/unitmedicine/deleted',
 
+    management: '/management',
+    users: '/management/users',
+    branchs: '/management/branchs',
+
     report: '/report',
 
     statistic: '/statistic',

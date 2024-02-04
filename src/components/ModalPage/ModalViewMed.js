@@ -16,9 +16,13 @@ function ModalViewMed({ dataInputs, dataValueInputs, methodOnchange, methodToggl
             validationError.ten = 'Phải nhập tên dược phẩm';
         }
 
-        if (dataValueInputs.don_gia === '' && !dataValueInputs.don_gia.trim()) {
-            validationError.dong_gia = 'Phải nhập đơn giá bán';
-        }
+        // if (valueUnit === '' && !valueUnit.trim()) {
+        //     validationError.don_vi_duoc = 'Phải chọn đơn vị dược';
+        // }
+
+        // if (valueGroup === '' && !valueGroup.trim()) {
+        //     validationError.nhom_thuoc = 'Phải chọn nhóm thuốc';
+        // }
 
         setError(validationError);
 

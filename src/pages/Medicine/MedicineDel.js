@@ -41,7 +41,6 @@ function MedicineDel() {
         dchi_ctysx: '',
         don_vi_duoc: '',
         nhom_thuoc: '',
-        don_gia: '',
     });
 
     const inputsMedicine = [
@@ -70,7 +69,7 @@ function MedicineDel() {
             id: 4,
             label: 'Hạn số đăng ký',
             name: 'han_sdk',
-            type: 'text',
+            type: 'date',
             placeholder: 'YYYY-MM-DD',
         },
         {
@@ -84,71 +83,78 @@ function MedicineDel() {
             id: 6,
             label: 'Năm cấp',
             name: 'nam_cap',
-            type: 'text',
+            type: 'date',
             placeholder: 'YYYY-MM-DD',
         },
         {
             id: 7,
+            label: 'Đợt cấp',
+            name: 'dot_cap',
+            type: 'text',
+            placeholder: '',
+        },
+        {
+            id: 8,
+            label: 'Tiêu chuẩn',
+            name: 'tieu_chuan',
+            type: 'text',
+            placeholder: '',
+        },
+        {
+            id: 9,
             label: 'Hoạt chất',
             name: 'hoat_chat',
             type: 'text',
             placeholder: 'Hoạt chất',
         },
         {
-            id: 8,
+            id: 10,
             label: 'Hàm lượng',
             name: 'ham_luong',
             type: 'text',
             placeholder: 'Hàm lượng',
         },
         {
-            id: 9,
+            id: 11,
             label: 'Dạng bào chế',
             name: 'dang_bao_che',
             type: 'text',
             placeholder: 'Dạng bào chế',
         },
         {
-            id: 10,
+            id: 12,
             label: 'Quy cách đóng gói',
             name: 'dong_goi',
             type: 'text',
             placeholder: 'Quy cách đóng gói',
         },
         {
-            id: 11,
+            id: 13,
             label: 'Công ty đăng ký',
             name: 'cty_dk',
             type: 'text',
             placeholder: 'Công ty đăng ký',
         },
         {
-            id: 12,
+            id: 14,
             label: 'Địa chỉ công ty đăng ký',
             name: 'dchi_ctydk',
             type: 'text',
             placeholder: 'Địa chỉ công ty đăng ký',
         },
         {
-            id: 13,
+            id: 15,
             label: 'Công ty sản xuất',
             name: 'cty_sx',
             type: 'text',
             placeholder: 'Công ty sản xuất',
         },
         {
-            id: 14,
+            id: 16,
             label: 'Địa chỉ công ty sản xuất',
             name: 'dchi_ctysx',
             type: 'text',
             placeholder: 'Địa chỉ công ty sản xuất',
-        },
-        {
-            id: 15,
-            label: 'Đơn giá bán',
-            name: 'don_gia',
-            type: 'number',
-            placeholder: 'Đơn giá bán',
         },
     ];
 
@@ -206,8 +212,10 @@ function MedicineDel() {
     //Method Handle
 
     const restoreMed = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
+
         axios
-            .put(`http://localhost:8081/category/medicine/update/restore/${idSelected}`)
+            .put(`${baseUrl}category/medicine/update/restore/${idSelected}`)
             .then((res) => {
                 setShowModalRes(false);
                 loadDataTbDel();
@@ -216,8 +224,9 @@ function MedicineDel() {
     };
 
     const deleteMedicine = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .delete(`http://localhost:8081/category/medicine/delete/${idSelected}`)
+            .delete(`${baseUrl}category/medicine/delete/${idSelected}`)
             .then((res) => {
                 setShowModalHardDelete(false);
                 loadDataTbDel();
@@ -226,8 +235,9 @@ function MedicineDel() {
     };
 
     const updateMedicine = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put(`http://localhost:8081/category/medicine/update/${idSelected}`, values)
+            .put(`${baseUrl}category/medicine/update/${idSelected}`, values)
             .then((res) => {
                 setShowModalView(false);
                 loadDataTbDel();
@@ -249,8 +259,9 @@ function MedicineDel() {
 
     //Call API Render
     const loadDataTbDel = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get('http://localhost:8081/category/getallmed/', {
+            .get(`${baseUrl}category/getallmed/`, {
                 params: {
                     search_value: nameSearchInput,
                     isDeleted: 1,

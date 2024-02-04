@@ -15,7 +15,7 @@ import ModalViewUser from '~/components/ModalPage/ModalViewUser';
 
 const cx = classNames.bind(style);
 
-function AllStaff() {
+function Branch() {
     const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState();
@@ -298,7 +298,7 @@ function AllStaff() {
             <div className={cx('header-content')}>
                 <DirectionHeader>Quản lý cơ sở</DirectionHeader>
                 <div className={cx('choose-medicine')}>
-                    <h4 className={cx('header-title')}>Danh sách người dùng</h4>
+                    <h4 className={cx('header-title')}>Danh sách chi nhánh</h4>
                     <div className={cx('header-action')}>
                         <div className={cx('header-search')}>
                             <input
@@ -312,7 +312,7 @@ function AllStaff() {
                             </button>
                         </div>
                         <button className={cx('btn-addstaff')} onClick={toggleModalAdd}>
-                            Thêm thành viên
+                            Thêm chi nhánh
                         </button>
                     </div>
                 </div>
@@ -362,4 +362,4 @@ function AllStaff() {
     );
 }
 
-export default AllStaff;
+export default Branch;

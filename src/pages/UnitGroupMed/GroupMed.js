@@ -5,6 +5,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import * as toast from '~/utils/toast';
+
 import axios from 'axios';
 import GroupMedTb from '~/components/Table/GroupMedTb';
 import ModalAll from '~/components/ModalPage/ModalAll';
@@ -83,6 +87,11 @@ function GroupMed() {
             .then((res) => {
                 setShowModalSofDel(false);
                 loadDataTb();
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Xóa thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
@@ -101,6 +110,11 @@ function GroupMed() {
                     .then((res1) => {
                         setShowModalAdd(false);
                         loadDataTb();
+                        if (res1.data === 'fail') {
+                            toast.notify('Bạn không có quyền thao tác', 'error');
+                        } else {
+                            toast.notify('Thêm mới thành công', 'success');
+                        }
                     })
                     .catch((e) => console.log(e));
             })
@@ -114,6 +128,11 @@ function GroupMed() {
             .then((res) => {
                 setShowModalView(false);
                 loadDataTb();
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Cập nhật thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
@@ -242,6 +261,8 @@ function GroupMed() {
                     methodHandle={handleAdd}
                 />
             )}
+
+            <ToastContainer />
 
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>

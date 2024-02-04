@@ -33,7 +33,10 @@ function Sidebar() {
                 <nav className={cx('sidebar-nav')}>
                     {SidebarData.map((item, index) => {
                         return (
-                            <div key={index}>
+                            <div
+                                key={index}
+                                className={cx(item.id === 5 && user.role !== 'ADMA' ? 'hidden-menu' : null)}
+                            >
                                 <div>
                                     <NavLink
                                         to={item.subNav ? null : item.path}

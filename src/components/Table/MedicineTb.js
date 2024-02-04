@@ -9,9 +9,7 @@ const cx = classNames.bind(style);
 function MedicineTb({ data, method }) {
     const tableStyle = {
         table: {
-            style: {
-                width: '1457px',
-            },
+            style: {},
         },
         rows: {
             style: {
@@ -23,12 +21,17 @@ function MedicineTb({ data, method }) {
                 fontSize: '16px',
             },
         },
+
+        cells: {
+            style: {},
+        },
     };
 
     const columns = [
         {
             name: 'STT',
             cell: (row, index) => index + 1,
+            width: '80px',
         },
         {
             name: 'Tên dược',
@@ -38,18 +41,23 @@ function MedicineTb({ data, method }) {
         {
             name: 'Hoạt chất',
             selector: (row) => row.hoat_chat,
+            width: '180px',
         },
         {
             name: 'Hàm lượng',
             selector: (row) => row.ham_luong,
+            width: '180px',
         },
         {
             name: 'Dạng bào chế',
             selector: (row) => row.dang_bao_che,
+            width: '200px',
         },
         {
-            name: 'Quy cách đóng gói',
-            selector: (row) => row.dong_goi,
+            name: 'Dạng đóng gói',
+            selector: (row) => row.description_unit,
+            width: '200px',
+            // maxWidth: 'fit-content',
         },
         {
             name: '',
@@ -63,6 +71,7 @@ function MedicineTb({ data, method }) {
                     </button>
                 </div>
             ),
+            width: '280px',
         },
     ];
     return (

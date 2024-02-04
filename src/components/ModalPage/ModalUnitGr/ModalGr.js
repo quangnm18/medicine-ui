@@ -7,7 +7,6 @@ import { useState } from 'react';
 const cx = classNames.bind(style);
 
 function ModalGr({ label, dataInputs, dataValueInputs, methodOnchange, methodToggle, methodHandle }) {
-    console.log(dataValueInputs);
     const [error, setError] = useState({});
     const validator = () => {
         const validationError = {};
@@ -17,6 +16,10 @@ function ModalGr({ label, dataInputs, dataValueInputs, methodOnchange, methodTog
 
         if (dataValueInputs.donvi_nho === '' && !dataValueInputs.donvi_nho.trim()) {
             validationError.donvi_nho = 'Phải nhập đơn vị nhỏ nhất';
+        }
+
+        if (dataValueInputs.description_unit === '' && !dataValueInputs.description_unit.trim()) {
+            validationError.description_unit = 'Phải nhập mô tả đóng gói';
         }
 
         if (dataValueInputs.ten_nhom_thuoc === '' && !dataValueInputs.ten_nhom_thuoc.trim()) {
@@ -45,7 +48,11 @@ function ModalGr({ label, dataInputs, dataValueInputs, methodOnchange, methodTog
                                             (input.name === 'Name' ||
                                                 input.name === 'donvi_lon' ||
                                                 input.name === 'donvi_nho' ||
-                                                input.name === 'ten_nhom_thuoc') &&
+                                                input.name === 'description_unit' ||
+                                                input.name === 'ten_nhom_thuoc' ||
+                                                input.name === 'userId_del' ||
+                                                input.name === 'group_code' ||
+                                                input.name === 'unit_code') &&
                                                 'required',
                                         )}
                                     >
@@ -66,7 +73,7 @@ function ModalGr({ label, dataInputs, dataValueInputs, methodOnchange, methodTog
                         {label === 'Thông tin chi tiết nhóm dược' && (
                             <div>
                                 <div className={cx('if-detailGr')}>
-                                    <div className={cx('label-gr')}>Mã nhóm thuốc:</div>
+                                    <div className={cx('label-gr', 'required')}>Mã nhóm thuốc:</div>
                                     <input name="group_code" value={dataValueInputs.group_code} disabled />
                                 </div>
                                 <div className={cx('if-detailGr', 'wrap_area')}>
@@ -99,7 +106,7 @@ function ModalGr({ label, dataInputs, dataValueInputs, methodOnchange, methodTog
 
                         {label === 'Thông tin chi tiết đơn vị' && (
                             <div className={cx('if-detailGr')}>
-                                <div className={cx('label-gr')}>Mã đơn vị:</div>
+                                <div className={cx('label-gr', 'required')}>Mã đơn vị:</div>
                                 <input name="unit_code" value={dataValueInputs.unit_code} disabled />
                             </div>
                         )}
@@ -108,7 +115,7 @@ function ModalGr({ label, dataInputs, dataValueInputs, methodOnchange, methodTog
 
                 <div className={cx('modal-actionGr')}>
                     <button className={cx('btn-modal', 'btn-yes')} onClick={validator}>
-                        {label === 'Thêm mới nhóm dược' ? 'Thêm' : 'Cập nhật'}
+                        {label === 'Thêm mới nhóm dược' || label == 'Thêm mới đơn vị' ? 'Thêm' : 'Cập nhật'}
                     </button>
                     <button className={cx('btn-modal', 'btn-no')} onClick={methodToggle}>
                         Trở lại

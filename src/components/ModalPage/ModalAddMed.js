@@ -7,12 +7,17 @@ import axios from 'axios';
 
 const cx = classNames.bind(style);
 
-function ModalAddMed({ dataInputs, dataValueInputs, methodOnchange, methodToggle, methodHandle }) {
+function ModalAddMed({
+    label,
+    dataInputs,
+    dataValueInputs,
+    methodOnchange,
+    methodToggle,
+    methodHandle,
+    methodValueSelect,
+}) {
     const [dataUnitMed, setDataUnitMed] = useState([]);
     const [dataGrMed, setDataGrMed] = useState([]);
-
-    const [valueUnit, setValueUnit] = useState('');
-    const [valueGroup, setValueGroup] = useState('');
     const [error, setError] = useState({});
 
     //validate
@@ -22,31 +27,24 @@ function ModalAddMed({ dataInputs, dataValueInputs, methodOnchange, methodToggle
             validationError.ten = 'Phải nhập tên dược phẩm';
         }
 
-        if (valueUnit === '' && !valueUnit.trim()) {
+        if (dataValueInputs.don_vi_duoc === '' || dataValueInputs.don_vi_duoc === '0') {
             validationError.don_vi_duoc = 'Phải chọn đơn vị dược';
         }
 
-        if (valueGroup === '' && !valueGroup.trim()) {
+        if (dataValueInputs.nhom_thuoc === '' || dataValueInputs.nhom_thuoc === '0') {
             validationError.nhom_thuoc = 'Phải chọn nhóm thuốc';
-        }
-
-        if (dataValueInputs.dong_goi === '' && !dataValueInputs.dong_goi.trim()) {
-            validationError.dong_goi = 'Phải nhập mô tả đóng gói';
         }
 
         setError(validationError);
 
         if (Object.keys(validationError).length === 0) {
-            methodHandle(valueUnit, valueGroup);
+            methodHandle();
         }
     };
 
-    const onChangeSelectedUnit = (obj) => {
-        setValueUnit(obj.target.value);
-    };
-
-    const onChangeSelectedGr = (obj) => {
-        setValueGroup(obj.target.value);
+    const onChangeSelected = (e) => {
+        console.log(typeof e.target.value);
+        methodValueSelect({ ...dataValueInputs, [e.target.name]: e.target.value });
     };
 
     useEffect(() => {
@@ -69,7 +67,7 @@ function ModalAddMed({ dataInputs, dataValueInputs, methodOnchange, methodToggle
     return (
         <Modal>
             <div className={cx('modal-view')}>
-                <div className={cx('modal-title')}>Thêm mới dược phẩm</div>
+                <div className={cx('modal-title')}>{label}</div>
                 <div className={cx('modal-form')}>
                     <div className={cx('modal-if')}>
                         {dataInputs.map((input) => (
@@ -90,8 +88,13 @@ function ModalAddMed({ dataInputs, dataValueInputs, methodOnchange, methodToggle
                         <div className={cx('select-action')}>
                             <div className={cx('choose-unitDetail')}>
                                 <label>Đơn vị dược</label>
-                                <select className={cx('unit-select')} onChange={onChangeSelectedUnit}>
-                                    <option value="">Đơn vị</option>
+                                <select
+                                    className={cx('unit-select')}
+                                    name="don_vi_duoc"
+                                    onChange={onChangeSelected}
+                                    value={dataValueInputs.don_vi_duoc}
+                                >
+                                    <option value={0}></option>
                                     {dataUnitMed.map((unit) => (
                                         <option key={unit.id} value={unit.id}>
                                             {unit.description_unit}
@@ -104,8 +107,13 @@ function ModalAddMed({ dataInputs, dataValueInputs, methodOnchange, methodToggle
                             </div>
                             <div className={cx('choose-unitDetail')}>
                                 <label>Nhóm thuốc</label>
-                                <select className={cx('unit-select')} onChange={onChangeSelectedGr}>
-                                    <option value=""></option>
+                                <select
+                                    className={cx('unit-select')}
+                                    name="nhom_thuoc"
+                                    onChange={onChangeSelected}
+                                    value={dataValueInputs.nhom_thuoc}
+                                >
+                                    <option value={0}></option>
                                     {dataGrMed.map((gr) => (
                                         <option key={gr.id} value={gr.id}>
                                             {gr.ten_nhom_thuoc}
@@ -122,12 +130,8 @@ function ModalAddMed({ dataInputs, dataValueInputs, methodOnchange, methodToggle
 
                 <div className={cx('modal-actionBtn')}>
                     <div>
-                        <button className={cx('btn-modal', 'btnAddMore-modal', 'btn-yes')}>Thêm đơn vị dược</button>
-                        <button className={cx('btn-modal', 'btnAddMore-modal', 'btn-yes')}>Thêm đơn nhóm thuốc</button>
-                    </div>
-                    <div>
                         <button className={cx('btn-modal', 'btn-yes')} onClick={validator}>
-                            Thêm
+                            {label === 'Thêm mới dược phẩm' ? 'Thêm' : 'Cập nhật'}
                         </button>
                         <button className={cx('btn-modal', 'btn-no')} onClick={methodToggle}>
                             Trở lại

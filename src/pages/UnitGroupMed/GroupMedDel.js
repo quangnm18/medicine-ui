@@ -5,6 +5,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import * as toast from '~/utils/toast';
+
 import axios from 'axios';
 import ModalAll from '~/components/ModalPage/ModalAll';
 import ModalGr from '~/components/ModalPage/ModalUnitGr/ModalGr';
@@ -87,6 +91,11 @@ function GroupMedDel() {
             .then((res) => {
                 setShowModalRes(false);
                 loadDataTbDel();
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Khôi phục thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
@@ -98,6 +107,11 @@ function GroupMedDel() {
             .then((res) => {
                 setShowModalHarDel(false);
                 loadDataTbDel();
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Xóa thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
@@ -109,6 +123,11 @@ function GroupMedDel() {
             .then((res) => {
                 setShowModalView(false);
                 loadDataTbDel();
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Cập nhật thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
@@ -194,6 +213,8 @@ function GroupMedDel() {
                     </div>
                 </div>
             </div>
+
+            <ToastContainer />
 
             {showModalRes && (
                 <ModalAll
