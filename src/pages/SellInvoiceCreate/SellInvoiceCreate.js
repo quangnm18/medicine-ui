@@ -131,8 +131,6 @@ function SellInvoiceCreate() {
                 .catch((e) => console.log(e));
         }
     };
-    console.log(process.env.REACT_APP_BASE_URL);
-    console.log(process.env.REACT_SERVER_INVOICE_URL);
 
     const handleSaveIvExport = () => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
@@ -241,9 +239,9 @@ function SellInvoiceCreate() {
                         </div>
                     </div>
 
-                    <div className={cx('btn-action')}>
-                        <button className={cx('btn-add')} onClick={routeChange}>
-                            Danh sách
+                    <div className={cx('btn-action', 'wrap-btnselllist')}>
+                        <button className={cx('btn-add', 'btn-selllist')} onClick={routeChange}>
+                            Danh sách hóa đơn
                         </button>
                     </div>
                 </div>

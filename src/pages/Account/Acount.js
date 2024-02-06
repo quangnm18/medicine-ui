@@ -24,8 +24,9 @@ function Account() {
 
     axios.defaults.withCredentials = true;
     const handleLogOut = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get('http://localhost:8081/authen/logout')
+            .get(`${baseUrl}authen/logout`)
             .then((res) => {
                 if (res.data.status === 'success') {
                     localStorage.clear();

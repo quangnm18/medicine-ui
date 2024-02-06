@@ -12,10 +12,14 @@ import ModalAll1 from '~/components/ModalPage/ModalAll1';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ModalViewUser from '~/components/ModalPage/ModalViewUser';
+import BranchListTb from '~/components/Table/BranchListTb';
+import ModalAddBranch from '~/components/ModalPage/ModalUnitGr/ModalBranch';
 
 const cx = classNames.bind(style);
 
 function Branch() {
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
+
     const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState();
@@ -34,43 +38,43 @@ function Branch() {
     const inputsUser = [
         {
             id: 1,
-            label: 'Họ và tên',
-            name: 'Name',
+            label: 'Tên chi nhánh',
+            name: 'name',
             type: 'text',
-            placeholder: 'Nguyễn Văn C...',
+            placeholder: '',
         },
         {
             id: 2,
-            label: 'Ngày sinh',
-            name: 'DateOfBirth',
-            type: 'date',
+            label: 'Địa chỉ',
+            name: 'address',
+            type: 'text',
             placeholder: '',
         },
         {
             id: 3,
-            label: 'Địa chỉ',
-            name: 'Address',
+            label: 'Mã chi nhánh',
+            name: 'branch_code',
             type: 'text',
-            placeholder: 'Đống Đa, Hà Nội,...',
+            placeholder: '',
         },
         {
             id: 4,
-            label: 'Số điện thoại',
-            name: 'PhoneNumber',
-            type: 'number',
-            placeholder: '012358745,...',
+            label: 'Người đại diện',
+            name: 'Name',
+            type: 'text',
+            placeholder: '',
         },
         {
             id: 5,
-            label: 'Email',
-            name: 'Email',
-            type: 'text',
-            placeholder: 'abc@gmail.com,...',
+            label: 'SĐT',
+            name: 'PhoneNumber',
+            type: 'number',
+            placeholder: '',
         },
         {
             id: 6,
-            label: 'Chi nhánh',
-            name: 'branch',
+            label: 'Email',
+            name: 'Email',
             type: 'text',
             placeholder: '',
         },
@@ -79,53 +83,25 @@ function Branch() {
     const inputsUserAdd = [
         {
             id: 1,
-            label: 'Họ và tên',
-            name: 'Name',
+            label: 'Tên chi nhánh',
+            name: 'name',
             type: 'text',
-            placeholder: 'Nguyễn Văn C...',
+            placeholder: 'Cơ sở 1',
         },
         {
             id: 2,
-            label: 'Ngày sinh',
-            name: 'DateOfBirth',
-            type: 'date',
-            placeholder: '',
-        },
-        {
-            id: 3,
             label: 'Địa chỉ',
-            name: 'Address',
+            name: 'address',
             type: 'text',
             placeholder: 'Đống Đa, Hà Nội,...',
         },
-        {
-            id: 4,
-            label: 'Số điện thoại',
-            name: 'PhoneNumber',
-            type: 'number',
-            placeholder: '012358745,...',
-        },
-        {
-            id: 5,
-            label: 'Email',
-            name: 'Email',
-            type: 'text',
-            placeholder: 'abc@gmail.com,...',
-        },
-        {
-            id: 6,
-            label: 'Tên đăng nhập',
-            name: 'user_name',
-            type: 'text',
-            placeholder: '',
-        },
-        {
-            id: 7,
-            label: 'Mật khẩu',
-            name: 'password',
-            type: 'password',
-            placeholder: '',
-        },
+        // {
+        //     id: 3,
+        //     label: 'Mã chi nhánh',
+        //     name: 'branch_code',
+        //     type: 'text',
+        //     placeholder: 'CS1',
+        // },
     ];
 
     const getBirth = (data) => {
@@ -178,47 +154,46 @@ function Branch() {
     };
 
     const toggleModalView = (data) => {
+        console.log(data);
         setShowModalView(!showModalView);
         setIdSelected(data);
         setValues({
-            UserID: data.ID,
-            Name: data.Name,
-            DateOfBirth: getBirth(data.DateOfBirth),
-            Address: data.Address,
+            name: data.name,
+            address: data.address,
+            branch_code: data.branch_code,
+            Name: data.ten_quan_ly,
             PhoneNumber: data.PhoneNumber,
             Email: data.Email,
-            Role: data.role_id,
-            branch: data.name,
         });
     };
 
     const toggleModalAdd = () => {
         setShowModalAdd(!showModalAdd);
         setValues({
-            Name: '',
-            DateOfBirth: '0000-00-00',
-            Address: '',
-            PhoneNumber: '',
-            Email: '',
-            Role: '',
-            user_name: '',
-            password: '',
-            branch_id: JSON.parse(localStorage.getItem('data_user')).id_chi_nhanh,
+            name: '',
+            address: '',
+            branch_code: '',
         });
     };
 
     const handleAdd = () => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .post(`${baseUrl}category/adduser`, values)
-            .then((res) => {
-                if (res.data === 'fail') {
-                    notify('Bạn không có quyền thao tác', 'error');
-                } else {
-                    notify('Thêm mới thành công', 'success');
-                }
-                setShowModalAdd(false);
-                loadData();
+            .get(`${baseUrl}branch/getmaxid`)
+            .then((res1) => {
+                const newId = res1.data[0].max_id + 1;
+                axios
+                    .post(`${baseUrl}branch/create`, { ...values, branch_code: `CS${newId}` })
+                    .then((res) => {
+                        if (res.data === 'fail') {
+                            notify('Bạn không có quyền thao tác', 'error');
+                        } else {
+                            notify('Thêm mới thành công', 'success');
+                        }
+                        setShowModalAdd(false);
+                        loadData();
+                    })
+                    .catch((e) => console.log(e));
             })
             .catch((e) => console.log(e));
     };
@@ -226,7 +201,7 @@ function Branch() {
     const handleUpdate = () => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put(`${baseUrl}category/updateuser`, values)
+            .put(`${baseUrl}branch/update/${idSelected.id}`, values)
             .then((res) => {
                 if (res.data === 'fail') {
                     notify('Bạn không có quyền thao tác', 'error');
@@ -239,10 +214,10 @@ function Branch() {
             .catch((e) => console.log(e));
     };
 
-    const handleDelete = (id) => {
+    const handleDelete = () => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .delete(`${baseUrl}category/users/delete/${idSelected}`)
+            .delete(`${baseUrl}branch/delete/${idSelected}`)
             .then((res) => {
                 setShowModalHardDel(false);
                 loadData();
@@ -272,9 +247,8 @@ function Branch() {
     const loadData = () => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get(`${baseUrl}category/users`, {
+            .get(`${baseUrl}branch/paginate`, {
                 params: {
-                    branch_code: JSON.parse(localStorage.getItem('data_user')).ma_chi_nhanh,
                     search_value: valuesSearch,
                     numRecord: numRecord,
                     startRecord: startRecord,
@@ -299,10 +273,10 @@ function Branch() {
                 <DirectionHeader>Quản lý cơ sở</DirectionHeader>
                 <div className={cx('choose-medicine')}>
                     <h4 className={cx('header-title')}>Danh sách chi nhánh</h4>
-                    <div className={cx('header-action')}>
+                    <div className={cx('header-action', 'header-action-branch')}>
                         <div className={cx('header-search')}>
                             <input
-                                placeholder="Tìm kiếm theo SĐT, Email, ..."
+                                placeholder="Tìm kiếm theo tên ..."
                                 onChange={onChangeInputSearch}
                                 value={valuesSearch}
                                 onKeyDown={handleKeyPress}
@@ -320,7 +294,7 @@ function Branch() {
 
             {showModalHardDel && (
                 <ModalAll1
-                    label={'Bạn có muốn xóa?'}
+                    label={'Bạn có muốn xóa vĩnh viễn?'}
                     methodToggle={toggleModalHardDel}
                     methodHandle={handleDelete}
                     data={idSelected}
@@ -328,8 +302,8 @@ function Branch() {
             )}
 
             {showModalView && (
-                <ModalViewUser
-                    label={'Thông tin người dùng'}
+                <ModalAddBranch
+                    label={'Thông tin chi tiết'}
                     dataInputs={inputsUser}
                     dataValueInputs={values}
                     methodToggle={toggleModalView}
@@ -339,8 +313,8 @@ function Branch() {
             )}
 
             {showModalAdd && (
-                <ModalViewUser
-                    label={'Nhập thông tin người dùng'}
+                <ModalAddBranch
+                    label={'Thêm mới chi nhánh'}
                     dataInputs={inputsUserAdd}
                     dataValueInputs={values}
                     methodToggle={toggleModalAdd}
@@ -352,7 +326,7 @@ function Branch() {
 
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>
-                    <StaffTb data={dataTb} method={{ toggleModalView, toggleModalHardDel }} />
+                    <BranchListTb data={dataTb} method={{ toggleModalView, toggleModalHardDel }} user={user} />
                 </div>
                 <div className={cx('wrap-pagination')}>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />

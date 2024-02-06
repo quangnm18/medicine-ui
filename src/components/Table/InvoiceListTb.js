@@ -45,6 +45,7 @@ function InvoiceListTb({ data, method }) {
         {
             name: 'Tổng CK',
             selector: (row) => Intl.NumberFormat().format(row.tong_ck),
+            width: '150px',
         },
         {
             name: 'Thành tiền',
@@ -66,11 +67,12 @@ function InvoiceListTb({ data, method }) {
                     </button>
                 </div>
             ),
+            width: '100px',
         },
     ];
     return (
         <div>
-            <DataTable columns={columns} data={data} customStyles={tableStyle}></DataTable>
+            <DataTable columns={columns} data={data} customStyles={tableStyle} highlightOnHover></DataTable>
         </div>
     );
 }

@@ -84,8 +84,9 @@ function InvoiceListDel() {
 
     //method handle
     const handleRes = (id) => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put(`http://localhost:8081/sell/ivlist/restore/${id}`)
+            .put(`${baseUrl}sell/ivlist/restore/${id}`)
             .then((res) => {
                 setShowModalRes(false);
                 loadData();
@@ -94,8 +95,9 @@ function InvoiceListDel() {
     };
 
     const handleHardDel = (id) => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .delete(`http://localhost:8081/sell/ivlist/harddelete/${id}`)
+            .delete(`${baseUrl}sell/ivlist/harddelete/${id}`)
             .then((res) => {
                 setShowModalHardDel(false);
                 loadData();
@@ -108,8 +110,9 @@ function InvoiceListDel() {
     };
 
     const loadData = useCallback(() => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get('http://localhost:8081/sell/ivlist/', {
+            .get(`${baseUrl}sell/ivlist/`, {
                 params: {
                     isDeleted: 1,
                     numRecord: numRecord,

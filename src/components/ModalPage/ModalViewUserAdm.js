@@ -7,8 +7,10 @@ import axios from 'axios';
 
 const cx = classNames.bind(style);
 
-function ModalViewUser({ label, dataInputs, dataValueInputs, methodOnchange, methodToggle, methodHandle }) {
+function ModalViewUserAdm({ label, dataInputs, dataValueInputs, methodOnchange, methodToggle, methodHandle }) {
     const [allRole, setAllRole] = useState([]);
+    const [allBranch, setAllBranch] = useState([]);
+
     const [error, setError] = useState({});
     const validator = () => {
         const validationError = {};
@@ -26,7 +28,7 @@ function ModalViewUser({ label, dataInputs, dataValueInputs, methodOnchange, met
             validationError.Email = 'Email không hợp lệ';
         }
 
-        if (dataValueInputs.Role === '' && !dataValueInputs.Role.trim()) {
+        if (dataValueInputs.Role === 0) {
             validationError.Role = 'Trường này là bắt buộc';
         }
 
@@ -36,6 +38,10 @@ function ModalViewUser({ label, dataInputs, dataValueInputs, methodOnchange, met
 
         if (dataValueInputs.password === '' && !dataValueInputs.password.trim()) {
             validationError.password = 'Trường này là bắt buộc';
+        }
+
+        if (dataValueInputs.branch_id === 0) {
+            validationError.branch_id = 'Trường này là bắt buộc';
         }
 
         setError(validationError);
@@ -53,6 +59,13 @@ function ModalViewUser({ label, dataInputs, dataValueInputs, methodOnchange, met
                 setAllRole(res.data);
             })
             .catch((e) => console.log(e));
+
+        axios
+            .get(`${baseUrl}branch`)
+            .then((res1) => {
+                setAllBranch(res1.data);
+            })
+            .catch((e) => console.log(e));
     }, []);
 
     return (
@@ -68,7 +81,9 @@ function ModalViewUser({ label, dataInputs, dataValueInputs, methodOnchange, met
                                         'label',
                                         (input.name === 'Name' ||
                                             input.name === 'PhoneNumber' ||
-                                            input.name === 'Email') &&
+                                            input.name === 'Email' ||
+                                            input.name === 'user_name' ||
+                                            input.name === 'password') &&
                                             'required',
                                     )}
                                 >
@@ -104,15 +119,32 @@ function ModalViewUser({ label, dataInputs, dataValueInputs, methodOnchange, met
                             </select>
                             {error['Role'] && <div className={cx('error-validate')}>{error['Role']}</div>}
                         </div>
+                        <div className={cx('if-detailAll', 'if-detailAlluser')}>
+                            <label htmlFor="branch_id" className={cx('required')}>
+                                Chi nhánh
+                            </label>
+                            <select
+                                className={cx('role-select')}
+                                name="branch_id"
+                                value={dataValueInputs.branch_id}
+                                onChange={methodOnchange}
+                            >
+                                <option>--Chọn chi nhánh--</option>
+                                {allBranch.map((branch) => (
+                                    <option key={branch.id} className={cx('role-option')} value={branch.id}>
+                                        {branch.name}
+                                    </option>
+                                ))}
+                            </select>
+                            {error['branch_id'] && <div className={cx('error-validate')}>{error['branch_id']}</div>}
+                        </div>
                     </div>
                 </div>
 
                 <div className={cx('modalViewAll-action')}>
-                    {JSON.parse(localStorage.getItem('data_user')).role === 'ADM' && (
-                        <button className={cx('btn-modal', 'btn-yes')} onClick={validator}>
-                            {label === 'Thông tin người dùng' ? 'Cập nhật' : 'Thêm'}
-                        </button>
-                    )}
+                    <button className={cx('btn-modal', 'btn-yes')} onClick={validator}>
+                        {label === 'Thông tin người dùng' ? 'Cập nhật' : 'Thêm'}
+                    </button>
 
                     <button className={cx('btn-modal', 'btn-no')} onClick={methodToggle}>
                         Trở lại
@@ -123,4 +155,4 @@ function ModalViewUser({ label, dataInputs, dataValueInputs, methodOnchange, met
     );
 }
 
-export default ModalViewUser;
+export default ModalViewUserAdm;

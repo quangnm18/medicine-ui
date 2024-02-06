@@ -11,21 +11,26 @@ import ModalAll1 from '~/components/ModalPage/ModalAll1';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import ModalViewUser from '~/components/ModalPage/ModalViewUser';
+import ModalViewUserAdm from '~/components/ModalPage/ModalViewUserAdm';
 
 const cx = classNames.bind(style);
 
 function AllStaff() {
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
+
     const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState();
 
     const [dataTb, setDataTb] = useState([]);
     const [valuesSearch, setValuesSearch] = useState('');
-    const [showModalHardDel, setShowModalHardDel] = useState(false);
+    const [showModalSoftDel, setShowModalSoftDel] = useState(false);
     const [showModalView, setShowModalView] = useState(false);
     const [showModalAdd, setShowModalAdd] = useState(false);
     const [idSelected, setIdSelected] = useState();
+
+    const [dataBranch, setDataBranch] = useState([]);
+    const [selectBranch, setSelectBranch] = useState(undefined);
 
     axios.defaults.withCredentials = true;
 
@@ -66,13 +71,6 @@ function AllStaff() {
             name: 'Email',
             type: 'text',
             placeholder: 'abc@gmail.com,...',
-        },
-        {
-            id: 6,
-            label: 'Chi nhánh',
-            name: 'branch',
-            type: 'text',
-            placeholder: '',
         },
     ];
 
@@ -139,13 +137,17 @@ function AllStaff() {
     };
 
     const onChangeInputUser = (e) => {
-        if (e.target.name === 'Role') {
+        if (e.target.name === 'Role' || e.target.name === 'branch_id') {
             setValues({ ...values, [e.target.name]: Number.parseInt(e.target.value) });
         } else if (e.target.name === 'password') {
             setValues({ ...values, [e.target.name]: e.target.value });
         } else {
             setValues({ ...values, [e.target.name]: e.target.value });
         }
+    };
+
+    const onchangeBranch = (e) => {
+        setSelectBranch(e.target.value);
     };
 
     const notify = (data, type) => {
@@ -172,12 +174,13 @@ function AllStaff() {
         }
     };
 
-    const toggleModalHardDel = (id) => {
-        setShowModalHardDel(!showModalHardDel);
+    const toggleModalSoftDel = (id) => {
+        setShowModalSoftDel(!showModalSoftDel);
         setIdSelected(id);
     };
 
     const toggleModalView = (data) => {
+        console.log(data);
         setShowModalView(!showModalView);
         setIdSelected(data);
         setValues({
@@ -188,7 +191,7 @@ function AllStaff() {
             PhoneNumber: data.PhoneNumber,
             Email: data.Email,
             Role: data.role_id,
-            branch: data.name,
+            branch_id: data.branch_id,
         });
     };
 
@@ -196,14 +199,14 @@ function AllStaff() {
         setShowModalAdd(!showModalAdd);
         setValues({
             Name: '',
-            DateOfBirth: '0000-00-00',
+            DateOfBirth: getBirth('1970-01-01'),
             Address: '',
             PhoneNumber: '',
             Email: '',
-            Role: '',
+            Role: 0,
             user_name: '',
             password: '',
-            branch_id: JSON.parse(localStorage.getItem('data_user')).id_chi_nhanh,
+            branch_id: 0,
         });
     };
 
@@ -242,9 +245,9 @@ function AllStaff() {
     const handleDelete = (id) => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .delete(`${baseUrl}category/users/delete/${idSelected}`)
+            .put(`${baseUrl}category/users/softdelete/${idSelected}`)
             .then((res) => {
-                setShowModalHardDel(false);
+                setShowModalSoftDel(false);
                 loadData();
                 if (res.data === 'fail') {
                     notify('Bạn không có quyền thao tác', 'error');
@@ -274,7 +277,8 @@ function AllStaff() {
         axios
             .get(`${baseUrl}category/users`, {
                 params: {
-                    branch_code: JSON.parse(localStorage.getItem('data_user')).ma_chi_nhanh,
+                    branch_id: selectBranch,
+                    isDeleted: 0,
                     search_value: valuesSearch,
                     numRecord: numRecord,
                     startRecord: startRecord,
@@ -292,43 +296,73 @@ function AllStaff() {
     useEffect(() => {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord]);
+    }, [startRecord, selectBranch]);
+
+    useEffect(() => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
+        axios
+            .get(`${baseUrl}branch`)
+            .then((res) => {
+                if (res.data === 'fail') {
+                    setDataBranch([]);
+                } else setDataBranch(res.data);
+            })
+            .catch((e) => console.log(e));
+    }, []);
     return (
         <div className={cx('content')}>
             <div className={cx('header-content')}>
                 <DirectionHeader>Quản lý cơ sở</DirectionHeader>
                 <div className={cx('choose-medicine')}>
                     <h4 className={cx('header-title')}>Danh sách người dùng</h4>
-                    <div className={cx('header-action')}>
-                        <div className={cx('header-search')}>
-                            <input
-                                placeholder="Tìm kiếm theo SĐT, Email, ..."
-                                onChange={onChangeInputSearch}
-                                value={valuesSearch}
-                                onKeyDown={handleKeyPress}
-                            />
-                            <button className={cx('search-btn')}>
-                                <FontAwesomeIcon icon={faSearch} className={cx('search-icon')} />
+                    <div className={cx('header-wrap')}>
+                        <div className={cx('header-action')}>
+                            <div className={cx('wrap-search')}>
+                                <div className={cx('header-search')}>
+                                    <label className={cx('search-label')}>Tìm kiếm</label>
+                                    <input
+                                        placeholder="Tìm kiếm theo tên, ..."
+                                        onChange={onChangeInputSearch}
+                                        value={valuesSearch}
+                                        onKeyDown={handleKeyPress}
+                                    />
+                                </div>
+                                <button className={cx('search-btn')}>
+                                    <FontAwesomeIcon icon={faSearch} className={cx('search-icon')} />
+                                </button>
+                            </div>
+
+                            <button className={cx('btn-addstaff')} onClick={toggleModalAdd}>
+                                Thêm thành viên
                             </button>
                         </div>
-                        <button className={cx('btn-addstaff')} onClick={toggleModalAdd}>
-                            Thêm thành viên
-                        </button>
+                        <div className={cx('branch-option', 'search-statistic')}>
+                            <label className={cx('search-label')}>Chi nhánh</label>
+
+                            <select value={selectBranch} onChange={onchangeBranch}>
+                                <option value={0}>--Chọn cơ sở--</option>
+                                {dataBranch.map((branch) => (
+                                    <option key={branch.id} value={branch.id}>
+                                        {branch.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            {showModalHardDel && (
+            {showModalSoftDel && (
                 <ModalAll1
                     label={'Bạn có muốn xóa?'}
-                    methodToggle={toggleModalHardDel}
+                    methodToggle={toggleModalSoftDel}
                     methodHandle={handleDelete}
                     data={idSelected}
                 />
             )}
 
             {showModalView && (
-                <ModalViewUser
+                <ModalViewUserAdm
                     label={'Thông tin người dùng'}
                     dataInputs={inputsUser}
                     dataValueInputs={values}
@@ -339,7 +373,7 @@ function AllStaff() {
             )}
 
             {showModalAdd && (
-                <ModalViewUser
+                <ModalViewUserAdm
                     label={'Nhập thông tin người dùng'}
                     dataInputs={inputsUserAdd}
                     dataValueInputs={values}
@@ -352,7 +386,7 @@ function AllStaff() {
 
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>
-                    <StaffTb data={dataTb} method={{ toggleModalView, toggleModalHardDel }} />
+                    <StaffTb data={dataTb} method={{ toggleModalView, toggleModalSoftDel }} user={user} />
                 </div>
                 <div className={cx('wrap-pagination')}>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />

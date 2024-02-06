@@ -120,8 +120,9 @@ function SupplierDel() {
     //handleClick method
 
     const handleUpdate = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put(`http://localhost:8081/category/supplier/update/${idSelected}`, values)
+            .put(`${baseUrl}category/supplier/update/${idSelected}`, values)
             .then((res) => {
                 loadData();
                 setShowModalView(false);
@@ -130,8 +131,9 @@ function SupplierDel() {
     };
 
     const handleHardDel = (id) => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .delete(`http://localhost:8081/category/supplier/harddelete/${id}`)
+            .delete(`${baseUrl}category/supplier/harddelete/${id}`)
             .then((res) => {
                 loadData();
                 setShowModaHardDel(false);
@@ -140,8 +142,9 @@ function SupplierDel() {
     };
 
     const handleRes = (id) => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put(`http://localhost:8081/category/supplier/restore/${id}`)
+            .put(`${baseUrl}category/supplier/restore/${id}`)
             .then((res) => {
                 loadData();
                 setShowModalRes(false);
@@ -164,8 +167,9 @@ function SupplierDel() {
     };
 
     const loadData = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get('http://localhost:8081/category/supplier/', {
+            .get(`${baseUrl}category/supplier/`, {
                 params: {
                     search_value: valuesSearch,
                     isDeleted: 1,

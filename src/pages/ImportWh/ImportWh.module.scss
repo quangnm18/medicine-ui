@@ -34,13 +34,28 @@
     }
 }
 
+.wrap-searchiptiv {
+    display: flex;
+}
+
 .search-statistic {
-    margin-left: 82px;
+    margin-left: 90px;
     padding-top: 8px;
+    width: 416px;
+
     input {
-        width: 398px;
+        width: 400px;
         outline: none;
     }
+
+    select {
+        width: 100%;
+        outline: none;
+    }
+}
+
+.input-statistic {
+    margin-left: 81px;
 }
 
 .search-filter {

@@ -90,8 +90,9 @@ function ModalViewDetailWh({ label, data, methodToggle, methodHandle }) {
     ];
 
     useEffect(() => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get(`http://localhost:8081/importlist/alldetailid/${data}`)
+            .get(`${baseUrl}importlist/alldetailid/${data}`)
             .then((res) => setDataDetails(res.data))
             .catch((e) => console.log(e));
     }, []);

@@ -81,8 +81,9 @@ function ModalViewSaleDetail({ label, data, methodToggle, methodHandle }) {
     ];
 
     useEffect(() => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get(`http://localhost:8081/sell/ivdetailcurr/?q=${data.ma_hoa_don}`)
+            .get(`${baseUrl}sell/ivdetailcurr/?q=${data.ma_hoa_don}`)
             .then((res) => setDataDetails(res.data))
             .catch((e) => console.log(e));
     }, []);

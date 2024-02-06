@@ -16,13 +16,15 @@ import ModalViewUser from '~/components/ModalPage/ModalViewUser';
 const cx = classNames.bind(style);
 
 function Staff() {
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
+
     const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState();
 
     const [dataTb, setDataTb] = useState([]);
     const [valuesSearch, setValuesSearch] = useState('');
-    const [showModalHardDel, setShowModalHardDel] = useState(false);
+    const [showModalSoftDel, setShowModalSoftDel] = useState(false);
     const [showModalView, setShowModalView] = useState(false);
     const [showModalAdd, setShowModalAdd] = useState(false);
     const [idSelected, setIdSelected] = useState();
@@ -172,8 +174,8 @@ function Staff() {
         }
     };
 
-    const toggleModalHardDel = (id) => {
-        setShowModalHardDel(!showModalHardDel);
+    const toggleModalSoftDel = (id) => {
+        setShowModalSoftDel(!showModalSoftDel);
         setIdSelected(id);
     };
 
@@ -196,14 +198,14 @@ function Staff() {
         setShowModalAdd(!showModalAdd);
         setValues({
             Name: '',
-            DateOfBirth: '0000-00-00',
+            DateOfBirth: getBirth('1970-01-01'),
             Address: '',
             PhoneNumber: '',
             Email: '',
             Role: '',
             user_name: '',
             password: '',
-            branch_id: JSON.parse(localStorage.getItem('data_user')).id_chi_nhanh,
+            branch_id: user.id_chi_nhanh,
         });
     };
 
@@ -242,9 +244,9 @@ function Staff() {
     const handleDelete = (id) => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .delete(`${baseUrl}category/users/delete/${idSelected}`)
+            .put(`${baseUrl}category/users/softdelete/${idSelected}`)
             .then((res) => {
-                setShowModalHardDel(false);
+                setShowModalSoftDel(false);
                 loadData();
                 if (res.data === 'fail') {
                     notify('Bạn không có quyền thao tác', 'error');
@@ -274,7 +276,8 @@ function Staff() {
         axios
             .get(`${baseUrl}category/users`, {
                 params: {
-                    branch_code: JSON.parse(localStorage.getItem('data_user')).ma_chi_nhanh,
+                    branch_id: user.id_chi_nhanh,
+                    isDeleted: 0,
                     search_value: valuesSearch,
                     numRecord: numRecord,
                     startRecord: startRecord,
@@ -311,17 +314,19 @@ function Staff() {
                                 <FontAwesomeIcon icon={faSearch} className={cx('search-icon')} />
                             </button>
                         </div>
-                        <button className={cx('btn-addstaff')} onClick={toggleModalAdd}>
-                            Thêm thành viên
-                        </button>
+                        {user.role === 'ADM' && (
+                            <button className={cx('btn-addstaff')} onClick={toggleModalAdd}>
+                                Thêm thành viên
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>
 
-            {showModalHardDel && (
+            {showModalSoftDel && (
                 <ModalAll1
                     label={'Bạn có muốn xóa?'}
-                    methodToggle={toggleModalHardDel}
+                    methodToggle={toggleModalSoftDel}
                     methodHandle={handleDelete}
                     data={idSelected}
                 />
@@ -352,7 +357,7 @@ function Staff() {
 
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>
-                    <StaffTb data={dataTb} method={{ toggleModalView, toggleModalHardDel }} />
+                    <StaffTb data={dataTb} method={{ toggleModalView, toggleModalSoftDel }} user={user} />
                 </div>
                 <div className={cx('wrap-pagination')}>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />

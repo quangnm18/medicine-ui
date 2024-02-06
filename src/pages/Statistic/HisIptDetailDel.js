@@ -3,7 +3,6 @@ import style from './Statistic.module.scss';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import HisIptDetailTb from '~/components/Table/HisIptDetailTb';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import ModalAll from '~/components/ModalPage/ModalAll';
@@ -118,8 +117,9 @@ function HisIptDetailDel() {
     //method handle
 
     const handleRes = (id) => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put(`http://localhost:8081/importlist/detail/restore/${id}`)
+            .put(`${baseUrl}importlist/detail/restore/${id}`)
             .then((res) => {
                 setShowModalRes(false);
                 loadData();
@@ -128,8 +128,9 @@ function HisIptDetailDel() {
     };
 
     const handleHardDel = (id) => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .delete(`http://localhost:8081/importlist/detail/harddelete/${id}`)
+            .delete(`${baseUrl}importlist/detail/harddelete/${id}`)
             .then((res) => {
                 setShowModalHardDel(false);
                 loadData();
@@ -138,8 +139,9 @@ function HisIptDetailDel() {
     };
 
     const loadData = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get('http://localhost:8081/importlist/detail/', {
+            .get(`${baseUrl}importlist/detail/`, {
                 params: {
                     isImported: 1,
                     isDeleted: 1,
@@ -163,6 +165,7 @@ function HisIptDetailDel() {
 
     useEffect(() => {
         loadData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [startRecord]);
 
     return (

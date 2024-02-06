@@ -11,7 +11,15 @@
 .choose-sell {
     display: flex;
     align-items: center;
-    // justify-content: space-between;
+    justify-content: space-between;
+}
+
+.wrap-btnselllist {
+    margin-right: 110px;
+}
+
+.btn-selllist {
+    width: 180px;
 }
 
 .choose-detail {
@@ -52,7 +60,7 @@
     display: flex;
     align-items: center;
     height: 52px;
-    width: 1224px;
+    width: 1148px;
     margin-left: 9px;
 }
 

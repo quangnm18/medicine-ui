@@ -1,4 +1,4 @@
-import { faPenToSquare, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { faPenToSquare, faRotateLeft, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DataTable from 'react-data-table-component';
 import classNames from 'classnames/bind';
@@ -6,7 +6,7 @@ import style from './Table.module.scss';
 
 const cx = classNames.bind(style);
 
-function StaffTb({ data, method, user }) {
+function BranchListTb({ data, method }) {
     const tableStyle = {
         rows: {
             style: {
@@ -22,51 +22,52 @@ function StaffTb({ data, method, user }) {
 
     const columns = [
         {
-            name: 'Mã nhân viên',
-            selector: (row) => row.ID,
-            width: '130px',
+            name: 'STT',
+            cell: (row, index) => index + 1,
+            width: '80px',
         },
         {
-            name: 'Họ tên',
-            selector: (row) => row.Name,
-        },
-        {
-            name: 'Số điện thoại',
-            selector: (row) => row.PhoneNumber,
+            name: 'Tên chi nhánh',
+            selector: (row) => row.name,
+            sortable: true,
         },
         {
             name: 'Địa chỉ',
-            selector: (row) => row.Address,
+            selector: (row) => row.address,
+            width: '300px',
+        },
+        {
+            name: 'Mã chi nhánh',
+            selector: (row) => row.branch_code,
+            sortable: true,
+            width: '150px',
+        },
+        {
+            name: 'Người đại diện',
+            selector: (row) => row.ten_quan_ly,
+        },
+        {
+            name: 'SĐT',
+            selector: (row) => row.PhoneNumber,
+            width: '130px',
         },
         {
             name: 'Email',
             selector: (row) => row.Email,
         },
         {
-            name: 'Chức vụ',
-            selector: (row) => row.ten_vai_tro,
-        },
-        {
-            name: 'Chi nhánh',
-            selector: (row) => row.name,
-            width: '130px',
-        },
-        {
-            name: '#',
+            name: '',
             cell: (row) => (
                 <div>
-                    {(user.role === 'ADM' || user.role === 'ADMA') && (
-                        <button className={cx('btn')} onClick={() => method.toggleModalSoftDel(row.ID)}>
-                            <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
-                        </button>
-                    )}
-
+                    <button className={cx('btn')} onClick={() => method.toggleModalHardDel(row.id)}>
+                        <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
+                    </button>
                     <button className={cx('btn')} onClick={() => method.toggleModalView(row)}>
                         <FontAwesomeIcon icon={faPenToSquare} className={cx('icon-view')} />
                     </button>
                 </div>
             ),
-            width: '130px',
+            width: '100px',
         },
     ];
     return (
@@ -76,4 +77,4 @@ function StaffTb({ data, method, user }) {
     );
 }
 
-export default StaffTb;
+export default BranchListTb;

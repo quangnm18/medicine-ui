@@ -49,7 +49,7 @@
     flex-wrap: wrap;
     display: inline-flex;
     width: 100%;
-    margin: 4px 8px 0 8px;
+    margin: 4px 8px 0 16px;
     .label {
         min-width: 148px;
     }
@@ -90,14 +90,14 @@
 }
 
 .modal-actionBtn {
-    margin: 12px 28px 16px 0;
+    margin: 12px 17px 16px 0;
     text-align: right;
 }
 
 //modal view
 .modal-actionView {
     text-align: right;
-    padding: 38px 40px 0 0;
+    padding: 38px 10px 0 0;
     width: 50%;
 }
 
@@ -289,7 +289,7 @@
 
 .modal-viewAll {
     min-width: 600px;
-    padding: 16px 16px 32px 16px;
+    padding: 16px 16px 16px 16px;
     position: relative;
 }
 
@@ -304,7 +304,7 @@
 }
 
 .if-detailAll {
-    margin: 8px 0 20px 0;
+    margin: 8px -10px 20px 0;
     align-items: center;
 
     .label {
@@ -324,7 +324,7 @@
 
 .modalViewAll-action {
     text-align: right;
-    margin-right: 19px;
+    margin-right: 11px;
     margin-top: 24px;
 }
 

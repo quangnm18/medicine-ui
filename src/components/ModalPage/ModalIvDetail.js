@@ -91,8 +91,9 @@ function ModalViewIvDetail({ label, data, methodToggle, methodHandle }) {
     ];
 
     useEffect(() => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get(`http://localhost:8081/importlist/alldetail/?q=${data.invoice_code}`)
+            .get(`${baseUrl}importlist/alldetail/?q=${data.invoice_code}`)
             .then((res) => setDataDetails(res.data))
             .catch((e) => console.log(e));
     }, []);

@@ -1,17 +1,28 @@
 import { useEffect, useMemo, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBugSlash, faFlag, faHouseChimneyMedical, faTruckField } from '@fortawesome/free-solid-svg-icons';
+import { faBugSlash, faCoins, faFileInvoiceDollar, faFlag } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
-import { Chart as ChartJS, Legend, plugins } from 'chart.js/auto';
-import { Bar, Doughnut, Line } from 'react-chartjs-2';
+import { defaults } from 'chart.js/auto';
+import { Bar, Line, Pie } from 'react-chartjs-2';
 import classNames from 'classnames/bind';
 import style from './Home.module.scss';
 import axios from 'axios';
 import UserHomeTb from '~/components/Table/UserHomeTb';
+import { dataLine } from './dataTest';
+
+defaults.maintainAspectRatio = false;
+defaults.responsive = true;
+
+defaults.plugins.title.display = true;
+defaults.plugins.title.align = 'center';
+defaults.plugins.title.font.size = '20px';
+defaults.plugins.title.color = 'black';
 
 const cx = classNames.bind(style);
 
 function Home() {
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
+
     const [countRp, setCountRp] = useState();
     const [countSup, setCountSup] = useState();
     const [countWarning, setCountWarning] = useState();
@@ -60,98 +71,145 @@ function Home() {
         <div className={cx('wrapper')}>
             <div className={cx('header')}>
                 <div className={cx('header-hello')}>
-                    <h4>
-                        Xin chào,{' '}
-                        {localStorage.getItem('data_user') && JSON.parse(localStorage.getItem('data_user')).name}
-                    </h4>
+                    <h4>Xin chào, {user.name}</h4>
                     <span>Chúc một ngày tốt lành!</span>
                 </div>
 
                 <div className={cx('header-synthetic')}>
-                    <div className={cx('synthetic-item', 'med')} onClick={() => routeChange('/category/medicine')}>
+                    <div
+                        className={cx('synthetic-item', 'med')}
+                        onClick={() => routeChange('/statistic/historyImport')}
+                    >
                         <div className={cx('wrap-icon')}>
-                            <FontAwesomeIcon className={cx('icon-med')} icon={faHouseChimneyMedical} />
+                            <FontAwesomeIcon className={cx('icon-med')} icon={faCoins} />
                         </div>
                         <div className={cx('wrap-if')}>
-                            <span className={cx('if-count')}>8</span>
-                            <span>Danh mục dược</span>
+                            <span>Tổng nhập</span>
+                            <span className={cx('if-count')}>12.000.000đ</span>
                         </div>
                     </div>
-                    <div className={cx('synthetic-item', 'ncc')}>
+                    <div className={cx('synthetic-item', 'ncc')} onClick={() => routeChange('/statistic/historySale')}>
                         <div className={cx('wrap-icon')}>
-                            <FontAwesomeIcon className={cx('icon-med')} icon={faTruckField} />
+                            <FontAwesomeIcon className={cx('icon-med')} icon={faFileInvoiceDollar} />
                         </div>
                         <div className={cx('wrap-if')}>
-                            <span className={cx('if-count')}>{countSup}</span>
-                            <span>Nhà cung cấp</span>
+                            <span>Tổng bán</span>
+                            <span className={cx('if-count')}>3.000.000đ</span>
                         </div>
                     </div>
-                    <div className={cx('synthetic-item', 'report')}>
+                    <div className={cx('synthetic-item', 'report')} onClick={() => routeChange('/report')}>
                         <div className={cx('wrap-icon')}>
                             <FontAwesomeIcon className={cx('icon-med')} icon={faFlag} />
                         </div>
                         <div className={cx('wrap-if')}>
-                            <span className={cx('if-count')}>{countRp}</span>
                             <span>Báo cáo</span>
+                            <span className={cx('if-count')}>{countRp}</span>
                         </div>
                     </div>
-                    <div className={cx('synthetic-item', 'warning')}>
+                    <div
+                        className={cx('synthetic-item', 'warning')}
+                        onClick={() => routeChange('/statistic/historyImport')}
+                    >
                         <div className={cx('wrap-icon')}>
                             <FontAwesomeIcon className={cx('icon-med')} icon={faBugSlash} />
                         </div>
                         <div className={cx('wrap-if')}>
-                            <span className={cx('if-count')}>{countWarning}</span>
                             <span>Cảnh báo dược</span>
+                            <span className={cx('if-count')}>{countWarning}</span>
                         </div>
                     </div>
                 </div>
 
                 <div className={cx('wrap-chart')}>
                     <div className={cx('chart', 'chart-1')}>
-                        <Bar
-                            data={{
-                                labels: ['Quý I', 'Quý II', 'Quý III', 'Quý IV'],
-                                datasets: [
-                                    {
-                                        label: 'Revenue',
-                                        data: [100, 300, 500, 400],
+                        <div className={cx('wrap-bar')}>
+                            <Bar
+                                data={{
+                                    labels: ['Quý I', 'Quý II', 'Quý III', 'Quý IV'],
+                                    datasets: [
+                                        {
+                                            label: 'Tổng nhập',
+                                            data: [100, 300, 500, 400],
+                                            // backgroundColor: '',
+                                            borderRadius: 5,
+                                        },
+                                        {
+                                            label: 'Tổng bán',
+                                            data: [100, 300, 500, 400],
+                                            backgroundColor: 'rgba(250,192,19,0.6)',
+                                            borderRadius: 5,
+                                        },
+                                    ],
+                                }}
+                                options={{
+                                    plugins: {
+                                        title: {
+                                            text: 'Thống kê theo quý',
+                                            color: '#333',
+                                        },
                                     },
-                                ],
-                            }}
-                        />
+                                }}
+                            />
+                        </div>
                     </div>
 
                     <div className={cx('chart', 'chart-2')}>
-                        <Doughnut
-                            options
-                            data={{
-                                labels: ['A', 'B'],
-                                datasets: [
-                                    {
-                                        label: 'Doanh thu',
-                                        data: [100, 300],
-                                        backgroundColor: ['rgba(233,241,249,1)', 'rgba(255,26,104,0.2)'],
-                                        weight: '2',
+                        <div className={cx('wrap-pie')}>
+                            <Pie
+                                data={{
+                                    labels: ['Dược hết hạn', 'Dược sặp hết hạn', 'Dược sẵn sàng'],
+                                    datasets: [
+                                        {
+                                            // label: 'Dược ',
+                                            data: [7, 2, 80],
+                                            backgroundColor: [
+                                                'rgba(238, 43, 43, 0.681)',
+                                                'rgba(250,192,19,0.6)',
+                                                'rgba(28, 176, 53, 0.4)',
+                                            ],
+                                        },
+                                    ],
+                                }}
+                                options={{
+                                    plugins: {
+                                        title: {
+                                            text: 'Tình trạng dược',
+                                            color: '#333',
+                                        },
                                     },
-                                    {
-                                        label: '2',
-                                        data: [0, 0],
-                                        backgroundColor: ['rgba(255,26,104,0.2)', 'rgba(255,26,104,0.2)'],
-                                        weight: '3',
-                                    },
-                                    {
-                                        label: 'Giá trị nhập',
-                                        data: [100, 300],
-                                        backgroundColor: ['red', 'red'],
-                                        weight: '2',
-                                    },
-                                ],
-                            }}
-                        />
+                                }}
+                            />
+                        </div>
                     </div>
                 </div>
+                <div className={cx('chart-3')}>
+                    <Line
+                        data={{
+                            labels: dataLine.map((data) => data.label),
 
+                            datasets: [
+                                {
+                                    label: 'Giá trị bán',
+                                    data: dataLine.map((data) => data.revenue),
+                                },
+                                {
+                                    label: 'Giá trị nhập',
+                                    data: dataLine.map((data) => data.cost),
+                                },
+                            ],
+                        }}
+                        options={{
+                            plugins: {
+                                title: {
+                                    text: 'Thống kê theo tháng',
+                                    color: '#333',
+                                },
+                            },
+                        }}
+                    />
+                </div>
                 <div className={cx('footer')}>
+                    <h4 className={cx('table-label')}>Chi nhánh nhà thuốc</h4>
                     <UserHomeTb />
                 </div>
             </div>

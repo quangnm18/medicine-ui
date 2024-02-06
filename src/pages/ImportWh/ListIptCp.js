@@ -23,12 +23,14 @@ function ListIptCp() {
     const [pageCount, setPageCount] = useState(1);
 
     const [dataTb, setDataTb] = useState([]);
+    const [dataBranch, setDataBranch] = useState([]);
 
     const [dateStart, setDateStart] = useState('');
     const [dateTo, setDateTo] = useState('');
     const [valuesSearch, setValuesSearch] = useState('');
 
     const [idSelected, setIdSelected] = useState('');
+    const [selectBranch, setSelectBranch] = useState(undefined);
 
     const [showModalSoftDel, setShowModalSoftDel] = useState(false);
     const [showModalView, setShowModalView] = useState(false);
@@ -55,6 +57,10 @@ function ListIptCp() {
     const toggleModalReject = (invoice_code) => {
         setShowModalReject(!showModalReject);
         setIdSelected(invoice_code);
+    };
+
+    const onchangeBranch = (e) => {
+        setSelectBranch(e.target.value);
     };
 
     //Method handle
@@ -115,7 +121,7 @@ function ListIptCp() {
         axios
             .get(`${baseUrl}importlist/alllistpaginate/`, {
                 params: {
-                    branch_id: user.id_chi_nhanh ? user.id_chi_nhanh : null,
+                    branch_id: user.id_chi_nhanh ? user.id_chi_nhanh : selectBranch,
                     date_start: dateStart,
                     date_to: dateTo,
                     search_value: valuesSearch,
@@ -141,7 +147,19 @@ function ListIptCp() {
     useEffect(() => {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord]);
+    }, [startRecord, selectBranch]);
+
+    useEffect(() => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
+        axios
+            .get(`${baseUrl}branch`)
+            .then((res) => {
+                if (res.data === 'fail') {
+                    setDataBranch([]);
+                } else setDataBranch(res.data);
+            })
+            .catch((e) => console.log(e));
+    }, []);
 
     const handleChangePage = (e) => {
         setStartRecord(e.selected * numRecord);
@@ -194,12 +212,27 @@ function ListIptCp() {
                                 </button>
                             </div>
                         </div>
-                        <div className={cx('medicine-option', 'search-statistic')}>
-                            <input
-                                placeholder="Tìm kiếm theo tên, mã hóa đơn..."
-                                value={valuesSearch}
-                                onChange={onchangeSearch}
-                            />
+                        <div className={cx('wrap-searchiptiv')}>
+                            <div className={cx('medicine-option', 'search-statistic', 'input-statistic')}>
+                                <input
+                                    placeholder="Tìm kiếm theo tên, mã hóa đơn..."
+                                    value={valuesSearch}
+                                    onChange={onchangeSearch}
+                                />
+                            </div>
+                            {user.role === 'ADMA' && (
+                                <div className={cx('medicine-option', 'search-statistic')}>
+                                    <select value={selectBranch} onChange={onchangeBranch}>
+                                        <option value={0}>--Chọn chi nhánh--</option>
+                                        {dataBranch.length > 0 &&
+                                            dataBranch.map((branch) => (
+                                                <option key={branch.id} value={branch.id}>
+                                                    {branch.name}
+                                                </option>
+                                            ))}
+                                    </select>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

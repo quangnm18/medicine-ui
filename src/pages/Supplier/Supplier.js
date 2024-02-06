@@ -157,8 +157,9 @@ function Supplier() {
 
     //handleClick method
     const handleAdd = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .post('http://localhost:8081/category/supplier/add', values)
+            .post(`${baseUrl}category/supplier/add`, values)
             .then((res) => {
                 loadData();
                 setShowModalAdd(false);
@@ -168,8 +169,9 @@ function Supplier() {
     };
 
     const handleUpdate = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put(`http://localhost:8081/category/supplier/update/${idSelected}`, values)
+            .put(`${baseUrl}category/supplier/update/${idSelected}`, values)
             .then((res) => {
                 loadData();
                 setShowModalView(false);
@@ -179,8 +181,9 @@ function Supplier() {
     };
 
     const handleSoftDel = (id) => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put(`http://localhost:8081/category/supplier/softdelete/${id}`)
+            .put(`${baseUrl}category/supplier/softdelete/${id}`)
             .then((res) => {
                 loadData();
                 notify('Xóa', 'success');
@@ -196,8 +199,9 @@ function Supplier() {
     };
 
     const loadData = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get('http://localhost:8081/category/supplier/', {
+            .get(`${baseUrl}category/supplier/`, {
                 params: {
                     search_value: valuesSearch,
                     isDeleted: 0,

@@ -42,8 +42,9 @@ function Login() {
 
     axios.defaults.withCredentials = true;
     const loadData = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get('http://localhost:8081')
+            .get(`${baseUrl}`)
             .then((res) => {
                 if (document.cookie) {
                     const obj = {
@@ -64,8 +65,9 @@ function Login() {
     };
 
     const handleLogin = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .post('http://localhost:8081/authen/login', values)
+            .post(`${baseUrl}authen/login`, values)
             .then((res) => {
                 if (res.data.status === 'loginSuccess') {
                     localStorage.setItem('statusLogin', res.data.status);

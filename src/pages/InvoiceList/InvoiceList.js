@@ -15,6 +15,8 @@ import Pagination from '~/components/Pagination/Pagination';
 const cx = classNames.bind(style);
 
 function InvoiceList() {
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
+
     const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState(1);
@@ -24,10 +26,13 @@ function InvoiceList() {
 
     const [dateStart, setDateStart] = useState('');
     const [dateTo, setDateTo] = useState('');
+    const [valuesSearch, setValuesSearch] = useState('');
 
     const [dataTb, setDataTb] = useState([]);
+    const [dataBranch, setDataBranch] = useState([]);
 
     const [idSelected, setIdSelected] = useState();
+    const [selectBranch, setSelectBranch] = useState(undefined);
 
     const toggleModalSoftDel = (id) => {
         setShowModalSoftDel(!showModalSoftDel);
@@ -40,7 +45,6 @@ function InvoiceList() {
     };
 
     const handleChooseDateStart = (e) => {
-        console.log(e.target.value);
         setDateStart(e.target.value);
     };
 
@@ -48,37 +52,23 @@ function InvoiceList() {
         setDateTo(e.target.value);
     };
 
+    const onchangeSearch = (e) => {
+        setValuesSearch(e.target.value);
+    };
+
+    const onchangeBranch = (e) => {
+        setSelectBranch(e.target.value);
+    };
+
     const handleSearch = () => {
-        // if (dateStart !== '' && dateTo !== '') {
-        //     let filtered = listIvSale.filter((invoice) => {
-        //         let invoiceDate = invoice.CreateDate;
-        //         return invoiceDate >= dateStart && invoiceDate <= dateTo;
-        //     });
-        //     setDataTb(filtered);
-        // }
-        // if (dateStart !== '' && dateTo === '') {
-        //     let filtered = listIvSale.filter((invoice) => {
-        //         let invoiceDate = invoice.CreateDate;
-        //         return invoiceDate >= dateStart;
-        //     });
-        //     setDataTb(filtered);
-        // }
-        // if (dateStart === '' && dateTo !== '') {
-        //     let filtered = listIvSale.filter((invoice) => {
-        //         let invoiceDate = invoice.CreateDate;
-        //         return invoiceDate <= dateTo;
-        //     });
-        //     setDataTb(filtered);
-        // }
-        // if (dateStart === '' && dateTo === '') {
-        //     setDataTb(listIvSale);
-        // }
+        loadData();
     };
 
     //method handle
     const handleSoftDel = (id) => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put(`http://localhost:8081/sell/ivlist/softdelete/${id}`)
+            .put(`${baseUrl}sell/ivlist/softdelete/${id}`)
             .then((res) => {
                 setShowModalSoftDel(false);
                 loadData();
@@ -91,9 +81,14 @@ function InvoiceList() {
     };
 
     const loadData = () => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get('http://localhost:8081/sell/ivlist/', {
+            .get(`${baseUrl}sell/ivlist/`, {
                 params: {
+                    branch_id: user.id_chi_nhanh ? user.id_chi_nhanh : selectBranch,
+                    date_start: dateStart,
+                    date_to: dateTo,
+                    search_value: valuesSearch,
                     isDeleted: 0,
                     numRecord: numRecord,
                     startRecord: startRecord,
@@ -111,7 +106,19 @@ function InvoiceList() {
     useEffect(() => {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord]);
+    }, [startRecord, selectBranch]);
+
+    useEffect(() => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
+        axios
+            .get(`${baseUrl}branch`)
+            .then((res) => {
+                if (res.data === 'fail') {
+                    setDataBranch([]);
+                } else setDataBranch(res.data);
+            })
+            .catch((e) => console.log(e));
+    }, []);
 
     const navigate = useNavigate();
     const routeChange = (path) => {
@@ -140,7 +147,7 @@ function InvoiceList() {
                     <button className={cx('btn-search')} onClick={handleSearch}>
                         <FontAwesomeIcon icon={faSearch} />
                     </button>
-                    <div className={cx('btn-action')}>
+                    <div className={cx('btn-action', 'btnaction-listivsell')}>
                         <button className={cx('btn-add')} onClick={() => routeChange('/sell/create')}>
                             Lập hóa đơn
                         </button>
@@ -148,6 +155,28 @@ function InvoiceList() {
                             Đã xóa
                         </button>
                     </div>
+                </div>
+                <div className={cx('wrap-inputselect')}>
+                    <div className={cx('medicine-option', 'search-statistic')}>
+                        <input
+                            placeholder="Tìm kiếm theo tên, mã hóa đơn..."
+                            value={valuesSearch}
+                            onChange={onchangeSearch}
+                        />
+                    </div>
+                    {user.role === 'ADMA' && (
+                        <div className={cx('medicine-option', 'search-statistic', 'select-statistic')}>
+                            <select value={selectBranch} onChange={onchangeBranch}>
+                                <option value={0}>--Chọn chi nhánh--</option>
+                                {dataBranch.length > 0 &&
+                                    dataBranch.map((branch) => (
+                                        <option key={branch.id} value={branch.id}>
+                                            {branch.name}
+                                        </option>
+                                    ))}
+                            </select>
+                        </div>
+                    )}
                 </div>
             </div>
             {showModalSoftDel && (

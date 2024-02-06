@@ -9,9 +9,9 @@ const cx = classNames.bind(style);
 
 function ModalAccept({ methodToggle, methodHandle, label, data }) {
     const [dataDetail, setDataDetail] = useState([]);
-    console.log(data);
     useEffect(() => {
-        axios('http://localhost:8081/importlist/alldetail/', { params: { q: data } }).then((res) => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
+        axios(`${baseUrl}importlist/alldetail/`, { params: { q: data } }).then((res) => {
             setDataDetail(res.data);
         });
     }, []);
