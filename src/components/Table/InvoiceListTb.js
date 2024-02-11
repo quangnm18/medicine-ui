@@ -7,6 +7,10 @@ import style from './Table.module.scss';
 const cx = classNames.bind(style);
 
 function InvoiceListTb({ data, method }) {
+    const handleSort = (obj, type, data) => {
+        method.setSort({ sort_col: obj.col, sort_type: type });
+    };
+
     const tableStyle = {
         rows: {
             style: {
@@ -28,15 +32,19 @@ function InvoiceListTb({ data, method }) {
         },
         {
             name: 'Số hóa đơn',
-            selector: (row) => row.ma_hoa_don,
+            selector: (row) => <div>{row.ma_hoa_don}</div>,
             width: '140px',
+            sortable: true,
+            col: 1,
         },
         {
-            name: 'Ngày lập',
+            name: 'Thời gian lập',
             selector: (row) => {
                 let date = new Date(row.createdDate);
-                return date.toLocaleDateString();
+                return <div>{date.toLocaleDateString()}</div>;
             },
+            sortable: true,
+            col: 2,
         },
         {
             name: 'Tổng tiền hàng',
@@ -49,17 +57,21 @@ function InvoiceListTb({ data, method }) {
         },
         {
             name: 'Thành tiền',
-            selector: (row) => Intl.NumberFormat().format(row.tong_phai_tra),
+            selector: (row) => <div>{Intl.NumberFormat().format(row.tong_phai_tra)}</div>,
+            sortable: true,
+            col: 3,
         },
         {
             name: 'Nhân viên',
-            selector: (row) => row.Name,
+            selector: (row) => <div>{row.Name}</div>,
+            sortable: true,
+            col: 4,
         },
         {
             name: '#',
             cell: (row) => (
                 <div>
-                    <button className={cx('btn')} onClick={() => method.toggleModalSoftDel(row.id)}>
+                    <button className={cx('btn')} onClick={() => method.toggleModalSoftDel(row)}>
                         <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
                     </button>
                     <button className={cx('btn')} onClick={() => method.toggleModalView(row)}>
@@ -72,7 +84,13 @@ function InvoiceListTb({ data, method }) {
     ];
     return (
         <div>
-            <DataTable columns={columns} data={data} customStyles={tableStyle} highlightOnHover></DataTable>
+            <DataTable
+                columns={columns}
+                data={data}
+                customStyles={tableStyle}
+                highlightOnHover
+                onSort={handleSort}
+            ></DataTable>
         </div>
     );
 }

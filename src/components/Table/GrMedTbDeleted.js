@@ -7,6 +7,9 @@ import style from './Table.module.scss';
 const cx = classNames.bind(style);
 
 function GrMedTbDeleted({ data, method }) {
+    const handleSort = (obj, type, data) => {
+        method.setSort({ sort_col: obj.col, sort_type: type });
+    };
     const tableStyle = {
         rows: {
             style: {
@@ -28,9 +31,10 @@ function GrMedTbDeleted({ data, method }) {
         },
         {
             name: 'Tên nhóm thuốc',
-            selector: (row) => row.ten_nhom_thuoc,
+            selector: (row) => <div>{row.ten_nhom_thuoc}</div>,
             sortable: true,
             width: '320px',
+            col: 1,
         },
         {
             name: 'Mô tả',
@@ -38,9 +42,10 @@ function GrMedTbDeleted({ data, method }) {
         },
         {
             name: 'Mã nhóm',
-            selector: (row) => row.group_code,
+            selector: (row) => <div>{row.group_code}</div>,
             sortable: true,
             width: '120px',
+            col: 2,
         },
         {
             name: 'Nguời xóa',
@@ -72,7 +77,13 @@ function GrMedTbDeleted({ data, method }) {
     ];
     return (
         <div>
-            <DataTable columns={columns} data={data} customStyles={tableStyle}></DataTable>
+            <DataTable
+                columns={columns}
+                data={data}
+                customStyles={tableStyle}
+                onSort={handleSort}
+                highlightOnHover
+            ></DataTable>
         </div>
     );
 }

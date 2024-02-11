@@ -20,6 +20,10 @@ function UnitMedDelTb({ data, method, role }) {
         },
     };
 
+    const handleSort = (obj, type, data) => {
+        method.setSort({ sort_col: obj.col, sort_type: type });
+    };
+
     const columns = [
         {
             name: 'STT',
@@ -28,8 +32,10 @@ function UnitMedDelTb({ data, method, role }) {
         },
         {
             name: 'Đơn vị lớn',
-            selector: (row) => row.donvi_lon,
+            selector: (row) => <div>{row.donvi_lon}</div>,
             center: true,
+            sortable: true,
+            col: 1,
         },
         {
             name: 'Đơn vị trung bình',
@@ -38,8 +44,10 @@ function UnitMedDelTb({ data, method, role }) {
         },
         {
             name: 'Đơn vị nhỏ nhất',
-            selector: (row) => row.donvi_nho,
+            selector: (row) => <div>{row.donvi_nho}</div>,
             center: true,
+            sortable: true,
+            col: 2,
         },
         {
             name: 'Đóng gói',
@@ -48,8 +56,10 @@ function UnitMedDelTb({ data, method, role }) {
         },
         {
             name: 'Mã đơn vị',
-            selector: (row) => row.unit_code,
+            selector: (row) => <div>{row.unit_code}</div>,
             center: true,
+            sortable: true,
+            col: 3,
         },
         {
             name: 'Nguời xóa',
@@ -86,7 +96,13 @@ function UnitMedDelTb({ data, method, role }) {
     ];
     return (
         <div>
-            <DataTable columns={columns} data={data} customStyles={tableStyle}></DataTable>
+            <DataTable
+                columns={columns}
+                data={data}
+                customStyles={tableStyle}
+                onSort={handleSort}
+                highlightOnHover
+            ></DataTable>
         </div>
     );
 }

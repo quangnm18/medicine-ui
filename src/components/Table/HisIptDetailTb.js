@@ -7,6 +7,10 @@ import style from './Table.module.scss';
 const cx = classNames.bind(style);
 
 function HisIptDetailTb({ data, method }) {
+    const handleSort = (obj, type, data) => {
+        method.setSort({ sort_col: obj.col, sort_type: type });
+    };
+
     const VND = new Intl.NumberFormat('vi-VN', {
         style: 'currency',
         currency: 'VND',
@@ -18,6 +22,11 @@ function HisIptDetailTb({ data, method }) {
                 fontSize: '16px',
             },
         },
+        // cells: {
+        //     style: {
+        //         height: '80px',
+        //     },
+        // },
         headCells: {
             style: {
                 fontSize: '16px',
@@ -29,12 +38,13 @@ function HisIptDetailTb({ data, method }) {
         {
             name: '',
             cell: (row, index) => index + 1,
-            width: '60px',
+            width: '50px',
         },
         {
             name: 'Tên dược',
-            selector: (row) => row.med,
-            width: '180px',
+            selector: (row) => <div>{row.med}</div>,
+            width: '220px',
+            col: 5,
             sortable: true,
         },
         {
@@ -43,9 +53,9 @@ function HisIptDetailTb({ data, method }) {
             width: '150px',
         },
         {
-            name: 'Số lượng',
+            name: 'SL',
             selector: (row) => row.soluong_lon,
-            width: '100px',
+            width: '90px',
         },
 
         {
@@ -56,37 +66,43 @@ function HisIptDetailTb({ data, method }) {
         {
             name: 'Tổng',
             selector: (row) => row.sl_tong,
-            width: '100px',
+            width: '90px',
         },
         {
             name: 'Đóng gói',
             selector: (row) => row.dong_goi,
-            width: '180px',
+            // width: '180px',
         },
 
         {
             name: 'Mã hóa đơn',
-            selector: (row) => row.ma_hoa_don,
+            col: 19,
+            selector: (row) => <div>{row.ma_hoa_don}</div>,
             width: '118px',
             sortable: true,
         },
 
         {
             name: 'Ngày nhập',
+            col: 23,
             selector: (row) => {
                 let date = new Date(row.createdDt_at);
-
-                return date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear();
+                // return <div>{date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear()}</div>;
+                return <div>{date.toLocaleDateString()}</div>;
             },
             width: '140px',
+            sortable: true,
         },
         {
             name: 'Hạn sử dụng',
+            col: 17,
             selector: (row) => {
                 let date = new Date(row.han_dung);
-                return date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear();
+                // return <div>{date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear()}</div>;
+                return <div>{date.toLocaleDateString()}</div>;
             },
-            width: '150px',
+            width: '130px',
+            sortable: true,
         },
 
         {
@@ -105,6 +121,7 @@ function HisIptDetailTb({ data, method }) {
         },
         {
             name: 'Trạng thái',
+            col: 17,
             cell: (row) => {
                 const currDate = new Date();
                 const dueDate = new Date(row.han_dung);
@@ -143,7 +160,14 @@ function HisIptDetailTb({ data, method }) {
     ];
     return (
         <div>
-            <DataTable columns={columns} data={data} customStyles={tableStyle} highlightOnHover></DataTable>
+            <DataTable
+                columns={columns}
+                data={data}
+                customStyles={tableStyle}
+                highlightOnHover
+                onSort={handleSort}
+                // selectableRows
+            ></DataTable>
         </div>
     );
 }

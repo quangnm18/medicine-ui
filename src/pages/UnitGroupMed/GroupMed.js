@@ -26,6 +26,7 @@ function GroupMed() {
     const [pageCount, setPageCount] = useState();
 
     const [dataTb, setDataTb] = useState([]);
+    const [sort, setSort] = useState({ sort_col: 1, sort_type: 'asc' });
 
     const [idSelected, setIdSelected] = useState('');
     const [listSelected, setListSelected] = useState([]);
@@ -168,6 +169,8 @@ function GroupMed() {
         axios
             .get(`${baseUrl}category/medicinegroup/`, {
                 params: {
+                    sort_col: sort.sort_col,
+                    sort_type: sort.sort_type,
                     search_value: valuesSearch,
                     isDeleted: 0,
                     numRecord: numRecord,
@@ -186,7 +189,7 @@ function GroupMed() {
     useEffect(() => {
         loadDataTb();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord]);
+    }, [startRecord, sort]);
 
     const navigate = useNavigate();
     const routeChange = (path) => {
@@ -266,7 +269,10 @@ function GroupMed() {
 
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>
-                    <GroupMedTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView, setListSelected }} />
+                    <GroupMedTb
+                        data={dataTb}
+                        method={{ toggleModalSoftDel, toggleModalView, setListSelected, setSort }}
+                    />
                 </div>
                 <div className={cx('wrap-pagination')}>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />

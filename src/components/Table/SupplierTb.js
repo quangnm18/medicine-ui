@@ -6,7 +6,10 @@ import style from './Table.module.scss';
 
 const cx = classNames.bind(style);
 
-function SupplierTb({ data, method }) {
+function SupplierTb({ data, method, role }) {
+    const handleSort = (obj, type, data) => {
+        method.setSort({ sort_col: obj.col, sort_type: type });
+    };
     const tableStyle = {
         rows: {
             style: {
@@ -24,10 +27,13 @@ function SupplierTb({ data, method }) {
         {
             name: 'STT',
             cell: (row, index) => index + 1,
+            width: '100px',
         },
         {
             name: 'Tên',
-            selector: (row) => row.ten_ncc,
+            selector: (row) => <div>{row.ten_ncc}</div>,
+            col: 1,
+            sortable: true,
         },
         {
             name: 'Số điện thoại',
@@ -45,8 +51,7 @@ function SupplierTb({ data, method }) {
             name: '',
             cell: (row) => (
                 <div>
-                    {(JSON.parse(localStorage.getItem('data_user')).role === 'ADM' ||
-                        JSON.parse(localStorage.getItem('data_user')).role === 'STFW') && (
+                    {(role === 'ADM' || role === 'STFW' || role === 'ADMA') && (
                         <button className={cx('btn')} onClick={() => method.toggleModalSingleDelete(row.ID)}>
                             <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
                         </button>
@@ -56,11 +61,18 @@ function SupplierTb({ data, method }) {
                     </button>
                 </div>
             ),
+            width: '100px',
         },
     ];
     return (
         <div>
-            <DataTable columns={columns} data={data} customStyles={tableStyle}></DataTable>
+            <DataTable
+                columns={columns}
+                data={data}
+                customStyles={tableStyle}
+                highlightOnHover
+                onSort={handleSort}
+            ></DataTable>
         </div>
     );
 }

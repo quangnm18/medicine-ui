@@ -12,6 +12,10 @@ import { useNavigate } from 'react-router-dom';
 import Pagination from '~/components/Pagination/Pagination';
 import FormatInput from '~/components/format/FormatInput';
 
+import * as toast from '~/utils/toast';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const cx = classNames.bind(style);
 
 function HisIptDetail() {
@@ -30,6 +34,7 @@ function HisIptDetail() {
     const [valuesSearch, setValuesSearch] = useState('');
     const [selectBranch, setSelectBranch] = useState(undefined);
     const [selectGrMed, setSelectGrMed] = useState();
+    const [sort, setSort] = useState({ sort_col: 17, sort_type: 'asc' });
 
     const [infoNum, setInfoNum] = useState({ han_dung: '', so_lo: '' });
     const [giaban, setGiaBan] = useState();
@@ -116,6 +121,11 @@ function HisIptDetail() {
             .then((res) => {
                 setShowModalSoftDel(false);
                 loadData();
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Xóa thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
@@ -127,6 +137,11 @@ function HisIptDetail() {
             .then((res) => {
                 setShowModalView(false);
                 loadData();
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Cập nhật thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
@@ -136,6 +151,8 @@ function HisIptDetail() {
         axios
             .get(`${baseUrl}importlist/detail/`, {
                 params: {
+                    sort_col: sort.sort_col,
+                    sort_type: sort.sort_type,
                     group_id: selectGrMed,
                     branch_id: user.id_chi_nhanh ? user.id_chi_nhanh : selectBranch,
                     date_start: dateStart,
@@ -164,7 +181,7 @@ function HisIptDetail() {
     useEffect(() => {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord]);
+    }, [startRecord, selectBranch, selectGrMed, sort]);
 
     useEffect(() => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
@@ -253,6 +270,7 @@ function HisIptDetail() {
                     </div>
                 </div>
             </div>
+            <ToastContainer />
 
             {showModalSoftDel && (
                 <ModalAll label={'Bạn có muốn xóa ?'} methodToggle={toggleModalSoftDel} methodHandle={handleSoftDel} />
@@ -355,7 +373,7 @@ function HisIptDetail() {
 
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>
-                    <HisIptDetailTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView }} />
+                    <HisIptDetailTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView, setSort }} />
                 </div>
                 <div className={cx('wrap-paginate')}>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />

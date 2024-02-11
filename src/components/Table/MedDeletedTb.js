@@ -8,6 +8,9 @@ import { memo } from 'react';
 const cx = classNames.bind(style);
 
 function MedDeletedTb({ data, method }) {
+    const handleSort = (obj, type, data) => {
+        method.setSort({ sort_col: obj.col, sort_type: type });
+    };
     const tableStyle = {
         rows: {
             style: {
@@ -28,8 +31,9 @@ function MedDeletedTb({ data, method }) {
         },
         {
             name: 'Tên dược',
-            selector: (row) => row.ten,
+            selector: (row) => <div>{row.ten}</div>,
             sortable: true,
+            col: 1,
         },
         {
             name: 'Thời gian xóa',
@@ -74,6 +78,8 @@ function MedDeletedTb({ data, method }) {
                 customStyles={tableStyle}
                 fixedHeader={true}
                 selectableRows
+                highlightOnHover
+                onSort={handleSort}
             ></DataTable>
         </div>
     );

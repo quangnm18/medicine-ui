@@ -19,7 +19,7 @@ function DefaultLayout({ children }) {
         }
     }, []);
 
-    if (localStorage.getItem('data_user')) {
+    if (document.cookie) {
         return (
             <div className={cx('wrapper')}>
                 <Sidebar />

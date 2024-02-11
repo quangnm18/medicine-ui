@@ -229,30 +229,6 @@ function InventoryWh() {
                             />
                         </div>
 
-                        {/* <div className={cx('view-detail')}>
-                            <label>CK: </label>
-                            <input disabled value={typeof idSelected === 'object' && idSelected.ck} />
-                        </div>
-                        <div className={cx('view-detail')}>
-                            <label>VAT: </label>
-                            <input disabled value={typeof idSelected === 'object' && idSelected.vat} />
-                        </div>
-
-                        <div className={cx('view-detail')}>
-                            <label>Thành tiền: </label>
-                            <input
-                                disabled
-                                value={
-                                    typeof idSelected === 'object' &&
-                                    VND.format(
-                                        idSelected.thanh_tien +
-                                            (idSelected.thanh_tien * idSelected.vat) / 100 -
-                                            (idSelected.thanh_tien * idSelected.ck) / 100,
-                                    )
-                                }
-                            />
-                        </div> */}
-
                         <div className={cx('view-detail')}>
                             <label>Giá nhập đã quy đổi:</label>
                             <input

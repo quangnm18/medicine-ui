@@ -68,7 +68,9 @@ function ModalViewUser({ label, dataInputs, dataValueInputs, methodOnchange, met
                                         'label',
                                         (input.name === 'Name' ||
                                             input.name === 'PhoneNumber' ||
-                                            input.name === 'Email') &&
+                                            input.name === 'Email' ||
+                                            input.name === 'user_name' ||
+                                            input.name === 'password') &&
                                             'required',
                                     )}
                                 >

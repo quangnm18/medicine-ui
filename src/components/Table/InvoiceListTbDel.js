@@ -7,6 +7,9 @@ import style from './Table.module.scss';
 const cx = classNames.bind(style);
 
 function InvoiceListTbDel({ data, method }) {
+    const handleSort = (obj, type, data) => {
+        method.setSort({ sort_col: obj.col, sort_type: type });
+    };
     const tableStyle = {
         rows: {
             style: {
@@ -27,22 +30,28 @@ function InvoiceListTbDel({ data, method }) {
         },
         {
             name: 'Số hóa đơn',
-            selector: (row) => row.ma_hoa_don,
+            selector: (row) => <div>{row.ma_hoa_don}</div>,
+            sortable: true,
+            col: 1,
         },
         {
             name: 'Ngày lập',
             selector: (row) => {
                 let date = new Date(row.createdDate);
-                return date.toLocaleDateString();
+                return <div>{date.toLocaleDateString()}</div>;
             },
+            sortable: true,
+            col: 2,
         },
         {
             name: 'Tổng tiền',
             selector: (row) => Intl.NumberFormat().format(row.tong_phai_tra),
         },
         {
-            name: 'Nhân viên',
-            selector: (row) => row.Name,
+            name: 'Người lập',
+            selector: (row) => <div>{row.Name}</div>,
+            sortable: true,
+            col: 4,
         },
         {
             name: '#',
@@ -54,7 +63,7 @@ function InvoiceListTbDel({ data, method }) {
                     <button className={cx('btn')} onClick={() => method.toggleModalView(row)}>
                         <FontAwesomeIcon icon={faEye} className={cx('icon-eye')} />
                     </button>
-                    <button className={cx('btn')} onClick={() => method.toggleModalRes(row.id)}>
+                    <button className={cx('btn')} onClick={() => method.toggleModalRes(row)}>
                         <FontAwesomeIcon icon={faRotateBack} className={cx('icon-view')} />
                     </button>
                 </div>
@@ -63,7 +72,13 @@ function InvoiceListTbDel({ data, method }) {
     ];
     return (
         <div>
-            <DataTable columns={columns} data={data} customStyles={tableStyle}></DataTable>
+            <DataTable
+                columns={columns}
+                data={data}
+                customStyles={tableStyle}
+                highlightOnHover
+                onSort={handleSort}
+            ></DataTable>
         </div>
     );
 }

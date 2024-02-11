@@ -8,10 +8,11 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Pagination from '~/components/Pagination/Pagination';
 import ModalAll1 from '~/components/ModalPage/ModalAll1';
-
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import ModalViewUserAdm from '~/components/ModalPage/ModalViewUserAdm';
+
+import * as toast from '~/utils/toast';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const cx = classNames.bind(style);
 
@@ -31,6 +32,7 @@ function AllStaff() {
 
     const [dataBranch, setDataBranch] = useState([]);
     const [selectBranch, setSelectBranch] = useState(undefined);
+    const [sort, setSort] = useState({ sort_col: 1, sort_type: 'asc' });
 
     axios.defaults.withCredentials = true;
 
@@ -150,30 +152,6 @@ function AllStaff() {
         setSelectBranch(e.target.value);
     };
 
-    const notify = (data, type) => {
-        if (type === 'success') {
-            toast.success(data, {
-                position: 'top-right',
-                autoClose: 3000,
-                closeOnClick: true,
-                pauseOnHover: true,
-                hideProgressBar: true,
-                draggable: true,
-            });
-        }
-
-        if (type === 'error') {
-            toast.error(data, {
-                position: 'top-right',
-                autoClose: 3000,
-                closeOnClick: true,
-                pauseOnHover: true,
-                hideProgressBar: true,
-                draggable: true,
-            });
-        }
-    };
-
     const toggleModalSoftDel = (id) => {
         setShowModalSoftDel(!showModalSoftDel);
         setIdSelected(id);
@@ -215,13 +193,13 @@ function AllStaff() {
         axios
             .post(`${baseUrl}category/adduser`, values)
             .then((res) => {
-                if (res.data === 'fail') {
-                    notify('Bạn không có quyền thao tác', 'error');
-                } else {
-                    notify('Thêm mới thành công', 'success');
-                }
                 setShowModalAdd(false);
                 loadData();
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Thêm thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
@@ -231,13 +209,13 @@ function AllStaff() {
         axios
             .put(`${baseUrl}category/updateuser`, values)
             .then((res) => {
-                if (res.data === 'fail') {
-                    notify('Bạn không có quyền thao tác', 'error');
-                } else {
-                    notify('Cập nhật thành công', 'success');
-                }
                 setShowModalView(false);
                 loadData();
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Cập nhật thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
@@ -250,9 +228,9 @@ function AllStaff() {
                 setShowModalSoftDel(false);
                 loadData();
                 if (res.data === 'fail') {
-                    notify('Bạn không có quyền thao tác', 'error');
+                    toast.notify('Bạn không có quyền thao tác', 'error');
                 } else {
-                    notify('Xóa thành công', 'success');
+                    toast.notify('Xóa thành công', 'success');
                 }
             })
             .catch((e) => console.log(e));
@@ -277,6 +255,8 @@ function AllStaff() {
         axios
             .get(`${baseUrl}category/users`, {
                 params: {
+                    sort_col: sort.sort_col,
+                    sort_type: sort.sort_type,
                     branch_id: selectBranch,
                     isDeleted: 0,
                     search_value: valuesSearch,
@@ -296,7 +276,7 @@ function AllStaff() {
     useEffect(() => {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord, selectBranch]);
+    }, [startRecord, selectBranch, sort]);
 
     useEffect(() => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
@@ -386,7 +366,7 @@ function AllStaff() {
 
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>
-                    <StaffTb data={dataTb} method={{ toggleModalView, toggleModalSoftDel }} user={user} />
+                    <StaffTb data={dataTb} method={{ toggleModalView, toggleModalSoftDel, setSort }} user={user} />
                 </div>
                 <div className={cx('wrap-pagination')}>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />

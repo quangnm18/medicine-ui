@@ -146,7 +146,8 @@
 .btn-desc {
     text-align: end;
     margin-right: 24px;
-    padding: 8px 8px 78px 8px;
+    margin-top: 24px;
+    padding: 8px 8px 40px 8px;
     height: 80px;
 }
 
@@ -172,7 +173,6 @@
 
 //Main Content
 .main-content {
-    height: 688px;
     background-color: var(--white);
     padding: 8px 12px 0 12px;
     margin-top: 12px;
@@ -181,6 +181,15 @@
     flex-direction: column;
     justify-content: space-between;
     overflow: auto;
+}
+
+.main-table {
+    display: flex;
+    min-height: 632px;
+}
+
+.content-table {
+    min-height: 626px;
 }
 
 .wrap-paginate {
@@ -231,27 +240,11 @@ thead {
     max-height: 60.5px;
 }
 
-tbody {
-}
+// tbody {
+// }
 
 .th-ten {
     width: 200px;
-}
-
-.th-sl {
-    // width: 140px;
-}
-
-.th-sltb {
-    // width: 80px;
-}
-
-.th-slnn {
-    // width: 160px;
-}
-
-.th-tn {
-    // width: 100px;
 }
 
 .th-dvt {
@@ -262,18 +255,9 @@ tbody {
     width: 230px;
 }
 
-// .th-handung {
-//     width: 100px;
-// }
-
 .th-solo {
     width: 200px;
 }
-
-// .th-btn {
-//     width: 80px;
-//     text-align: center;
-// }
 
 .table-input {
     height: 42px;
@@ -285,13 +269,13 @@ tbody {
 
 .table-icon {
     color: var(--white);
-    font-size: 2rem;
+    font-size: 1.4rem;
 }
 
 .table-btn {
     cursor: pointer;
     background-color: red;
-    width: 32px;
+    width: 28px;
     padding: 6px;
     border-radius: 4px;
 }
@@ -300,18 +284,6 @@ tbody {
     width: 100%;
     display: flex;
     border: none;
-    padding: 12px;
-    position: fixed;
-}
-
-.foot-total {
-    margin-top: 56px;
-}
-
-.foot-ck {
-    margin-top: 28px;
-}
-
-.foot-tr + .foot-tr {
-    margin-top: 28px;
+    // padding: 12px;
+    // position: fixed;
 }

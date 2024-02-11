@@ -58,7 +58,7 @@ function Medicine() {
             label: 'Tên dược',
             name: 'ten',
             type: 'text',
-            placeholder: 'Tên dược',
+            placeholder: 'Ampicilin',
         },
         {
             id: 2,
@@ -72,7 +72,7 @@ function Medicine() {
             label: 'Số đăng ký',
             name: 'sdk',
             type: 'text',
-            placeholder: 'Số đăng ký',
+            placeholder: '893110354923',
         },
         {
             id: 4,
@@ -86,7 +86,7 @@ function Medicine() {
             label: 'Số quyết định',
             name: 'sqd',
             type: 'text',
-            placeholder: 'Số quyết định',
+            placeholder: '826/QĐ-QLD',
         },
         {
             id: 6,
@@ -100,42 +100,42 @@ function Medicine() {
             label: 'Đợt cấp',
             name: 'dot_cap',
             type: 'text',
-            placeholder: '',
+            placeholder: '187 BS',
         },
         {
             id: 8,
             label: 'Tiêu chuẩn',
             name: 'tieu_chuan',
             type: 'text',
-            placeholder: '',
+            placeholder: 'NSX',
         },
         {
             id: 9,
             label: 'Hoạt chất',
             name: 'hoat_chat',
             type: 'text',
-            placeholder: 'Hoạt chất',
+            placeholder: 'Natri valproate',
         },
         {
             id: 10,
             label: 'Hàm lượng',
             name: 'ham_luong',
             type: 'text',
-            placeholder: 'Hàm lượng',
+            placeholder: '200mg/ml',
         },
         {
             id: 11,
             label: 'Dạng bào chế',
             name: 'dang_bao_che',
             type: 'text',
-            placeholder: 'Dạng bào chế',
+            placeholder: 'Dung dịch thuốc uống',
         },
         {
             id: 12,
             label: 'Quy cách đóng gói',
             name: 'dong_goi',
             type: 'text',
-            placeholder: 'Quy cách đóng gói',
+            placeholder: 'Hộp 1 chai 40ml',
         },
         {
             id: 13,
@@ -173,6 +173,8 @@ function Medicine() {
 
     const [dataGrMed, setDataGrMed] = useState([]);
     const [selectGrMed, setSelectGrMed] = useState();
+
+    const [sort, setSort] = useState({ sort_col: 1, sort_type: 'desc' });
 
     const [idSelected, setIdSelected] = useState({});
     const [medSelected, setMedSelected] = useState([]);
@@ -339,6 +341,8 @@ function Medicine() {
         axios
             .get(`${baseUrl}category/getallmed/`, {
                 params: {
+                    sort_col: sort.sort_col,
+                    sort_type: sort.sort_type,
                     group_id: selectGrMed,
                     search_value: nameSearchInput,
                     isDeleted: 0,
@@ -363,7 +367,7 @@ function Medicine() {
     useEffect(() => {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord, selectGrMed]);
+    }, [startRecord, selectGrMed, sort]);
 
     //search
     useEffect(() => {
@@ -504,7 +508,10 @@ function Medicine() {
 
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>
-                    <MedicineTb data={dataTb} method={{ toggleModalSingleDelete, toggleModalView, handleChooseRow }} />
+                    <MedicineTb
+                        data={dataTb}
+                        method={{ toggleModalSingleDelete, toggleModalView, handleChooseRow, setSort }}
+                    />
                 </div>
 
                 <div className={cx('wrap-pagination')}>

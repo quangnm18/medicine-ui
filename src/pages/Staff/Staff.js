@@ -28,6 +28,7 @@ function Staff() {
     const [showModalView, setShowModalView] = useState(false);
     const [showModalAdd, setShowModalAdd] = useState(false);
     const [idSelected, setIdSelected] = useState();
+    const [sort, setSort] = useState({ sort_col: 1, sort_type: 'asc' });
 
     axios.defaults.withCredentials = true;
 
@@ -276,6 +277,8 @@ function Staff() {
         axios
             .get(`${baseUrl}category/users`, {
                 params: {
+                    sort_col: sort.sort_col,
+                    sort_type: sort.sort_type,
                     branch_id: user.id_chi_nhanh,
                     isDeleted: 0,
                     search_value: valuesSearch,
@@ -295,7 +298,7 @@ function Staff() {
     useEffect(() => {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord]);
+    }, [startRecord, sort]);
     return (
         <div className={cx('content')}>
             <div className={cx('header-content')}>
@@ -357,7 +360,7 @@ function Staff() {
 
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>
-                    <StaffTb data={dataTb} method={{ toggleModalView, toggleModalSoftDel }} user={user} />
+                    <StaffTb data={dataTb} method={{ toggleModalView, toggleModalSoftDel, setSort }} user={user} />
                 </div>
                 <div className={cx('wrap-pagination')}>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />

@@ -12,10 +12,15 @@ import ModalAll from '~/components/ModalPage/ModalAll';
 import ModalViewSaleDetail from '~/components/ModalPage/ModalSaleDetail';
 import Pagination from '~/components/Pagination/Pagination';
 
+import * as toast from '~/utils/toast';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const cx = classNames.bind(style);
 
 function InvoiceList() {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
+    const [sort, setSort] = useState({ sort_col: 1, sort_type: 'desc' });
 
     const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
@@ -34,9 +39,11 @@ function InvoiceList() {
     const [idSelected, setIdSelected] = useState();
     const [selectBranch, setSelectBranch] = useState(undefined);
 
-    const toggleModalSoftDel = (id) => {
+    axios.defaults.withCredentials = true;
+
+    const toggleModalSoftDel = (row) => {
         setShowModalSoftDel(!showModalSoftDel);
-        setIdSelected(id);
+        setIdSelected(row.ma_hoa_don);
     };
 
     const toggleModalView = (data) => {
@@ -68,10 +75,15 @@ function InvoiceList() {
     const handleSoftDel = (id) => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put(`${baseUrl}sell/ivlist/softdelete/${id}`)
+            .put(`${baseUrl}sell/ivlist/softdelete`, { ma_hoa_don: idSelected, deleted_by: user.userId })
             .then((res) => {
                 setShowModalSoftDel(false);
                 loadData();
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Xóa thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
@@ -85,6 +97,8 @@ function InvoiceList() {
         axios
             .get(`${baseUrl}sell/ivlist/`, {
                 params: {
+                    sort_col: sort.sort_col,
+                    sort_type: sort.sort_type,
                     branch_id: user.id_chi_nhanh ? user.id_chi_nhanh : selectBranch,
                     date_start: dateStart,
                     date_to: dateTo,
@@ -106,7 +120,7 @@ function InvoiceList() {
     useEffect(() => {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord, selectBranch]);
+    }, [startRecord, selectBranch, sort]);
 
     useEffect(() => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
@@ -179,6 +193,8 @@ function InvoiceList() {
                     )}
                 </div>
             </div>
+            <ToastContainer />
+
             {showModalSoftDel && (
                 <ModalAll
                     label={'Bạn có muốn xóa?'}
@@ -197,7 +213,7 @@ function InvoiceList() {
             )}
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>
-                    <InvoiceListTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView }} />
+                    <InvoiceListTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView, setSort }} />
                 </div>
 
                 <div>

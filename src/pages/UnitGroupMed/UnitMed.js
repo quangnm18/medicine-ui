@@ -25,6 +25,7 @@ function UnitMed() {
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState(1);
     const [dataTb, setDataTb] = useState([]);
+    const [sort, setSort] = useState({ sort_col: 1, sort_type: 'asc' });
 
     const [idSelected, setIdSelected] = useState('');
     const [listSelected, setListSelected] = useState([]);
@@ -198,6 +199,8 @@ function UnitMed() {
         axios
             .get(`${baseUrl}category/medicineunit`, {
                 params: {
+                    sort_col: sort.sort_col,
+                    sort_type: sort.sort_type,
                     search_value: valuesSearch,
                     isDeleted: 0,
                     numRecord: numRecord,
@@ -221,7 +224,7 @@ function UnitMed() {
     useEffect(() => {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord]);
+    }, [startRecord, sort]);
 
     return (
         <div className={cx('content')}>
@@ -295,7 +298,10 @@ function UnitMed() {
 
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>
-                    <UnitMedTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView, setListSelected }} />
+                    <UnitMedTb
+                        data={dataTb}
+                        method={{ toggleModalSoftDel, toggleModalView, setListSelected, setSort }}
+                    />
                 </div>
                 <div>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />

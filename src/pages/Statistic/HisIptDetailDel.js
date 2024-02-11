@@ -11,6 +11,10 @@ import { useNavigate } from 'react-router-dom';
 import HisIptDetailTbDel from '~/components/Table/HisIptDetailTbDel';
 import Pagination from '~/components/Pagination/Pagination';
 
+import * as toast from '~/utils/toast';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const cx = classNames.bind(style);
 
 function HisIptDetailDel() {
@@ -22,6 +26,7 @@ function HisIptDetailDel() {
 
     const [dateStart, setDateStart] = useState('');
     const [dateEnd, setDateEnd] = useState('');
+    const [sort, setSort] = useState({ sort_col: 17, sort_type: 'asc' });
     const [valuesSearch, setValuesSearch] = useState('');
 
     const [idSelected, setIdSelected] = useState('');
@@ -59,56 +64,6 @@ function HisIptDetailDel() {
         setStartRecord(e.selected * numRecord);
     };
 
-    const fillInvoiceDetail = () => {
-        // if (dateStart !== '' && dateEnd !== '' && valuesSearch.length) {
-        //     let arr = dataDetailCurr.filter((detail) => {
-        //         return detail.ma_hoa_don.toLocaleLowerCase().includes(valuesSearch.toLocaleLowerCase());
-        //     });
-        //     let filtered = dataDetailCurr.filter((detail) => {
-        //         let detailDate = detail.createdDt_at;
-        //         return detailDate >= dateStart && detailDate <= dateEnd;
-        //     });
-        //     let result = new Set(arr.concat(filtered));
-        //     setDataTb([...result]);
-        //     console.log([...result]);
-        //     console.log(123);
-        // }
-        // if (dateStart !== '' && dateEnd === '') {
-        //     let filtered = dataDetailCurr.filter((detail) => {
-        //         let detailDate = detail.createdDt_at;
-        //         return (
-        //             detailDate >= dateStart &&
-        //             detail.ma_hoa_don.toLocaleLowerCase().includes(valuesSearch.toLocaleLowerCase())
-        //         );
-        //     });
-        //     setDataTb(filtered);
-        // }
-        // if (dateStart === '' && dateEnd !== '') {
-        //     let filtered = dataDetailCurr.filter((detail) => {
-        //         let detailDate = detail.createdDt_at;
-        //         return (
-        //             detailDate <= dateEnd &&
-        //             detail.ma_hoa_don.toLocaleLowerCase().includes(valuesSearch.toLocaleLowerCase())
-        //         );
-        //     });
-        //     setDataTb(filtered);
-        // }
-        // if (dateStart === '' && dateEnd === '') {
-        //     setDataTb(dataDetailCurr);
-        // }
-    };
-
-    const handleFilter = () => {
-        // if (valuesSearch.length) {
-        //     const arr = dataDetailCurr.filter((detail) => {
-        //         return detail.ma_hoa_don.toLocaleLowerCase().includes(valuesSearch.toLocaleLowerCase());
-        //     });
-        //     setDataTb(arr);
-        // } else {
-        //     setDataTb(dataDetailCurr);
-        // }
-    };
-
     const VND = new Intl.NumberFormat('vi-VN', {
         style: 'currency',
         currency: 'VND',
@@ -123,6 +78,11 @@ function HisIptDetailDel() {
             .then((res) => {
                 setShowModalRes(false);
                 loadData();
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Khôi phục thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
@@ -134,6 +94,11 @@ function HisIptDetailDel() {
             .then((res) => {
                 setShowModalHardDel(false);
                 loadData();
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Xóa thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
@@ -143,6 +108,8 @@ function HisIptDetailDel() {
         axios
             .get(`${baseUrl}importlist/detail/`, {
                 params: {
+                    sort_col: sort.sort_col,
+                    sort_type: sort.sort_type,
                     isImported: 1,
                     isDeleted: 1,
                     numRecord: numRecord,
@@ -166,7 +133,7 @@ function HisIptDetailDel() {
     useEffect(() => {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord]);
+    }, [startRecord, sort]);
 
     return (
         <div className={cx('content')}>
@@ -182,7 +149,7 @@ function HisIptDetailDel() {
                             <label className={cx('label-option')}>Đến ngày</label>
                             <input type="date" onChange={onchangeDateEnd} />
                         </div>
-                        <button className={cx('btn-search')} onClick={fillInvoiceDetail}>
+                        <button className={cx('btn-search')}>
                             <FontAwesomeIcon icon={faSearch} />
                         </button>
                         <div className={cx('btn-action')}>
@@ -194,7 +161,7 @@ function HisIptDetailDel() {
                             </button>
                         </div>
                     </div>
-
+                    <ToastContainer />
                     <div className={cx('medicine-option', 'search-statistic')}>
                         <input
                             placeholder="Tìm kiếm theo mã hóa đơn..."
@@ -297,7 +264,10 @@ function HisIptDetailDel() {
 
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>
-                    <HisIptDetailTbDel data={dataTb} method={{ toggleModalRes, toggleModalHardDel, toggleModalView }} />
+                    <HisIptDetailTbDel
+                        data={dataTb}
+                        method={{ toggleModalRes, toggleModalHardDel, toggleModalView, setSort }}
+                    />
                 </div>
 
                 <div>

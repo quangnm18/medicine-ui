@@ -10,6 +10,10 @@ function UnitMedTb({ data, method }) {
     const handleSelectRow = (a) => {
         method.setListSelected(a.selectedRows);
     };
+
+    const handleSort = (obj, type, data) => {
+        method.setSort({ sort_col: obj.col, sort_type: type });
+    };
     const tableStyle = {
         rows: {
             style: {
@@ -31,9 +35,11 @@ function UnitMedTb({ data, method }) {
         },
         {
             name: 'Đơn vị lớn',
-            selector: (row) => row.donvi_lon,
+            selector: (row) => <div>{row.donvi_lon}</div>,
             width: '220px',
             center: true,
+            col: 1,
+            sortable: true,
         },
         {
             name: 'Đơn vị trung bình',
@@ -43,9 +49,11 @@ function UnitMedTb({ data, method }) {
         },
         {
             name: 'Đơn vị nhỏ nhất',
-            selector: (row) => row.donvi_nho,
+            selector: (row) => <div>{row.donvi_nho}</div>,
             width: '220px',
             center: true,
+            col: 2,
+            sortable: true,
         },
         {
             name: 'Đóng gói',
@@ -55,9 +63,11 @@ function UnitMedTb({ data, method }) {
         },
         {
             name: 'Mã đơn vị',
-            selector: (row) => row.unit_code,
+            selector: (row) => <div>{row.unit_code}</div>,
             width: '200px',
             center: true,
+            sortable: true,
+            col: 3,
         },
         {
             name: '',
@@ -81,6 +91,8 @@ function UnitMedTb({ data, method }) {
                 customStyles={tableStyle}
                 selectableRows
                 onSelectedRowsChange={handleSelectRow}
+                onSort={handleSort}
+                highlightOnHover
             ></DataTable>
         </div>
     );

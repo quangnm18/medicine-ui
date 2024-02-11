@@ -7,6 +7,10 @@ import style from './Table.module.scss';
 const cx = classNames.bind(style);
 
 function MedicineTb({ data, method }) {
+    const handleSort = (obj, type, data) => {
+        method.setSort({ sort_col: obj.col, sort_type: type });
+    };
+
     const tableStyle = {
         table: {
             style: {},
@@ -35,13 +39,15 @@ function MedicineTb({ data, method }) {
         },
         {
             name: 'Tên dược',
-            selector: (row) => row.ten,
+            col: 1,
+            selector: (row) => <div>{row.ten}</div>,
+            width: '300px',
             sortable: true,
         },
         {
             name: 'Hoạt chất',
             selector: (row) => row.hoat_chat,
-            width: '180px',
+            // width: '180px',
         },
         {
             name: 'Hàm lượng',
@@ -56,8 +62,6 @@ function MedicineTb({ data, method }) {
         {
             name: 'Dạng đóng gói',
             selector: (row) => row.description_unit,
-            width: '200px',
-            // maxWidth: 'fit-content',
         },
         {
             name: '',
@@ -71,7 +75,7 @@ function MedicineTb({ data, method }) {
                     </button>
                 </div>
             ),
-            width: '280px',
+            width: '100px',
         },
     ];
     return (
@@ -82,6 +86,8 @@ function MedicineTb({ data, method }) {
                 customStyles={tableStyle}
                 selectableRows
                 onSelectedRowsChange={method.handleChooseRow}
+                onSort={handleSort}
+                highlightOnHover
             ></DataTable>
         </div>
     );

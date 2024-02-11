@@ -73,7 +73,7 @@ function ModalAddMed({
                         {dataInputs.map((input) => (
                             <div key={input.id} className={cx('if-detail')}>
                                 <div>
-                                    <div className={cx('label')}>{input.label}</div>
+                                    <div className={cx('label', input.name === 'ten' && 'required')}>{input.label}</div>
                                     <input
                                         name={input.name}
                                         value={dataValueInputs[input.name]}
@@ -87,7 +87,7 @@ function ModalAddMed({
                         ))}
                         <div className={cx('select-action')}>
                             <div className={cx('choose-unitDetail')}>
-                                <label>Đơn vị dược</label>
+                                <label className={cx('required')}>Đơn vị dược</label>
                                 <select
                                     className={cx('unit-select')}
                                     name="don_vi_duoc"
@@ -106,7 +106,7 @@ function ModalAddMed({
                                 )}
                             </div>
                             <div className={cx('choose-unitDetail')}>
-                                <label>Nhóm thuốc</label>
+                                <label className={cx('required')}>Nhóm thuốc</label>
                                 <select
                                     className={cx('unit-select')}
                                     name="nhom_thuoc"

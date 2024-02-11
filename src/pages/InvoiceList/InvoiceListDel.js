@@ -7,15 +7,21 @@ import axios from 'axios';
 
 import DirectionHeader from '~/components/DirectionHeader/DirectionHeader';
 import style from './InvoiceList.module.scss';
-import InvoiceListTb from '~/components/Table/InvoiceListTb';
 import ModalAll from '~/components/ModalPage/ModalAll';
 import ModalViewSaleDetail from '~/components/ModalPage/ModalSaleDetail';
 import Pagination from '~/components/Pagination/Pagination';
 import InvoiceListTbDel from '~/components/Table/InvoiceListTbDel';
 
+import * as toast from '~/utils/toast';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const cx = classNames.bind(style);
 
 function InvoiceListDel() {
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
+    const [sort, setSort] = useState({ sort_col: 1, sort_type: 'desc' });
+
     const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState(1);
@@ -26,8 +32,10 @@ function InvoiceListDel() {
 
     const [dateStart, setDateStart] = useState('');
     const [dateTo, setDateTo] = useState('');
+    const [valuesSearch, setValuesSearch] = useState('');
 
     const [dataTb, setDataTb] = useState([]);
+    const [selectBranch, setSelectBranch] = useState(undefined);
 
     const [idSelected, setIdSelected] = useState();
 
@@ -36,9 +44,9 @@ function InvoiceListDel() {
         setIdSelected(data);
     };
 
-    const toggleModalRes = (id) => {
+    const toggleModalRes = (row) => {
         setShowModalRes(!showModalRes);
-        setIdSelected(id);
+        setIdSelected(row.ma_hoa_don);
     };
 
     const toggleModalHardDel = (id) => {
@@ -86,10 +94,15 @@ function InvoiceListDel() {
     const handleRes = (id) => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put(`${baseUrl}sell/ivlist/restore/${id}`)
+            .put(`${baseUrl}sell/ivlist/restore`, { ma_hoa_don: idSelected })
             .then((res) => {
                 setShowModalRes(false);
                 loadData();
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Khôi phục thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
@@ -101,6 +114,11 @@ function InvoiceListDel() {
             .then((res) => {
                 setShowModalHardDel(false);
                 loadData();
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Xóa thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
@@ -114,6 +132,12 @@ function InvoiceListDel() {
         axios
             .get(`${baseUrl}sell/ivlist/`, {
                 params: {
+                    sort_col: sort.sort_col,
+                    sort_type: sort.sort_type,
+                    branch_id: user.id_chi_nhanh ? user.id_chi_nhanh : selectBranch,
+                    date_start: dateStart,
+                    date_to: dateTo,
+                    search_value: valuesSearch,
                     isDeleted: 1,
                     numRecord: numRecord,
                     startRecord: startRecord,
@@ -126,7 +150,7 @@ function InvoiceListDel() {
                 setPageCount(Math.ceil(totalRecord / numRecord));
             })
             .catch((err) => console.log(err));
-    }, [startRecord]);
+    }, [startRecord, sort]);
 
     useEffect(() => {
         loadData();
@@ -169,6 +193,7 @@ function InvoiceListDel() {
                     </div>
                 </div>
             </div>
+            <ToastContainer />
 
             {showModalRes && (
                 <ModalAll
@@ -197,7 +222,10 @@ function InvoiceListDel() {
             )}
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>
-                    <InvoiceListTbDel data={dataTb} method={{ toggleModalRes, toggleModalView, toggleModalHardDel }} />
+                    <InvoiceListTbDel
+                        data={dataTb}
+                        method={{ toggleModalRes, toggleModalView, toggleModalHardDel, setSort }}
+                    />
                 </div>
 
                 <div>

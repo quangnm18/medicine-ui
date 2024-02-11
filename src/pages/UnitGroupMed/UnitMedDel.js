@@ -26,6 +26,7 @@ function UnitMedDel() {
     const [pageCount, setPageCount] = useState(1);
     const [dataTb, setDataTb] = useState([]);
     const [idSelected, setIdSelected] = useState('');
+    const [sort, setSort] = useState({ sort_col: 1, sort_type: 'asc' });
 
     const [showModalRes, setShowModalRes] = useState(false);
     const [showModalHardDel, setShowModalHarDel] = useState(false);
@@ -182,6 +183,8 @@ function UnitMedDel() {
         axios
             .get(`${baseUrl}category/medicineunit/`, {
                 params: {
+                    sort_col: sort.sort_col,
+                    sort_type: sort.sort_type,
                     search_value: valuesSearch,
                     isDeleted: 1,
                     numRecord: numRecord,
@@ -205,7 +208,7 @@ function UnitMedDel() {
     useEffect(() => {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord]);
+    }, [startRecord, sort]);
 
     return (
         <div className={cx('content')}>
@@ -269,7 +272,7 @@ function UnitMedDel() {
                 <div className={cx('content-table')}>
                     <UnitMedDelTb
                         data={dataTb}
-                        method={{ toggleModalRes, toggleModalView, toggleModalHardDel }}
+                        method={{ toggleModalRes, toggleModalView, toggleModalHardDel, setSort }}
                         role={user.role}
                     />
                 </div>

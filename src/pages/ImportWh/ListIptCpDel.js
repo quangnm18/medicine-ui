@@ -12,6 +12,10 @@ import ModalIvDetail from '~/components/ModalPage/ModalIvDetail';
 import Pagination from '~/components/Pagination/Pagination';
 import IptCpListTbDel from '~/components/Table/IptCpListTbDel';
 
+import * as toast from '~/utils/toast';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const cx = classNames.bind(style);
 
 function ListIptCpDel() {
@@ -20,6 +24,7 @@ function ListIptCpDel() {
     const [pageCount, setPageCount] = useState(1);
 
     const [dataTb, setDataTb] = useState([]);
+    const [sort, setSort] = useState({ sort_col: 1, sort_type: 'desc' });
 
     const [dateStart, setDateStart] = useState('');
     const [dateEnd, setDateEnd] = useState('');
@@ -28,6 +33,7 @@ function ListIptCpDel() {
     const [showModalView, setShowModalView] = useState(false);
     const [showModalRes, setShowModalRes] = useState(false);
     const [showModalHardDel, setShowModalHardDel] = useState(false);
+    axios.defaults.withCredentials = true;
 
     //Method Toggle
 
@@ -54,6 +60,11 @@ function ListIptCpDel() {
             .then((res) => {
                 setShowModalRes(false);
                 loadData();
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Khôi phục thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
@@ -65,6 +76,11 @@ function ListIptCpDel() {
             .then((res) => {
                 setShowModalHardDel(false);
                 loadData();
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Xóa thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
@@ -84,6 +100,8 @@ function ListIptCpDel() {
         axios
             .get(`${baseUrl}importlist/alllistpaginate/`, {
                 params: {
+                    sort_col: sort.sort_col,
+                    sort_type: sort.sort_type,
                     branch_id: JSON.parse(localStorage.getItem('data_user')).id_chi_nhanh,
                     isDeleted: 1,
                     numRecord: numRecord,
@@ -106,7 +124,7 @@ function ListIptCpDel() {
 
     useEffect(() => {
         loadData();
-    }, [startRecord]);
+    }, [startRecord, sort]);
 
     const handleChangePage = (e) => {
         setStartRecord(e.selected * numRecord);
@@ -154,6 +172,7 @@ function ListIptCpDel() {
                     </div>
                 </div>
             </div>
+            <ToastContainer />
 
             {showModalView && (
                 <ModalIvDetail
@@ -183,7 +202,10 @@ function ListIptCpDel() {
 
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>
-                    <IptCpListTbDel data={dataTb} method={{ toggleModalView, toggleModalRes, toggleModalHardDel }} />
+                    <IptCpListTbDel
+                        data={dataTb}
+                        method={{ toggleModalView, toggleModalRes, toggleModalHardDel, setSort }}
+                    />
                 </div>
                 <div className={cx('wrap-paginate')}>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />

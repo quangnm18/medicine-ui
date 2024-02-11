@@ -11,6 +11,10 @@ function GroupMedTb({ data, method }) {
         method.setListSelected(a.selectedRows);
     };
 
+    const handleSort = (obj, type, data) => {
+        method.setSort({ sort_col: obj.col, sort_type: type });
+    };
+
     const tableStyle = {
         table: {
             style: {
@@ -31,15 +35,16 @@ function GroupMedTb({ data, method }) {
 
     const columns = [
         {
-            name: 'ID',
+            name: '',
             cell: (row, index) => index + 1,
             width: '100px',
         },
         {
             name: 'Tên nhóm thuốc',
-            selector: (row) => row.ten_nhom_thuoc,
+            selector: (row) => <div>{row.ten_nhom_thuoc}</div>,
             sortable: true,
             width: '360px',
+            col: 1,
         },
         {
             name: 'Mô tả',
@@ -48,9 +53,10 @@ function GroupMedTb({ data, method }) {
         },
         {
             name: 'Mã nhóm thuốc',
-            selector: (row) => row.group_code,
+            selector: (row) => <div>{row.group_code}</div>,
             sortable: true,
             width: '180px',
+            col: 2,
         },
         {
             name: '',
@@ -77,7 +83,7 @@ function GroupMedTb({ data, method }) {
                 selectableRows
                 fixedHeader
                 fixedHeaderScrollHeight="700px"
-                // onSort={(e) => console.log(e)}
+                onSort={handleSort}
                 onSelectedRowsChange={handleSelectRow}
             ></DataTable>
         </div>

@@ -12,6 +12,10 @@ import ModalView from '~/components/ModalPage/ModalView';
 import { useNavigate } from 'react-router-dom';
 import Pagination from '~/components/Pagination/Pagination';
 
+import * as toast from '~/utils/toast';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const cx = classNames.bind(style);
 
 function SupplierDel() {
@@ -75,6 +79,7 @@ function SupplierDel() {
     ];
 
     const [valuesSearch, setValuesSearch] = useState('');
+    const [sort, setSort] = useState({ sort_col: 1, sort_type: 'asc' });
 
     const [showModalView, setShowModalView] = useState(false);
     const [showModalHardDel, setShowModaHardDel] = useState(false);
@@ -126,6 +131,11 @@ function SupplierDel() {
             .then((res) => {
                 loadData();
                 setShowModalView(false);
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Cập nhật thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
@@ -137,6 +147,11 @@ function SupplierDel() {
             .then((res) => {
                 loadData();
                 setShowModaHardDel(false);
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Xóa thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
@@ -148,6 +163,11 @@ function SupplierDel() {
             .then((res) => {
                 loadData();
                 setShowModalRes(false);
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Khôi phục thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
@@ -171,6 +191,8 @@ function SupplierDel() {
         axios
             .get(`${baseUrl}category/supplier/`, {
                 params: {
+                    sort_col: sort.sort_col,
+                    sort_type: sort.sort_type,
                     search_value: valuesSearch,
                     isDeleted: 1,
                     numRecord: numRecord,
@@ -194,7 +216,7 @@ function SupplierDel() {
     useEffect(() => {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord]);
+    }, [startRecord, sort]);
 
     return (
         <div className={cx('content')}>
@@ -222,6 +244,7 @@ function SupplierDel() {
                     </div>
                 </div>
             </div>
+            <ToastContainer />
 
             {showModalHardDel && (
                 <ModalAll
@@ -253,7 +276,10 @@ function SupplierDel() {
             )}
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>
-                    <SupDeletedTb data={dataTb} method={{ toggleModalHardDel, toggleModalView, toggleModalRes }} />
+                    <SupDeletedTb
+                        data={dataTb}
+                        method={{ toggleModalHardDel, toggleModalView, toggleModalRes, setSort }}
+                    />
                 </div>
                 <div className={cx('wrap-pagination')}>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />

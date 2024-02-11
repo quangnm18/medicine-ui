@@ -7,6 +7,10 @@ import style from './Table.module.scss';
 const cx = classNames.bind(style);
 
 function IptCpListTbDel({ data, method }) {
+    const handleSort = (obj, type, data) => {
+        method.setSort({ sort_col: obj.col, sort_type: type });
+    };
+
     const tableStyle = {
         rows: {
             style: {
@@ -28,48 +32,58 @@ function IptCpListTbDel({ data, method }) {
         },
         {
             name: 'Số hóa đơn',
-            selector: (row) => row.invoice_code,
+            selector: (row) => <div>{row.invoice_code}</div>,
             width: '140px',
+            sortable: true,
+            col: 1,
         },
         {
             name: 'Ngày lập',
             selector: (row) => {
                 let date = new Date(row.createdDate);
-                return date.toLocaleDateString();
+                return <div>{date.toLocaleDateString()}</div>;
             },
             width: '180px',
+            sortable: true,
+            col: 2,
         },
-        {
-            name: 'Giá trị nhập',
-            selector: (row) => {
-                const VND = new Intl.NumberFormat('vi-VN', {
-                    style: 'currency',
-                    currency: 'VND',
-                });
+        // {
+        //     name: 'Giá trị nhập',
+        //     selector: (row) => {
+        //         const VND = new Intl.NumberFormat('vi-VN', {
+        //             style: 'currency',
+        //             currency: 'VND',
+        //         });
 
-                return VND.format(row.giatri_nhap);
-            },
-            width: '160px',
-        },
-        {
-            name: 'Thành tiền',
-            selector: (row) => {
-                const VND = new Intl.NumberFormat('vi-VN', {
-                    style: 'currency',
-                    currency: 'VND',
-                });
+        //         return VND.format(row.giatri_nhap);
+        //     },
+        //     width: '160px',
+        // },
+        // {
+        //     name: 'Thành tiền',
+        //     selector: (row) => {
+        //         const VND = new Intl.NumberFormat('vi-VN', {
+        //             style: 'currency',
+        //             currency: 'VND',
+        //         });
 
-                return VND.format(row.thanh_tien);
-            },
-            width: '160px',
-        },
+        //         return VND.format(row.thanh_tien);
+        //     },
+        //     width: '160px',
+        //     sortable: true,
+        //     col: 3,
+        // },
         {
-            name: 'Nhân viên',
-            selector: (row) => row.Name,
+            name: 'Người lập',
+            selector: (row) => <div>{row.Name}</div>,
+            sortable: true,
+            col: 4,
         },
         {
             name: 'Nhà cung cấp',
-            selector: (row) => row.ten_ncc,
+            selector: (row) => <div>{row.ten_ncc}</div>,
+            sortable: true,
+            col: 5,
         },
 
         {
@@ -86,6 +100,8 @@ function IptCpListTbDel({ data, method }) {
                     )} */}
                 </div>
             ),
+            sortable: true,
+            col: 6,
         },
 
         {
@@ -108,7 +124,13 @@ function IptCpListTbDel({ data, method }) {
     ];
     return (
         <div>
-            <DataTable columns={columns} data={data} customStyles={tableStyle}></DataTable>
+            <DataTable
+                columns={columns}
+                data={data}
+                customStyles={tableStyle}
+                highlightOnHover
+                onSort={handleSort}
+            ></DataTable>
         </div>
     );
 }

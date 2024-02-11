@@ -3,22 +3,22 @@ import style from './Branchs.module.scss';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import StaffTb from '~/components/Table/StaffTb';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Pagination from '~/components/Pagination/Pagination';
 import ModalAll1 from '~/components/ModalPage/ModalAll1';
-
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import ModalViewUser from '~/components/ModalPage/ModalViewUser';
 import BranchListTb from '~/components/Table/BranchListTb';
 import ModalAddBranch from '~/components/ModalPage/ModalUnitGr/ModalBranch';
+
+import * as toast from '~/utils/toast';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const cx = classNames.bind(style);
 
 function Branch() {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
+    const [sort, setSort] = useState({ sort_col: 16, sort_type: 'desc' });
 
     const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
@@ -124,30 +124,6 @@ function Branch() {
         }
     };
 
-    const notify = (data, type) => {
-        if (type === 'success') {
-            toast.success(data, {
-                position: 'top-right',
-                autoClose: 3000,
-                closeOnClick: true,
-                pauseOnHover: true,
-                hideProgressBar: true,
-                draggable: true,
-            });
-        }
-
-        if (type === 'error') {
-            toast.error(data, {
-                position: 'top-right',
-                autoClose: 3000,
-                closeOnClick: true,
-                pauseOnHover: true,
-                hideProgressBar: true,
-                draggable: true,
-            });
-        }
-    };
-
     const toggleModalHardDel = (id) => {
         setShowModalHardDel(!showModalHardDel);
         setIdSelected(id);
@@ -185,13 +161,13 @@ function Branch() {
                 axios
                     .post(`${baseUrl}branch/create`, { ...values, branch_code: `CS${newId}` })
                     .then((res) => {
-                        if (res.data === 'fail') {
-                            notify('Bạn không có quyền thao tác', 'error');
-                        } else {
-                            notify('Thêm mới thành công', 'success');
-                        }
                         setShowModalAdd(false);
                         loadData();
+                        if (res.data === 'fail') {
+                            toast.notify('Bạn không có quyền thao tác', 'error');
+                        } else {
+                            toast.notify('Thêm thành công', 'success');
+                        }
                     })
                     .catch((e) => console.log(e));
             })
@@ -203,13 +179,13 @@ function Branch() {
         axios
             .put(`${baseUrl}branch/update/${idSelected.id}`, values)
             .then((res) => {
-                if (res.data === 'fail') {
-                    notify('Bạn không có quyền thao tác', 'error');
-                } else {
-                    notify('Cập nhật thành công', 'success');
-                }
                 setShowModalView(false);
                 loadData();
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Cập nhật thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
@@ -222,9 +198,9 @@ function Branch() {
                 setShowModalHardDel(false);
                 loadData();
                 if (res.data === 'fail') {
-                    notify('Bạn không có quyền thao tác', 'error');
+                    toast.notify('Bạn không có quyền thao tác', 'error');
                 } else {
-                    notify('Xóa thành công', 'success');
+                    toast.notify('Xóa thành công', 'success');
                 }
             })
             .catch((e) => console.log(e));
@@ -249,6 +225,8 @@ function Branch() {
         axios
             .get(`${baseUrl}branch/paginate`, {
                 params: {
+                    sort_col: sort.sort_col,
+                    sort_type: sort.sort_type,
                     search_value: valuesSearch,
                     numRecord: numRecord,
                     startRecord: startRecord,
@@ -266,7 +244,7 @@ function Branch() {
     useEffect(() => {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord]);
+    }, [startRecord, sort]);
     return (
         <div className={cx('content')}>
             <div className={cx('header-content')}>
@@ -326,7 +304,7 @@ function Branch() {
 
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>
-                    <BranchListTb data={dataTb} method={{ toggleModalView, toggleModalHardDel }} user={user} />
+                    <BranchListTb data={dataTb} method={{ toggleModalView, toggleModalHardDel, setSort }} user={user} />
                 </div>
                 <div className={cx('wrap-pagination')}>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />

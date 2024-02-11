@@ -7,6 +7,10 @@ import style from './Table.module.scss';
 const cx = classNames.bind(style);
 
 function IptCpListTb({ data, method }) {
+    const handleSort = (obj, type, data) => {
+        method.setSort({ sort_col: obj.col, sort_type: type });
+    };
+
     const tableStyle = {
         rows: {
             style: {
@@ -29,16 +33,20 @@ function IptCpListTb({ data, method }) {
         },
         {
             name: 'Số hóa đơn',
-            selector: (row) => row.invoice_code,
+            selector: (row) => <div>{row.invoice_code}</div>,
             width: '140px',
+            sortable: true,
+            col: 1,
         },
         {
             name: 'Ngày lập',
             selector: (row) => {
                 let date = new Date(row.createdDate);
-                return date.toLocaleDateString();
+                return <div>{date.toLocaleDateString()}</div>;
             },
             width: '180px',
+            sortable: true,
+            col: 2,
         },
         {
             name: 'Giá trị nhập',
@@ -60,17 +68,23 @@ function IptCpListTb({ data, method }) {
                     currency: 'VND',
                 });
 
-                return VND.format(row.thanh_tien);
+                return <div>{VND.format(row.thanh_tien)}</div>;
             },
             width: '160px',
+            sortable: true,
+            col: 3,
         },
         {
             name: 'Nhân viên',
-            selector: (row) => row.Name,
+            selector: (row) => <div>{row.Name}</div>,
+            sortable: true,
+            col: 4,
         },
         {
             name: 'Nhà cung cấp',
-            selector: (row) => row.ten_ncc,
+            selector: (row) => <div>{row.ten_ncc}</div>,
+            sortable: true,
+            col: 5,
         },
         {
             name: '#',
@@ -120,6 +134,8 @@ function IptCpListTb({ data, method }) {
             ),
             width: '260px',
             center: true,
+            sortable: true,
+            col: 6,
         },
     ];
     return (
@@ -131,6 +147,8 @@ function IptCpListTb({ data, method }) {
                 fixedHeader
                 fixedHeaderScrollHeight="620px"
                 className={cx('wrapper-tb')}
+                highlightOnHover
+                onSort={handleSort}
             ></DataTable>
         </div>
     );

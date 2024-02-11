@@ -35,8 +35,8 @@ function InventoryWhTb({ data, method }) {
         {
             name: 'Tên thuốc',
             col: 24,
-            selector: (row) => row.ten,
-            width: '250px',
+            selector: (row) => <div>{row.ten}</div>,
+            // width: '250px',
             sortable: true,
         },
         {
@@ -69,7 +69,7 @@ function InventoryWhTb({ data, method }) {
         {
             name: 'SL(ĐVNN)',
             col: 10,
-            selector: (row) => (row.so_luong_con ? row.so_luong_con : 0),
+            selector: (row) => <div>{row.so_luong_con ? row.so_luong_con : 0}</div>,
             width: '140px',
             sortable: true,
         },
@@ -81,7 +81,7 @@ function InventoryWhTb({ data, method }) {
         {
             name: 'Đóng gói',
             selector: (row) => row.dong_goi,
-            width: '200px',
+            // width: '200px',
         },
         {
             name: 'Số lô',

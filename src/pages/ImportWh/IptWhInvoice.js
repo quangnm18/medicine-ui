@@ -13,6 +13,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import FormatInput from '~/components/format/FormatInput';
 
+import * as toast from '~/utils/toast';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const cx = classNames.bind(style);
 
 function CreateInvoiceIpt() {
@@ -221,6 +225,11 @@ function CreateInvoiceIpt() {
                             .then((res) => {
                                 setModalSave(false);
                                 setDataDetails([]);
+                                if (res.data === 'fail') {
+                                    toast.notify('Bạn không có quyền thao tác', 'error');
+                                } else {
+                                    toast.notify('Tạo phiếu thành công', 'success');
+                                }
                             })
                             .catch((e) => console.log(e));
                     })
@@ -272,6 +281,7 @@ function CreateInvoiceIpt() {
                         />
                     </div>
                 </div>
+                <ToastContainer />
 
                 {modalSave && dataDetails.length > 0 && (
                     <ModalAll

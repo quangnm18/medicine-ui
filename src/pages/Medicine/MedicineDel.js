@@ -15,6 +15,10 @@ import ModalViewMed from '~/components/ModalPage/ModalViewMed';
 import { useNavigate } from 'react-router-dom';
 import Pagination from '~/components/Pagination/Pagination';
 
+import * as toast from '~/utils/toast';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const cx = classNames.bind(style);
 
 function MedicineDel() {
@@ -163,6 +167,7 @@ function MedicineDel() {
     const debounced = useDebounce(nameSearchInput, 500);
 
     const [dataTbDel, setDataTbDel] = useState([]);
+    const [sort, setSort] = useState({ sort_col: 1, sort_type: 'desc' });
 
     const [idSelected, setIdSelected] = useState({});
     const [medSelected, setMedSelected] = useState([]);
@@ -219,6 +224,11 @@ function MedicineDel() {
             .then((res) => {
                 setShowModalRes(false);
                 loadDataTbDel();
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Khôi phục thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
@@ -230,6 +240,11 @@ function MedicineDel() {
             .then((res) => {
                 setShowModalHardDelete(false);
                 loadDataTbDel();
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Xóa thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
@@ -241,6 +256,11 @@ function MedicineDel() {
             .then((res) => {
                 setShowModalView(false);
                 loadDataTbDel();
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Cập nhật thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
@@ -263,6 +283,8 @@ function MedicineDel() {
         axios
             .get(`${baseUrl}category/getallmed/`, {
                 params: {
+                    sort_col: sort.sort_col,
+                    sort_type: sort.sort_type,
                     search_value: nameSearchInput,
                     isDeleted: 1,
                     numRecord: numRecord,
@@ -281,7 +303,7 @@ function MedicineDel() {
     useEffect(() => {
         loadDataTbDel();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord]);
+    }, [startRecord, sort]);
 
     const navigate = useNavigate();
     const routeChange = (path) => {
@@ -365,12 +387,13 @@ function MedicineDel() {
                     />
                 </div>
             )}
+            <ToastContainer />
 
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>
                     <MedDeletedTb
                         data={dataTbDel}
-                        method={{ toggleModalView, toggleModalRes, toggleModalHardDelete }}
+                        method={{ toggleModalView, toggleModalRes, toggleModalHardDelete, setSort }}
                     />
                 </div>
 

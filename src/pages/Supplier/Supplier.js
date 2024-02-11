@@ -13,12 +13,15 @@ import ModalAdd from '~/components/ModalPage/ModalAdd';
 import { useNavigate } from 'react-router-dom';
 import Pagination from '~/components/Pagination/Pagination';
 
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import * as toast from '~/utils/toast';
 
 const cx = classNames.bind(style);
 
 function Supplier() {
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
+
     const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState(1);
@@ -81,6 +84,8 @@ function Supplier() {
 
     const [valuesSearch, setValuesSearch] = useState('');
 
+    const [sort, setSort] = useState({ sort_col: 1, sort_type: 'asc' });
+
     const [showModalAdd, setShowModalAdd] = useState(false);
     const [showModalView, setShowModalView] = useState(false);
     const [showModalDelete, setShowModalDelete] = useState(false);
@@ -131,30 +136,6 @@ function Supplier() {
         setShowModalAdd(!showModalAdd);
     };
 
-    const notify = (data, type) => {
-        if (type === 'success') {
-            toast.success(`${data} thành công`, {
-                position: 'top-right',
-                autoClose: 3000,
-                closeOnClick: true,
-                pauseOnHover: true,
-                hideProgressBar: true,
-                draggable: true,
-            });
-        }
-
-        if (type === 'error') {
-            toast.error(`${data} thất bại`, {
-                position: 'top-right',
-                autoClose: 3000,
-                closeOnClick: true,
-                pauseOnHover: true,
-                hideProgressBar: true,
-                draggable: true,
-            });
-        }
-    };
-
     //handleClick method
     const handleAdd = () => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
@@ -163,7 +144,11 @@ function Supplier() {
             .then((res) => {
                 loadData();
                 setShowModalAdd(false);
-                notify('Thêm mới', 'success');
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Thêm thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
@@ -175,7 +160,11 @@ function Supplier() {
             .then((res) => {
                 loadData();
                 setShowModalView(false);
-                notify('Cập nhật', 'success');
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Cập nhật thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
@@ -186,8 +175,12 @@ function Supplier() {
             .put(`${baseUrl}category/supplier/softdelete/${id}`)
             .then((res) => {
                 loadData();
-                notify('Xóa', 'success');
                 setShowModalDelete(false);
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Xóa thành công', 'success');
+                }
             })
             .catch((e) => console.log(e));
     };
@@ -203,6 +196,8 @@ function Supplier() {
         axios
             .get(`${baseUrl}category/supplier/`, {
                 params: {
+                    sort_col: sort.sort_col,
+                    sort_type: sort.sort_type,
                     search_value: valuesSearch,
                     isDeleted: 0,
                     numRecord: numRecord,
@@ -226,7 +221,7 @@ function Supplier() {
     useEffect(() => {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord]);
+    }, [startRecord, sort]);
 
     return (
         <div className={cx('content')}>
@@ -247,8 +242,7 @@ function Supplier() {
                                 <FontAwesomeIcon icon={faSearch} className={cx('search-icon')} />
                             </button>
                         </div>
-                        {(JSON.parse(localStorage.getItem('data_user')).role === 'ADM' ||
-                            JSON.parse(localStorage.getItem('data_user')).role === 'STFW') && (
+                        {(user.role === 'ADM' || user.role === 'STFW' || user.role === 'ADMA') && (
                             <button
                                 className={cx('btn-addstaff')}
                                 onClick={() => {
@@ -267,7 +261,7 @@ function Supplier() {
                             </button>
                         )}
 
-                        {JSON.parse(localStorage.getItem('data_user')).role === 'ADM' && (
+                        {(user.role === 'ADM' || user.role === 'ADMA') && (
                             <button
                                 className={cx('btn-addstaff')}
                                 onClick={() => routeChange('/category/supplier/deleted')}
@@ -295,6 +289,7 @@ function Supplier() {
                     methodOnchange={onChangeInputSup}
                     methodToggle={toggleModalAdd}
                     methodHandle={handleAdd}
+                    role={user.role}
                 />
             )}
 
@@ -307,6 +302,7 @@ function Supplier() {
                         methodOnchange={onChangeInputSup}
                         methodToggle={toggleModalView}
                         methodHandle={handleUpdate}
+                        role={user.role}
                     />
                 </div>
             )}
@@ -314,7 +310,11 @@ function Supplier() {
             <ToastContainer />
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>
-                    <SupplierTb data={dataTb} method={{ toggleModalSingleDelete, toggleModalView }} />
+                    <SupplierTb
+                        data={dataTb}
+                        method={{ toggleModalSingleDelete, toggleModalView, setSort }}
+                        role={user.role}
+                    />
                 </div>
                 <div className={cx('wrap-pagination')}>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />

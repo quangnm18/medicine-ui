@@ -13,6 +13,10 @@ import FormatInput from '~/components/format/FormatInput';
 import ModalAll from '~/components/ModalPage/ModalAll';
 import { useNavigate } from 'react-router-dom';
 
+import * as toast from '~/utils/toast';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const cx = classNames.bind(style);
 
 function SellInvoiceCreate() {
@@ -123,6 +127,11 @@ function SellInvoiceCreate() {
                                 .then((res) => {
                                     setModalSave(false);
                                     setDataInvoice([]);
+                                    if (res.data === 'fail') {
+                                        toast.notify('Bạn không có quyền thao tác', 'error');
+                                    } else {
+                                        toast.notify('Tạo thành công', 'success');
+                                    }
                                 })
                                 .catch((e) => console.log(e));
                         })
@@ -159,6 +168,11 @@ function SellInvoiceCreate() {
                                 branch_id: user.id_chi_nhanh,
                             })
                             .then((res) => {
+                                if (res.data === 'fail') {
+                                    toast.notify('Bạn không có quyền thao tác', 'error');
+                                } else {
+                                    toast.notify('Tạo thành công', 'success');
+                                }
                                 setModalSaveExport(false);
                                 setDataInvoice([]);
                                 window.open(`${invoiceUrl}invoice?id=${ma_hoa_don}`);
@@ -325,6 +339,7 @@ function SellInvoiceCreate() {
                         </tfoot>
                     </table>
                 </div>
+                <ToastContainer />
 
                 {modalSave && (
                     <ModalAll label={'Lưu lại hóa đơn ?'} methodToggle={toggleModalSave} methodHandle={handleSaveIv} />

@@ -84,7 +84,7 @@ export const SidebarData = [
                 icon: <FontAwesomeIcon icon={faListCheck} />,
             },
             {
-                title: 'Kiểm kho',
+                title: 'Tồn kho',
                 path: routesConfig.checkInventory,
                 icon: <FontAwesomeIcon icon={faBoxesStacked} />,
             },
@@ -155,6 +155,11 @@ export const SidebarData = [
         iconClosed: <FontAwesomeIcon icon={faChevronDown} />,
         iconOpened: <FontAwesomeIcon icon={faChevronUp} />,
         subNav: [
+            {
+                title: 'Dược phẩm trong kho',
+                path: routesConfig.checkInventory,
+                icon: <FontAwesomeIcon icon={faBoxesStacked} />,
+            },
             {
                 title: 'Chi tiết nhập thuốc',
                 path: routesConfig.historyImportStatistic,

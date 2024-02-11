@@ -24,6 +24,7 @@ function GroupMedDel() {
     const [pageCount, setPageCount] = useState(1);
 
     const [dataTbDel, setDataTbDel] = useState([]);
+    const [sort, setSort] = useState({ sort_col: 1, sort_type: 'desc' });
 
     const [idSelected, setIdSelected] = useState('');
 
@@ -163,6 +164,8 @@ function GroupMedDel() {
         axios
             .get(`${baseUrl}category/medicinegroup/`, {
                 params: {
+                    sort_col: sort.sort_col,
+                    sort_type: sort.sort_type,
                     search_value: valuesSearch,
                     isDeleted: 1,
                     numRecord: numRecord,
@@ -181,7 +184,7 @@ function GroupMedDel() {
     useEffect(() => {
         loadDataTbDel();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord]);
+    }, [startRecord, sort]);
 
     const navigate = useNavigate();
     const routeChange = (path) => {
@@ -247,7 +250,10 @@ function GroupMedDel() {
 
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>
-                    <GrMedTbDeleted data={dataTbDel} method={{ toggleModalRes, toggleModalView, toggleModalHardDel }} />
+                    <GrMedTbDeleted
+                        data={dataTbDel}
+                        method={{ toggleModalRes, toggleModalView, toggleModalHardDel, setSort }}
+                    />
                 </div>
                 <div className={cx('wrap-pagination')}>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />

@@ -22,6 +22,7 @@ function HisSaleDetail() {
     const [dataTb, setDataTb] = useState([]);
     const [dataBranch, setDataBranch] = useState([]);
     const [dataGrMed, setDataGrMed] = useState([]);
+    const [sort, setSort] = useState({ sort_col: 16, sort_type: 'desc' });
 
     const [dateStart, setDateStart] = useState(null);
     const [dateTo, setDateTo] = useState(null);
@@ -98,6 +99,8 @@ function HisSaleDetail() {
         axios
             .get(`${baseUrl}sell/ivdetail/`, {
                 params: {
+                    sort_col: sort.sort_col,
+                    sort_type: sort.sort_type,
                     group_id: selectGrMed,
                     branch_id: user.id_chi_nhanh ? user.id_chi_nhanh : selectBranch,
                     date_start: dateStart,
@@ -125,7 +128,7 @@ function HisSaleDetail() {
     useEffect(() => {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord]);
+    }, [startRecord, selectBranch, selectGrMed, sort]);
 
     useEffect(() => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
@@ -259,7 +262,7 @@ function HisSaleDetail() {
 
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>
-                    <HisSaleDetailTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView }} />
+                    <HisSaleDetailTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView, setSort }} />
                 </div>
                 <div>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />

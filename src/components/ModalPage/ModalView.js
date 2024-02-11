@@ -6,7 +6,7 @@ import Modal from '~/components/Modal';
 
 const cx = classNames.bind(style);
 
-function ModalView({ label, dataInputs, dataValueInputs, methodOnchange, methodToggle, methodHandle }) {
+function ModalView({ label, dataInputs, dataValueInputs, methodOnchange, methodToggle, methodHandle, role }) {
     const [error, setError] = useState({});
     console.log(dataValueInputs);
     console.log(dataInputs);
@@ -40,7 +40,17 @@ function ModalView({ label, dataInputs, dataValueInputs, methodOnchange, methodT
                     <div className={cx('modalAll-if')}>
                         {dataInputs.map((input) => (
                             <div key={input.id} className={cx('if-detailAll')}>
-                                <div className={cx('label')}>{input.label}</div>
+                                <div
+                                    className={cx(
+                                        'label',
+                                        (input.name === 'ten_ncc' ||
+                                            input.name === 'PhoneNumber' ||
+                                            input.name === 'Email') &&
+                                            'required',
+                                    )}
+                                >
+                                    {input.label}
+                                </div>
                                 <input
                                     name={input.name}
                                     value={dataValueInputs[input.name] ? dataValueInputs[input.name] : ''}
@@ -54,8 +64,7 @@ function ModalView({ label, dataInputs, dataValueInputs, methodOnchange, methodT
                 </div>
 
                 <div className={cx('modalViewAll-action')}>
-                    {(JSON.parse(localStorage.getItem('data_user')).role === 'ADM' ||
-                        JSON.parse(localStorage.getItem('data_user')).role === 'STFW') && (
+                    {(role === 'ADM' || role === 'STFW' || role === 'ADMA') && (
                         <button className={cx('btn-modal', 'btn-yes')} onClick={validator}>
                             Cập nhật
                         </button>

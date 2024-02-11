@@ -7,6 +7,9 @@ import style from './Table.module.scss';
 const cx = classNames.bind(style);
 
 function StaffTb({ data, method, user }) {
+    const handleSort = (obj, type, data) => {
+        method.setSort({ sort_col: obj.col, sort_type: type });
+    };
     const tableStyle = {
         rows: {
             style: {
@@ -28,7 +31,9 @@ function StaffTb({ data, method, user }) {
         },
         {
             name: 'Họ tên',
-            selector: (row) => row.Name,
+            selector: (row) => <div>{row.Name}</div>,
+            sortable: true,
+            col: 1,
         },
         {
             name: 'Số điện thoại',
@@ -44,12 +49,16 @@ function StaffTb({ data, method, user }) {
         },
         {
             name: 'Chức vụ',
-            selector: (row) => row.ten_vai_tro,
+            selector: (row) => <div>{row.ten_vai_tro}</div>,
+            sortable: true,
+            col: 2,
         },
         {
             name: 'Chi nhánh',
-            selector: (row) => row.name,
+            selector: (row) => <div>{row.name}</div>,
             width: '130px',
+            sortable: true,
+            col: 3,
         },
         {
             name: '#',
@@ -71,7 +80,13 @@ function StaffTb({ data, method, user }) {
     ];
     return (
         <div>
-            <DataTable columns={columns} data={data} customStyles={tableStyle}></DataTable>
+            <DataTable
+                columns={columns}
+                data={data}
+                customStyles={tableStyle}
+                highlightOnHover
+                onSort={handleSort}
+            ></DataTable>
         </div>
     );
 }

@@ -1,4 +1,4 @@
-import { faPenToSquare, faRotateLeft, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { faPenToSquare, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DataTable from 'react-data-table-component';
 import classNames from 'classnames/bind';
@@ -7,6 +7,10 @@ import style from './Table.module.scss';
 const cx = classNames.bind(style);
 
 function BranchListTb({ data, method }) {
+    const handleSort = (obj, type, data) => {
+        method.setSort({ sort_col: obj.col, sort_type: type });
+    };
+
     const tableStyle = {
         rows: {
             style: {
@@ -28,8 +32,9 @@ function BranchListTb({ data, method }) {
         },
         {
             name: 'Tên chi nhánh',
-            selector: (row) => row.name,
+            selector: (row) => <div>{row.name}</div>,
             sortable: true,
+            col: 1,
         },
         {
             name: 'Địa chỉ',
@@ -38,13 +43,16 @@ function BranchListTb({ data, method }) {
         },
         {
             name: 'Mã chi nhánh',
-            selector: (row) => row.branch_code,
+            selector: (row) => <div>{row.branch_code}</div>,
             sortable: true,
             width: '150px',
+            col: 2,
         },
         {
             name: 'Người đại diện',
-            selector: (row) => row.ten_quan_ly,
+            selector: (row) => <div>{row.ten_quan_ly}</div>,
+            sortable: true,
+            col: 3,
         },
         {
             name: 'SĐT',
@@ -72,7 +80,13 @@ function BranchListTb({ data, method }) {
     ];
     return (
         <div>
-            <DataTable columns={columns} data={data} customStyles={tableStyle}></DataTable>
+            <DataTable
+                columns={columns}
+                data={data}
+                customStyles={tableStyle}
+                highlightOnHover
+                onSort={handleSort}
+            ></DataTable>
         </div>
     );
 }

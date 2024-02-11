@@ -7,6 +7,10 @@ import style from './Table.module.scss';
 const cx = classNames.bind(style);
 
 function HisIptDetailTbDel({ data, method }) {
+    const handleSort = (obj, type, data) => {
+        method.setSort({ sort_col: obj.col, sort_type: type });
+    };
+
     const VND = new Intl.NumberFormat('vi-VN', {
         style: 'currency',
         currency: 'VND',
@@ -33,8 +37,9 @@ function HisIptDetailTbDel({ data, method }) {
         },
         {
             name: 'Tên dược',
-            selector: (row) => row.med,
+            selector: (row) => <div>{row.med}</div>,
             width: '180px',
+            col: 5,
             sortable: true,
         },
         {
@@ -65,8 +70,9 @@ function HisIptDetailTbDel({ data, method }) {
 
         {
             name: 'Mã hóa đơn',
-            selector: (row) => row.ma_hoa_don,
+            selector: (row) => <div>{row.ma_hoa_don}</div>,
             width: '120px',
+            col: 19,
             sortable: true,
         },
 
@@ -74,17 +80,21 @@ function HisIptDetailTbDel({ data, method }) {
             name: 'Ngày nhập',
             selector: (row) => {
                 let date = new Date(row.createdDt_at);
-                return date.toLocaleDateString();
+                return <div>{date.toLocaleDateString()}</div>;
             },
             width: '140px',
+            col: 23,
+            sortable: true,
         },
         {
             name: 'Hạn sử dụng',
             selector: (row) => {
                 let date = new Date(row.han_dung);
-                return date.toLocaleDateString();
+                return <div>{date.toLocaleDateString()}</div>;
             },
             width: '140px',
+            col: 17,
+            sortable: true,
         },
 
         {
@@ -144,7 +154,13 @@ function HisIptDetailTbDel({ data, method }) {
     ];
     return (
         <div>
-            <DataTable columns={columns} data={data} customStyles={tableStyle}></DataTable>
+            <DataTable
+                columns={columns}
+                data={data}
+                customStyles={tableStyle}
+                highlightOnHover
+                onSort={handleSort}
+            ></DataTable>
         </div>
     );
 }

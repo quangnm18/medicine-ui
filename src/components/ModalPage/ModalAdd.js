@@ -6,7 +6,7 @@ import { useState } from 'react';
 
 const cx = classNames.bind(style);
 
-function ModalAdd({ label, dataInputs, dataValueInputs, methodOnchange, methodToggle, methodHandle }) {
+function ModalAdd({ label, dataInputs, dataValueInputs, methodOnchange, methodToggle, methodHandle, role }) {
     const [error, setError] = useState({});
 
     //validate
@@ -40,7 +40,17 @@ function ModalAdd({ label, dataInputs, dataValueInputs, methodOnchange, methodTo
                     <div className={cx('modalAll-if')}>
                         {dataInputs.map((input) => (
                             <div key={input.id} className={cx('if-detailAll')}>
-                                <div className={cx('label')}>{input.label}</div>
+                                <div
+                                    className={cx(
+                                        'label',
+                                        (input.name === 'ten_ncc' ||
+                                            input.name === 'PhoneNumber' ||
+                                            input.name === 'Email') &&
+                                            'required',
+                                    )}
+                                >
+                                    {input.label}
+                                </div>
                                 <input
                                     name={input.name}
                                     value={dataValueInputs[input.name]}
@@ -54,8 +64,7 @@ function ModalAdd({ label, dataInputs, dataValueInputs, methodOnchange, methodTo
                 </div>
 
                 <div className={cx('modalViewAll-action')}>
-                    {(JSON.parse(localStorage.getItem('data_user')).role === 'ADM' ||
-                        JSON.parse(localStorage.getItem('data_user')).role === 'STFW') && (
+                    {(role === 'ADM' || role === 'STFW' || role === 'ADMA') && (
                         <button className={cx('btn-modal', 'btn-yes')} onClick={validator}>
                             Thêm
                         </button>
