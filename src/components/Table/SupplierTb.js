@@ -10,6 +10,10 @@ function SupplierTb({ data, method, role }) {
     const handleSort = (obj, type, data) => {
         method.setSort({ sort_col: obj.col, sort_type: type });
     };
+
+    const handleSelectRow = (a) => {
+        method.setListSelected(a.selectedRows);
+    };
     const tableStyle = {
         rows: {
             style: {
@@ -72,6 +76,8 @@ function SupplierTb({ data, method, role }) {
                 customStyles={tableStyle}
                 highlightOnHover
                 onSort={handleSort}
+                selectableRows
+                onSelectedRowsChange={handleSelectRow}
             ></DataTable>
         </div>
     );

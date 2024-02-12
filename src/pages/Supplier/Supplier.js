@@ -89,8 +89,10 @@ function Supplier() {
     const [showModalAdd, setShowModalAdd] = useState(false);
     const [showModalView, setShowModalView] = useState(false);
     const [showModalDelete, setShowModalDelete] = useState(false);
+    const [showModalMultiSofDel, setShowModalMultiSofDel] = useState(false);
 
     const [idSelected, setIdSelected] = useState();
+    const [listSelected, setListSelected] = useState([]);
 
     axios.defaults.withCredentials = true;
 
@@ -115,6 +117,11 @@ function Supplier() {
         setShowModalDelete(!showModalDelete);
         setIdSelected(id);
     };
+
+    const toggleModalMultiSoftDel = () => {
+        setShowModalMultiSofDel(!showModalMultiSofDel);
+    };
+
     const toggleModalView = (id) => {
         setShowModalView(!showModalView);
         setIdSelected(id);
@@ -172,10 +179,30 @@ function Supplier() {
     const handleSoftDel = (id) => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put(`${baseUrl}category/supplier/softdelete/${id}`)
+            .put(`${baseUrl}category/supplier/softdelete`, { id: id, user_id: user.userId })
             .then((res) => {
                 loadData();
                 setShowModalDelete(false);
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Xóa thành công', 'success');
+                }
+            })
+            .catch((e) => console.log(e));
+    };
+
+    const handleMultiSoftDel = (data) => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
+        axios
+            .put(`${baseUrl}category/supplier/multisoftdelete`, {
+                listSelected: listSelected,
+                user_id: user.userId,
+            })
+            .then((res) => {
+                setShowModalMultiSofDel(false);
+                setListSelected([]);
+                loadData();
                 if (res.data === 'fail') {
                     toast.notify('Bạn không có quyền thao tác', 'error');
                 } else {
@@ -269,6 +296,11 @@ function Supplier() {
                                 Đã xóa
                             </button>
                         )}
+                        {listSelected.length > 0 && (
+                            <button className={cx('btn-addstaff', 'btn-delMulti')} onClick={toggleModalMultiSoftDel}>
+                                Xóa mục đã chọn
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>
@@ -278,6 +310,15 @@ function Supplier() {
                     methodToggle={toggleModalSingleDelete}
                     methodHandle={handleSoftDel}
                     data={idSelected}
+                />
+            )}
+
+            {showModalMultiSofDel && (
+                <ModalAll
+                    label={'Xóa các mục đã chọn?'}
+                    methodToggle={toggleModalMultiSoftDel}
+                    methodHandle={handleMultiSoftDel}
+                    data={listSelected}
                 />
             )}
 
@@ -312,7 +353,7 @@ function Supplier() {
                 <div className={cx('content-table')}>
                     <SupplierTb
                         data={dataTb}
-                        method={{ toggleModalSingleDelete, toggleModalView, setSort }}
+                        method={{ toggleModalSingleDelete, toggleModalView, setSort, setListSelected }}
                         role={user.role}
                     />
                 </div>

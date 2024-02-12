@@ -43,7 +43,7 @@ function SupDeletedTb({ data, method }) {
             name: 'Thời gian xóa',
             selector: (row) => {
                 let date = new Date(row.deletedAt);
-                return date.toLocaleDateString();
+                return date.toLocaleString();
             },
         },
         {

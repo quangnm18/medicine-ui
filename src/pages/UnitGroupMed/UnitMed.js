@@ -31,6 +31,8 @@ function UnitMed() {
     const [listSelected, setListSelected] = useState([]);
 
     const [showModalSofDel, setShowModalSofDel] = useState(false);
+    const [showModalMultiSofDel, setShowModalMultiSofDel] = useState(false);
+
     const [showModalView, setShowModalView] = useState(false);
     const [showModalAdd, setShowModalAdd] = useState(false);
 
@@ -105,6 +107,10 @@ function UnitMed() {
         setShowModalSofDel(!showModalSofDel);
     };
 
+    const toggleModalMultiSoftDel = () => {
+        setShowModalMultiSofDel(!showModalMultiSofDel);
+    };
+
     const toggleModalView = (gr) => {
         setIdSelected(gr.id);
         setShowModalView(!showModalView);
@@ -127,14 +133,6 @@ function UnitMed() {
     //method handle
     const handleSingleSoftDel = (id) => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
-        // axios
-        //     .put(`${baseUrl}category/medicine/unit/softdelete/${id}`)
-        //     .then((res) => {
-        //         setShowModalSofDel(false);
-        //         loadData();
-        //     })
-        //     .catch((e) => console.log(e));
-
         axios
             .put(`${baseUrl}category/medicine/unit/softdelete`, {
                 userId_del: user.userId,
@@ -142,6 +140,26 @@ function UnitMed() {
             })
             .then((res) => {
                 setShowModalSofDel(false);
+                loadData();
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Xóa thành công', 'success');
+                }
+            })
+            .catch((e) => console.log(e));
+    };
+
+    const handleMultiSoftDel = (data) => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
+        axios
+            .put(`${baseUrl}category/medicine/unit/multisoftdelete`, {
+                listSelected: listSelected,
+                user_id: user.userId,
+            })
+            .then((res) => {
+                setShowModalMultiSofDel(false);
+                setListSelected([]);
                 loadData();
                 if (res.data === 'fail') {
                     toast.notify('Bạn không có quyền thao tác', 'error');
@@ -259,7 +277,9 @@ function UnitMed() {
                         )}
 
                         {listSelected.length > 0 && (
-                            <button className={cx('btn-addstaff', 'btn-delMulti')}>Xóa mục đã chọn</button>
+                            <button className={cx('btn-addstaff', 'btn-delMulti')} onClick={toggleModalMultiSoftDel}>
+                                Xóa mục đã chọn
+                            </button>
                         )}
                     </div>
                 </div>
@@ -270,6 +290,15 @@ function UnitMed() {
                     methodToggle={toggleModalSoftDel}
                     methodHandle={handleSingleSoftDel}
                     data={idSelected}
+                />
+            )}
+
+            {showModalMultiSofDel && (
+                <ModalAll
+                    label={'Xóa các mục đã chọn?'}
+                    methodToggle={toggleModalMultiSoftDel}
+                    methodHandle={handleMultiSoftDel}
+                    data={listSelected}
                 />
             )}
 

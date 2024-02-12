@@ -34,6 +34,7 @@ function GroupMed() {
     const [valuesSearch, setValuesSearch] = useState('');
 
     const [showModalSofDel, setShowModalSofDel] = useState(false);
+    const [showModalMultiSofDel, setShowModalMultiSofDel] = useState(false);
 
     const [showModalView, setShowModalView] = useState(false);
     const [showModalAdd, setShowModalAdd] = useState(false);
@@ -63,6 +64,10 @@ function GroupMed() {
         setShowModalSofDel(!showModalSofDel);
     };
 
+    const toggleModalMultiSoftDel = () => {
+        setShowModalMultiSofDel(!showModalMultiSofDel);
+    };
+
     const toggleModalView = (gr) => {
         setIdSelected(gr.id);
         setShowModalView(!showModalView);
@@ -84,9 +89,31 @@ function GroupMed() {
     const handleSingleSoftDel = (id) => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put(`${baseUrl}category/medicine/group/softdelete/${id}`)
+            .put(`${baseUrl}category/medicine/group/softdelete`, { id: id, user_id: user.userId })
             .then((res) => {
                 setShowModalSofDel(false);
+                loadDataTb();
+                if (res.data === 'fail') {
+                    toast.notify('Bạn không có quyền thao tác', 'error');
+                } else {
+                    toast.notify('Xóa thành công', 'success');
+                }
+            })
+            .catch((e) => console.log(e));
+    };
+
+    console.log(listSelected);
+
+    const handleMultiSoftDel = (data) => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
+        axios
+            .put(`${baseUrl}category/medicine/group/multisoftdelete`, {
+                listSelected: listSelected,
+                user_id: user.userId,
+            })
+            .then((res) => {
+                setShowModalMultiSofDel(false);
+                setListSelected([]);
                 loadDataTb();
                 if (res.data === 'fail') {
                     toast.notify('Bạn không có quyền thao tác', 'error');
@@ -229,7 +256,9 @@ function GroupMed() {
                         )}
 
                         {listSelected.length > 0 && (
-                            <button className={cx('btn-addstaff', 'btn-delMulti')}>Xóa mục đã chọn</button>
+                            <button className={cx('btn-addstaff', 'btn-delMulti')} onClick={toggleModalMultiSoftDel}>
+                                Xóa mục đã chọn
+                            </button>
                         )}
                     </div>
                 </div>
@@ -241,6 +270,15 @@ function GroupMed() {
                     methodToggle={toggleModalSoftDel}
                     methodHandle={handleSingleSoftDel}
                     data={idSelected}
+                />
+            )}
+
+            {showModalMultiSofDel && (
+                <ModalAll
+                    label={'Xóa các mục đã chọn?'}
+                    methodToggle={toggleModalMultiSoftDel}
+                    methodHandle={handleMultiSoftDel}
+                    data={listSelected}
                 />
             )}
 
