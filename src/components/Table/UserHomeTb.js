@@ -25,6 +25,8 @@ function UserHomeTb({ data, method }) {
         axios
             .get(`${baseUrl}branch/paginate`, {
                 params: {
+                    sort_col: 1,
+                    sort_type: 'asc',
                     search_value: '',
                     numRecord: numRecord,
                     startRecord: startRecord,
@@ -80,17 +82,17 @@ function UserHomeTb({ data, method }) {
             name: 'Số điện thoại',
             selector: (row) => row.PhoneNumber,
         },
-        {
-            name: '',
-            cell: (row) => (
-                <div>
-                    <button className={cx('btn')} onClick={() => method.toggleModalView(row)}>
-                        <FontAwesomeIcon icon={faPenToSquare} className={cx('icon-view')} />
-                    </button>
-                </div>
-            ),
-            width: '100px',
-        },
+        // {
+        //     name: '',
+        //     cell: (row) => (
+        //         <div>
+        //             <button className={cx('btn')} onClick={() => method.toggleModalView(row)}>
+        //                 <FontAwesomeIcon icon={faPenToSquare} className={cx('icon-view')} />
+        //             </button>
+        //         </div>
+        //     ),
+        //     width: '100px',
+        // },
     ];
     return (
         <div>

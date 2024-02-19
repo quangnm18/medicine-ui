@@ -174,7 +174,7 @@ function Medicine() {
     const [dataGrMed, setDataGrMed] = useState([]);
     const [selectGrMed, setSelectGrMed] = useState();
 
-    const [sort, setSort] = useState({ sort_col: 1, sort_type: 'desc' });
+    const [sort, setSort] = useState({ sort_col: 1, sort_type: 'asc' });
 
     const [idSelected, setIdSelected] = useState({});
     const [medSelected, setMedSelected] = useState([]);
@@ -277,7 +277,7 @@ function Medicine() {
     const softDeleteMed = (data) => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put(`${baseUrl}category/medicine/update/softdelete`, { data })
+            .put(`${baseUrl}category/medicine/update/softdelete`, { data: data, user_id: user.userId })
             .then((res) => {
                 setShowModalSingleDelete(false);
                 loadData();
@@ -293,7 +293,7 @@ function Medicine() {
     const softMultiDeleteMed = (data) => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put(`${baseUrl}category/medicine/update/softdelete`, { data })
+            .put(`${baseUrl}category/medicine/update/softdelete`, { data: data, user_id: user.userId })
             .then((res) => {
                 setShowModalMultiDelete(false);
                 setListSelected([]);
@@ -333,6 +333,12 @@ function Medicine() {
 
     const handleChangePage = (e) => {
         setStartRecord(e.selected * numRecord);
+    };
+
+    const handleKeyPress = (e) => {
+        if (e.code === 'Enter') {
+            handleSearch();
+        }
     };
 
     //Call API Render
@@ -410,6 +416,7 @@ function Medicine() {
                                     methodOnchangeInput={handleOnchangeInput}
                                     methodSelectedResult={handleSelectedMedicine}
                                     classWidth={'search-resultMed'}
+                                    methodHandleSearch={handleKeyPress}
                                 />
                             </div>
 
@@ -431,12 +438,14 @@ function Medicine() {
                     </div>
 
                     <div className={cx('action-bin')}>
-                        <button
-                            className={cx('btn-delete', 'btn')}
-                            onClick={() => routeChange('/category/medicine/deleted')}
-                        >
-                            Đã xóa
-                        </button>
+                        {(user.role === 'ADMA' || user.role === 'ADM') && (
+                            <button
+                                className={cx('btn-delete', 'btn')}
+                                onClick={() => routeChange('/category/medicine/deleted')}
+                            >
+                                Đã xóa
+                            </button>
+                        )}
                         {listSelected.length > 0 && (
                             <button className={cx('btn-delete', 'btn')} onClick={toggleModalMultiDelete}>
                                 Xóa dược

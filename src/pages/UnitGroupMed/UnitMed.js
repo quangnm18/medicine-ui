@@ -184,7 +184,7 @@ function UnitMed() {
                     .then((res1) => {
                         setShowModalAdd(false);
                         loadData();
-                        if (res.data === 'fail') {
+                        if (res1.data === 'fail') {
                             toast.notify('Bạn không có quyền thao tác', 'error');
                         } else {
                             toast.notify('Thêm mới thành công', 'success');
@@ -263,13 +263,15 @@ function UnitMed() {
                                 <FontAwesomeIcon icon={faSearch} className={cx('search-icon')} />
                             </button>
                         </div>
-                        <button className={cx('btn-addstaff')} onClick={toggleModalAdd}>
-                            Thêm
-                        </button>
+                        {(user.role === 'ADMA' || user.role === 'ADM' || user.role === 'STFW') && (
+                            <button className={cx('btn-addstaff')} onClick={toggleModalAdd}>
+                                Thêm
+                            </button>
+                        )}
 
                         {(user.role === 'ADM' || user.role === 'ADMA') && (
                             <button
-                                className={cx('btn-addstaff')}
+                                className={cx('btn-addstaff', 'btn-delete')}
                                 onClick={() => routeChange('/category/unitmedicine/deleted')}
                             >
                                 Đã xóa

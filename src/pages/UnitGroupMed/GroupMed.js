@@ -102,8 +102,6 @@ function GroupMed() {
             .catch((e) => console.log(e));
     };
 
-    console.log(listSelected);
-
     const handleMultiSoftDel = (data) => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
@@ -248,7 +246,7 @@ function GroupMed() {
 
                         {(user.role === 'ADM' || user.role === 'ADMA') && (
                             <button
-                                className={cx('btn-addstaff')}
+                                className={cx('btn-addstaff', 'btn-delete')}
                                 onClick={() => routeChange('/category/grmedicine/deleted')}
                             >
                                 Đã xóa

@@ -23,9 +23,19 @@ const cx = classNames.bind(style);
 function Home() {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
 
-    const [countRp, setCountRp] = useState();
-    const [countSup, setCountSup] = useState();
-    const [countWarning, setCountWarning] = useState();
+    const [year, setYear] = useState(new Date().getFullYear());
+
+    const [dataHome, setDataHome] = useState({});
+
+    const formatMoney = new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+    });
+
+    const onChangeYear = (e) => {
+        setYear(e.target.value);
+        console.log(e.target.value);
+    };
 
     const navigate = useNavigate();
     const routeChange = (path) => {
@@ -33,46 +43,136 @@ function Home() {
     };
 
     useEffect(() => {
-        axios
-            .get('http://localhost:8081/getallcountrp')
-            .then((res) => {
-                setCountRp(res.data[0].count_rp);
-            })
-            .catch((e) => console.log(e));
-
-        axios
-            .get('http://localhost:8081/getcountsup')
-            .then((res) => {
-                setCountSup(res.data[0].count_sup);
-            })
-            .catch((e) => console.log(e));
-
+        let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
             //
-            .get('http://localhost:8081/getmeddue')
-            .then((res1) => {
-                let currentDate = new Date();
-                let curr_day =
-                    currentDate.getFullYear() * 12 * 30 + (currentDate.getMonth() + 1) * 30 + currentDate.getDate();
+            .get(`${baseUrl}getmeddue`, {
+                params: {
+                    curr_year: year,
+                    branch_id: user.id_chi_nhanh,
+                    count_due: 0,
+                    count_neardue: 0,
+                    count_ok: 0,
+                    tonggt_nhap: 0,
+                    tong_ban: 0,
+                },
+            })
+            .then((res) => {
+                let arr_ban = res.data[1];
+                let arr_nhap = res.data[2];
+                console.log(arr_nhap);
 
-                const arr = res1.data.filter((item) => {
-                    let day = new Date(item.han_dung);
-                    let due_day = day.getFullYear() * 12 * 30 + (day.getMonth() + 1) * 30 + day.getDate();
-                    if (due_day - curr_day < 20) return item;
+                const ban_quy_1 = arr_ban.reduce((total, current) => {
+                    if (
+                        new Date(`${year}-01-01`).getTime() <= new Date(current.createdAt).getTime() &&
+                        new Date(current.createdAt).getTime() <= new Date(`${year}-03-31`).getTime()
+                    ) {
+                        return current.thanh_tien_ban ? total + current.thanh_tien_ban : total + 0;
+                    }
+                }, 0);
+
+                const ban_quy_2 = arr_ban.reduce((total, current) => {
+                    if (
+                        new Date(`${year}-04-01`).getTime() <= new Date(current.createdAt).getTime() &&
+                        new Date(current.createdAt).getTime() <= new Date(`${year}-06-30`).getTime()
+                    ) {
+                        return current.thanh_tien_ban ? total + current.thanh_tien_ban : total + 0;
+                    }
+                }, 0);
+
+                const ban_quy_3 = arr_ban.reduce((total, current) => {
+                    if (
+                        new Date(`${year}-07-01`) <= new Date(current.createdAt) &&
+                        new Date(current.createdAt).getTime() <= new Date(`${year}-09-30`)
+                    ) {
+                        return current.thanh_tien_ban ? total + current.thanh_tien_ban : total + 0;
+                    }
+                }, 0);
+
+                const ban_quy_4 = arr_ban.reduce((total, current) => {
+                    if (
+                        new Date(`${year}-10-01`) <= new Date(current.createdAt) &&
+                        new Date(current.createdAt).getTime() <= new Date(`${year}-12-31`)
+                    ) {
+                        return current.thanh_tien_ban ? total + current.thanh_tien_ban : total + 0;
+                    }
+                }, 0);
+
+                const nhap_quy_1 = arr_nhap.reduce((total, current) => {
+                    if (
+                        new Date(`${year}-01-01`).getTime() <= new Date(current.createdDt_at).getTime() &&
+                        new Date(current.createdDt_at).getTime() <= new Date(`${year}-03-31`).getTime()
+                    ) {
+                        return current.thanh_tien_nhap ? total + current.thanh_tien_nhap : total + 0;
+                    }
+                }, 0);
+
+                const nhap_quy_2 = arr_nhap.reduce((total, current) => {
+                    if (
+                        new Date(`${year}-04-01`).getTime() <= new Date(current.createdDt_at).getTime() &&
+                        new Date(current.createdDt_at).getTime() <= new Date(`${year}-06-30`).getTime()
+                    ) {
+                        return current.thanh_tien_nhap ? total + current.thanh_tien_nhap : total + 0;
+                    }
+                }, 0);
+
+                const nhap_quy_3 = arr_nhap.reduce((total, current) => {
+                    if (
+                        new Date(`${year}-07-01`) <= new Date(current.createdDt_at) &&
+                        new Date(current.createdDt_at).getTime() <= new Date(`${year}-09-30`)
+                    ) {
+                        return current.thanh_tien_nhap ? total + current.thanh_tien_nhap : total + 0;
+                    }
+                }, 0);
+
+                const nhap_quy_4 = arr_nhap.reduce((total, current) => {
+                    if (
+                        new Date(`${year}-10-01`) <= new Date(current.createdDt_at) &&
+                        new Date(current.createdDt_at).getTime() <= new Date(`${year}-12-31`)
+                    ) {
+                        return current.thanh_tien_nhap ? total + current.thanh_tien_nhap : total + 0;
+                    }
+                }, 0);
+
+                setDataHome({
+                    ...dataHome,
+                    count_ok: res.data[0][0].count_ok,
+                    count_due: res.data[0][0].count_due,
+                    count_neardue: res.data[0][0].count_neardue,
+                    tonggt_nhap: res.data[0][0].tonggt_nhap,
+                    tong_ban: res.data[0][0].tong_ban,
+                    ban_q1: ban_quy_1 ? ban_quy_1 : 0,
+                    ban_q2: ban_quy_2 ? ban_quy_2 : 0,
+                    ban_q3: ban_quy_3 ? ban_quy_3 : 0,
+                    ban_q4: ban_quy_4 ? ban_quy_4 : 0,
+                    nhap_q1: nhap_quy_1 ? nhap_quy_1 : 0,
+                    nhap_q2: nhap_quy_2 ? nhap_quy_2 : 0,
+                    nhap_q3: nhap_quy_3 ? nhap_quy_3 : 0,
+                    nhap_q4: nhap_quy_4 ? nhap_quy_4 : 0,
                 });
-                if (arr.length) {
-                    setCountWarning(arr.length);
-                }
             })
             .catch((e) => console.log(e));
-    }, []);
+    }, [year]);
 
     return (
         <div className={cx('wrapper')}>
             <div className={cx('header')}>
-                <div className={cx('header-hello')}>
-                    <h4>Xin chào, {user.name}</h4>
-                    <span>Chúc một ngày tốt lành!</span>
+                <div className={cx('wrap-header')}>
+                    <div className={cx('header-hello')}>
+                        <h4>Xin chào, {user.name}</h4>
+                        <span>Chúc một ngày tốt lành!</span>
+                    </div>
+                    <div className={cx('wrap-year')}>
+                        <select value={Number.parseInt(year)} onChange={onChangeYear}>
+                            <option value={Number.parseInt(year) - 3}>{Number.parseInt(year) - 3}</option>
+                            <option value={Number.parseInt(year) - 2}>{Number.parseInt(year) - 2}</option>
+                            <option value={Number.parseInt(year) - 1}>{Number.parseInt(year) - 1}</option>
+                            <option value={Number.parseInt(year)}>{year}</option>
+                            <option value={Number.parseInt(year) + 1}>{Number.parseInt(year) + 1}</option>
+                            <option value={Number.parseInt(year) + 2}>{Number.parseInt(year) + 2}</option>
+                            <option value={Number.parseInt(year) + 3}>{Number.parseInt(year) + 3}</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div className={cx('header-synthetic')}>
@@ -85,7 +185,7 @@ function Home() {
                         </div>
                         <div className={cx('wrap-if')}>
                             <span>Tổng nhập</span>
-                            <span className={cx('if-count')}>12.000.000đ</span>
+                            <span className={cx('if-count')}>{formatMoney.format(dataHome.tonggt_nhap)}</span>
                         </div>
                     </div>
                     <div className={cx('synthetic-item', 'ncc')} onClick={() => routeChange('/statistic/historySale')}>
@@ -94,7 +194,7 @@ function Home() {
                         </div>
                         <div className={cx('wrap-if')}>
                             <span>Tổng bán</span>
-                            <span className={cx('if-count')}>3.000.000đ</span>
+                            <span className={cx('if-count')}>{formatMoney.format(dataHome.tong_ban)}</span>
                         </div>
                     </div>
                     <div className={cx('synthetic-item', 'report')} onClick={() => routeChange('/report')}>
@@ -103,7 +203,7 @@ function Home() {
                         </div>
                         <div className={cx('wrap-if')}>
                             <span>Báo cáo</span>
-                            <span className={cx('if-count')}>{countRp}</span>
+                            <span className={cx('if-count')}>{3}</span>
                         </div>
                     </div>
                     <div
@@ -115,7 +215,11 @@ function Home() {
                         </div>
                         <div className={cx('wrap-if')}>
                             <span>Cảnh báo dược</span>
-                            <span className={cx('if-count')}>{countWarning}</span>
+                            <span className={cx('if-count')}>
+                                {dataHome.count_due && dataHome.count_neardue
+                                    ? dataHome.count_due + dataHome.count_neardue
+                                    : 0}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -129,13 +233,18 @@ function Home() {
                                     datasets: [
                                         {
                                             label: 'Tổng nhập',
-                                            data: [100, 300, 500, 400],
+                                            data: [
+                                                dataHome.nhap_q1,
+                                                dataHome.nhap_q2,
+                                                dataHome.nhap_q3,
+                                                dataHome.nhap_q4,
+                                            ],
                                             // backgroundColor: '',
                                             borderRadius: 5,
                                         },
                                         {
                                             label: 'Tổng bán',
-                                            data: [100, 300, 500, 400],
+                                            data: [dataHome.ban_q1, dataHome.ban_q2, dataHome.ban_q3, dataHome.ban_q4],
                                             backgroundColor: 'rgba(250,192,19,0.6)',
                                             borderRadius: 5,
                                         },
@@ -161,7 +270,7 @@ function Home() {
                                     datasets: [
                                         {
                                             // label: 'Dược ',
-                                            data: [7, 2, 80],
+                                            data: [dataHome.count_due, dataHome.count_neardue, dataHome.count_ok],
                                             backgroundColor: [
                                                 'rgba(238, 43, 43, 0.681)',
                                                 'rgba(250,192,19,0.6)',

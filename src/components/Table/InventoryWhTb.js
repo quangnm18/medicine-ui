@@ -8,6 +8,7 @@ import style from './Table.module.scss';
 const cx = classNames.bind(style);
 
 function InventoryWhTb({ data, method }) {
+    console.log(data);
     const handleSort = (obj, type, data) => {
         method.setSort({ sort_col: obj.col, sort_type: type });
     };
@@ -36,7 +37,6 @@ function InventoryWhTb({ data, method }) {
             name: 'Tên thuốc',
             col: 24,
             selector: (row) => <div>{row.ten}</div>,
-            // width: '250px',
             sortable: true,
         },
         {
@@ -74,9 +74,9 @@ function InventoryWhTb({ data, method }) {
             sortable: true,
         },
         {
-            name: 'Đơn vị tính',
+            name: 'ĐVT',
             selector: (row) => row.dvt,
-            width: '120px',
+            width: '80px',
         },
         {
             name: 'Đóng gói',
@@ -87,6 +87,45 @@ function InventoryWhTb({ data, method }) {
             name: 'Số lô',
             selector: (row) => row.so_lo,
             width: '160px',
+        },
+        {
+            name: 'Trạng thái',
+            selector: (row) => {
+                const currDate = new Date();
+                const dueDate = new Date(row.han_dung);
+                const count_date =
+                    dueDate.getFullYear() * 12 * 30 +
+                    (dueDate.getMonth() + 1) * 30 +
+                    dueDate.getDate() -
+                    currDate.getFullYear() * 12 * 30 -
+                    (currDate.getMonth() + 1) * 30 -
+                    currDate.getDate();
+
+                if (count_date > 2 && count_date < 20) {
+                    return (
+                        <div>
+                            <button className={cx('btn-status', 'btn-near')}>Sắp hết hạn</button>
+                        </div>
+                    );
+                }
+
+                if (count_date <= 2) {
+                    return (
+                        <div>
+                            <button className={cx('btn-due', 'btn-status')}>Đã hết hạn</button>
+                        </div>
+                    );
+                } else {
+                    return (
+                        <div>
+                            <button className={cx('btn-status', 'btn-okay')}>Sẵn sàng</button>
+                        </div>
+                    );
+                }
+            },
+            width: '136px',
+            sortable: true,
+            col: 17,
         },
         {
             name: '#',
@@ -110,6 +149,7 @@ function InventoryWhTb({ data, method }) {
                 expandableRowsComponent={(row) => <WarehouseExpander data={row} />}
                 highlightOnHover
                 onSort={handleSort}
+                responsive
             ></DataTable>
         </div>
     );

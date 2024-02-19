@@ -19,17 +19,23 @@ import 'react-toastify/dist/ReactToastify.css';
 const cx = classNames.bind(style);
 
 function ListIptCpDel() {
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
+
     const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState(1);
 
     const [dataTb, setDataTb] = useState([]);
+    const [dataBranch, setDataBranch] = useState([]);
+
     const [sort, setSort] = useState({ sort_col: 1, sort_type: 'desc' });
-
     const [dateStart, setDateStart] = useState('');
-    const [dateEnd, setDateEnd] = useState('');
+    const [dateTo, setDateTo] = useState('');
+    const [valuesSearch, setValuesSearch] = useState('');
 
+    const [selectBranch, setSelectBranch] = useState(undefined);
     const [idSelected, setIdSelected] = useState('');
+
     const [showModalView, setShowModalView] = useState(false);
     const [showModalRes, setShowModalRes] = useState(false);
     const [showModalHardDel, setShowModalHardDel] = useState(false);
@@ -50,6 +56,31 @@ function ListIptCpDel() {
     const toggleModalHardDel = (item) => {
         setShowModalHardDel(!showModalHardDel);
         setIdSelected(item);
+    };
+
+    const onchangeDateStart = (e) => {
+        setDateStart(e.target.value);
+    };
+    const onchangeDateTo = (e) => {
+        setDateTo(e.target.value);
+    };
+
+    const onchangeSearch = (e) => {
+        setValuesSearch(e.target.value);
+    };
+
+    const onchangeBranch = (e) => {
+        setSelectBranch(e.target.value);
+    };
+
+    const handleSearch = () => {
+        loadData();
+    };
+
+    const handleKeyPress = (e) => {
+        if (e.code === 'Enter') {
+            handleSearch();
+        }
     };
 
     //Method handle
@@ -87,13 +118,6 @@ function ListIptCpDel() {
 
     //Method OnchangeInput
 
-    const onchangeDateStart = (e) => {
-        setDateStart(e.target.value);
-    };
-    const onchangeDateEnd = (e) => {
-        setDateEnd(e.target.value);
-    };
-
     //call api
     const loadData = () => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
@@ -102,7 +126,10 @@ function ListIptCpDel() {
                 params: {
                     sort_col: sort.sort_col,
                     sort_type: sort.sort_type,
-                    branch_id: JSON.parse(localStorage.getItem('data_user')).id_chi_nhanh,
+                    branch_id: user.id_chi_nhanh ? user.id_chi_nhanh : selectBranch,
+                    date_start: dateStart,
+                    date_to: dateTo,
+                    search_value: valuesSearch,
                     isDeleted: 1,
                     numRecord: numRecord,
                     startRecord: startRecord,
@@ -122,52 +149,92 @@ function ListIptCpDel() {
         navigate(path);
     };
 
-    useEffect(() => {
-        loadData();
-    }, [startRecord, sort]);
-
     const handleChangePage = (e) => {
         setStartRecord(e.selected * numRecord);
     };
+
+    useEffect(() => {
+        loadData();
+    }, [startRecord, sort, selectBranch]);
+
+    useEffect(() => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
+        axios
+            .get(`${baseUrl}branch`)
+            .then((res) => {
+                if (res.data === 'fail') {
+                    setDataBranch([]);
+                } else setDataBranch(res.data);
+            })
+            .catch((e) => console.log(e));
+    }, []);
 
     return (
         <div className={cx('content')}>
             <div className={cx('header-content')}>
                 <DirectionHeader>Quản lý nhập kho</DirectionHeader>
                 <div>
-                    <div className={cx('choose-medicine')}>
-                        <div className={cx('medicine-option')}>
-                            <label className={cx('label-option')}>Từ ngày</label>
-                            <input
-                                name="date-start"
-                                type="date"
-                                className={cx('input-name')}
-                                onChange={onchangeDateStart}
-                                value={dateStart}
-                                // onBlur={onchangeDate}
-                            />
+                    <div>
+                        <div className={cx('choose-medicine')}>
+                            <div className={cx('wrap-date')}>
+                                <div className={cx('medicine-option')}>
+                                    <label className={cx('label-option')}>Từ ngày</label>
+                                    <input
+                                        name="date-start"
+                                        type="date"
+                                        className={cx('input-name')}
+                                        onChange={onchangeDateStart}
+                                        value={dateStart}
+                                    />
+                                </div>
+                                <div className={cx('medicine-option')}>
+                                    <label className={cx('label-option')}>Đến ngày</label>
+                                    <input
+                                        name="date-end"
+                                        type="date"
+                                        className={cx('input-name')}
+                                        onChange={onchangeDateTo}
+                                        value={dateTo}
+                                    />
+                                </div>
+                                <button className={cx('btn-search')} onClick={handleSearch}>
+                                    <FontAwesomeIcon icon={faSearch} />
+                                </button>
+                            </div>
+                            <div className={cx('btn-action')}>
+                                <button
+                                    className={cx('btn-add')}
+                                    onClick={() => routeChange('/warehouse/importcreate')}
+                                >
+                                    Nhập tồn
+                                </button>
+                                <button className={cx('btn-add')} onClick={() => routeChange('/warehouse/importlist')}>
+                                    Trở lại
+                                </button>
+                            </div>
                         </div>
-                        <div className={cx('medicine-option')}>
-                            <label className={cx('label-option')}>Đến ngày</label>
-                            <input
-                                name="date-end"
-                                type="date"
-                                className={cx('input-name')}
-                                onChange={onchangeDateEnd}
-                                value={dateEnd}
-                                // onBlur={onchangeDate}
-                            />
-                        </div>
-                        <button className={cx('btn-search')}>
-                            <FontAwesomeIcon icon={faSearch} />
-                        </button>
-                        <div className={cx('btn-action')}>
-                            <button className={cx('btn-add')} onClick={() => routeChange('/warehouse/importcreate')}>
-                                Nhập tồn
-                            </button>
-                            <button className={cx('btn-add')} onClick={() => routeChange('/warehouse/importlist')}>
-                                Trở lại
-                            </button>
+                        <div className={cx('wrap-searchiptiv')}>
+                            <div className={cx('medicine-option', 'search-statistic', 'input-statistic')}>
+                                <input
+                                    placeholder="Tìm kiếm theo tên, mã hóa đơn..."
+                                    value={valuesSearch}
+                                    onChange={onchangeSearch}
+                                    onKeyUp={handleKeyPress}
+                                />
+                            </div>
+                            {user.role === 'ADMA' && (
+                                <div className={cx('medicine-option', 'search-statistic')}>
+                                    <select value={selectBranch} onChange={onchangeBranch}>
+                                        <option value={0}>--Chọn chi nhánh--</option>
+                                        {dataBranch.length > 0 &&
+                                            dataBranch.map((branch) => (
+                                                <option key={branch.id} value={branch.id}>
+                                                    {branch.name}
+                                                </option>
+                                            ))}
+                                    </select>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

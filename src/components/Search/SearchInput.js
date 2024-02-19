@@ -13,9 +13,9 @@ function SearchInput({
     methodSelectedResult,
     classWidth,
     placeholder = '',
+    methodHandleSearch = null,
 }) {
     const [showResult, setShowResult] = useState(false);
-
     const handleShowResult = (e) => {
         setShowResult(true);
         methodOnchangeInput(e.target.value);
@@ -56,17 +56,24 @@ function SearchInput({
                                             <div>{item.ten}</div>
                                             <div className={cx('result-span')}>
                                                 <span className={cx('result-itemmore')}>
-                                                    {item.ten_nhom_thuoc} || {'   '} Đóng gói: {item.description_unit}{' '}
-                                                    || Tồn kho: {item.soluong_lon ? item.soluong_lon : 0}{' '}
-                                                    {item.donvi_lon} --
-                                                    {item.soluong_lon * item.soluong_tb
-                                                        ? item.soluong_lon * item.soluong_tb
-                                                        : ''}{' '}
-                                                    {item.soluong_lon * item.soluong_tb ? item.donvi_tb : ''} --{' '}
-                                                    {item.sl_tong ? item.sl_tong : 0} {item.donvi_nho}
+                                                    {item.ten_nhom_thuoc} || {'   '} Đóng gói: {item.dong_goi} || Tồn
+                                                    kho:{' '}
+                                                    {item.so_luong_ban
+                                                        ? (item.sl_tong -
+                                                              item.so_luong_ban -
+                                                              ((item.sl_tong - item.so_luong_ban) % item.soluong_nho)) /
+                                                          item.soluong_nho
+                                                        : item.soluong_lon}{' '}
+                                                    {item.donvi_lon},{' '}
+                                                    {(item.sl_tong - item.so_luong_ban) % item.soluong_nho}{' '}
+                                                    {item.donvi_nho} --{' '}
+                                                    {item.so_luong_ban
+                                                        ? item.sl_tong - item.so_luong_ban
+                                                        : item.sl_tong}{' '}
+                                                    {item.donvi_nho}
                                                 </span>
                                                 <span className={cx('result-itemmore')}>
-                                                    Hạn dùng: {formatDate(item.han_dung)} || Số lô: {item.so_lo}
+                                                    Số lô: {item.so_lo} || Hạn dùng: {formatDate(item.han_dung)}
                                                 </span>
                                             </div>
                                         </div>
@@ -96,6 +103,7 @@ function SearchInput({
                 onChange={(e) => handleShowResult(e)}
                 onFocus={() => setShowResult(true)}
                 placeholder={placeholder}
+                onKeyUp={methodHandleSearch}
             />
         </Tippy>
     );

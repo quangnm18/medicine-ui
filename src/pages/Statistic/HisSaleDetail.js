@@ -171,7 +171,7 @@ function HisSaleDetail() {
                                 Lập hóa đơn
                             </button>
                             <button
-                                className={cx('btn-add')}
+                                className={cx('btn-add', 'btn-delete')}
                                 onClick={() => routeChange('/statistic/historySale/deleted')}
                             >
                                 Đã xóa

@@ -84,6 +84,19 @@
     cursor: pointer;
 }
 
+.btn-export {
+    background-color: var(--primary);
+    padding: 8px;
+    min-width: 128px;
+    border-radius: 2px;
+    text-align: center;
+    margin-left: 24px;
+
+    span {
+        color: var(--white);
+    }
+}
+
 //Main Content
 .main-content {
     height: 100%;

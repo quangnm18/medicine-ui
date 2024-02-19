@@ -8,12 +8,21 @@ import DataTable from 'react-data-table-component';
 
 const cx = classNames.bind(style);
 
-function ModalViewSaleDetail({ label, data, methodToggle, methodHandle }) {
+function ModalViewIptIvDetail({ label, data, methodToggle, methodHandle }) {
+    const VND = new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+    });
     const date = new Date(data.createdDate);
 
     const [dataDetails, setDataDetails] = useState([]);
-
+    console.log(dataDetails);
     const tableStyle = {
+        // table: {
+        //     style: {
+        //         width: '12px',
+        //     },
+        // },
         rows: {
             style: {
                 fontSize: '16px',
@@ -35,44 +44,52 @@ function ModalViewSaleDetail({ label, data, methodToggle, methodHandle }) {
         },
         {
             name: 'Tên thuốc',
-            selector: (row) => row.ten_duoc,
+            selector: (row) => row.med,
             sortable: true,
-            // width: '260px',
         },
         {
-            name: 'Số lô',
+            name: 'Số lô hàng',
             selector: (row) => row.so_lo,
             sortable: true,
         },
         {
-            name: 'Đóng gói',
-            selector: (row) => row.loai_dong_goi,
-            sortable: true,
-            // width: '200px',
-        },
-        {
-            name: 'Số lượng',
-            selector: (row) => row.so_luong_ban,
+            name: 'SL',
+            selector: (row) => row.soluong_lon,
             width: '100px',
             center: true,
         },
         {
-            name: 'ĐVT',
-            selector: (row) => row.don_vi_ban,
-            width: '100px',
-            center: true,
-        },
-        {
-            name: 'Đơn giá',
-            selector: (row) => Intl.NumberFormat().format(row.don_gia_ban),
+            name: 'Tổng nhập',
+            selector: (row) => row.sl_tong,
             sortable: true,
             width: '150px',
             center: true,
         },
         {
-            name: 'Thành tiền',
-            selector: (row) => Intl.NumberFormat().format(row.thanh_tien),
-            width: '152px',
+            name: 'Đóng gói',
+            selector: (row) => row.dong_goi,
+            // width: '162px',
+            center: true,
+        },
+        {
+            name: 'ĐVT',
+            selector: (row) => row.dvt,
+            width: '100px',
+            center: true,
+        },
+        {
+            name: 'Giá nhập (/ĐVLN)',
+            selector: (row) => VND.format(row.gianhap_chuaqd),
+            sortable: true,
+            width: '200px',
+            center: true,
+        },
+
+        {
+            name: 'Tổng giá trị',
+            selector: (row) => VND.format(row.gianhap_daqd),
+            sortable: true,
+            width: '200px',
             center: true,
         },
     ];
@@ -80,15 +97,10 @@ function ModalViewSaleDetail({ label, data, methodToggle, methodHandle }) {
     useEffect(() => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get(`${baseUrl}sell/ivdetailcurr/?q=${data.ma_hoa_don}`)
-            .then((res) => {
-                // let arr = res.data.filter((item) => item.isDeleted === 0);
-                setDataDetails(res.data);
-            })
+            .get(`${baseUrl}importlist/alldetail/?q=${data.invoice_code}`)
+            .then((res) => setDataDetails(res.data))
             .catch((e) => console.log(e));
     }, []);
-    console.log(dataDetails);
-
     return (
         <Modal>
             <div className={cx('modal-view')}>
@@ -100,14 +112,10 @@ function ModalViewSaleDetail({ label, data, methodToggle, methodHandle }) {
                 </div>
                 <div className={cx('modal-form', 'modal-formDetail')}>
                     <div className={cx('modal-if')}></div>
-                    <div>Mã hóa đơn : {data.ma_hoa_don}</div>
+                    <div>Mã hóa đơn : {data.invoice_code}</div>
                     <div>Nhân viên : {data.Name}</div>
-                    <div>Ngày tạo : {date.toLocaleDateString()}</div>
-                    <div>Tổng giá trị : {Intl.NumberFormat().format(data.tong_tien_hang)}</div>
-                    <div>Tổng CK : {Intl.NumberFormat().format(data.tong_ck)}</div>
-                    <div>Thành tiền : {Intl.NumberFormat().format(data.tong_phai_tra)}</div>
-                    <div>Khách trả : {Intl.NumberFormat().format(data.khach_tra)}</div>
-                    <div>Tiền dư : {Intl.NumberFormat().format(data.tien_du)}</div>
+                    <div>Ngày tạo : {date.toLocaleString()}</div>
+                    <div>Tổng giá trị : {VND.format(data.totalPrice)}</div>
                 </div>
                 <div className={cx('table-details')}>
                     <DataTable data={dataDetails} columns={columns} customStyles={tableStyle} />
@@ -117,4 +125,4 @@ function ModalViewSaleDetail({ label, data, methodToggle, methodHandle }) {
     );
 }
 
-export default ModalViewSaleDetail;
+export default ModalViewIptIvDetail;

@@ -40,21 +40,20 @@ function ModalAddExcel({ methodToggle }) {
         }
     };
 
-    const handleFilePreview = () => {
-        if (excelFile !== null) {
-            const workbook = XLSX.read(excelFile, { type: 'buffer' });
-            const worksheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[worksheetName];
-            const data = XLSX.utils.sheet_to_json(worksheet);
-            setExcelData(data.slice(0, 10));
-        }
-    };
+    // const handleFilePreview = () => {
+    //     if (excelFile !== null) {
+    //         const workbook = XLSX.read(excelFile, { type: 'buffer' });
+    //         const worksheetName = workbook.SheetNames[0];
+    //         const worksheet = workbook.Sheets[worksheetName];
+    //         const data = XLSX.utils.sheet_to_json(worksheet);
+    //         setExcelData(data.slice(0, 10));
+    //     }
+    // };
 
     const onChangeOption = (e) => {
         setOptionSheet({ ...optionSheet, [e.target.name]: e.target.value });
     };
 
-    console.log(process.env.REACT_SERVER_INVOICE_URL);
     const getTemplate = () => {
         let url = process.env.REACT_SERVER_INVOICE_URL + 'import/template?catalog=1';
         window.open(url);
@@ -67,8 +66,8 @@ function ModalAddExcel({ methodToggle }) {
         formData.append('file', file);
         let path =
             stateImport === 0
-                ? 'import/validate?sheetName=Sheet1&header=2&catalog=1'
-                : 'import/save?sheetName=Sheet1&header=2&catalog=1';
+                ? `import/validate?sheetName=Sheet${optionSheet.sheetPage}&header=${optionSheet.header - 1}&catalog=1`
+                : `import/save?sheetName=Sheet${optionSheet.sheetPage}&header=${optionSheet.header - 1}&catalog=1`;
         let url = 'http://localhost:5000/' + path;
         try {
             const response = await fetch(url, {
@@ -77,7 +76,22 @@ function ModalAddExcel({ methodToggle }) {
             });
             const result = await response.json();
             console.log('Success:', result);
+
             if (stateImport === 0) {
+                // const response = await fetch(url, {
+                //     method: 'GET',
+                // });
+                // const result = await response.blob();
+                // var fileValid = window.URL.createObjectURL(result);
+                // window.location.assign(fileValid);
+                fetch(url, { mode: 'cors' })
+                    .then((res) => res.blob())
+                    .then((blob) => {
+                        // const file = new File([blob], 'validateMedicine');
+                        var fileValid = window.URL.createObjectURL(blob);
+                        window.location.assign(fileValid);
+                    });
+
                 setStateImport(1);
             }
         } catch (error) {
@@ -119,27 +133,34 @@ function ModalAddExcel({ methodToggle }) {
                             <button className={cx('btn-excel', 'btn-preview')} onClick={getTemplate}>
                                 <FontAwesomeIcon icon={faDownload} /> Template
                             </button>
-                            <button className={cx('btn-excel', 'btn-preview')} onClick={handleFilePreview}>
+                            {/* <button className={cx('btn-excel', 'btn-preview')} onClick={handleFilePreview}>
                                 Prevew
-                            </button>
+                            </button> */}
                         </div>
                     </div>
                     {typeErrorr && <div className={cx('alert-err')}>{typeErrorr}</div>}
                 </div>
 
                 <div className={cx('wrap-option')}>
-                    <input
-                        placeholder="Nhập trang Sheet bạn muốn nhập..."
-                        name="sheetPage"
-                        value={optionSheet.sheetPage}
-                        onChange={onChangeOption}
-                    />
-                    <input
-                        placeholder="Chọn dòng đầu tiên nhập..."
-                        name="header"
-                        value={optionSheet.header}
-                        onChange={onChangeOption}
-                    />
+                    <div className={cx('wrap-input')}>
+                        <label>Trang Excel</label>
+                        <input
+                            placeholder="Nhập trang Sheet bạn muốn nhập..."
+                            name="sheetPage"
+                            value={optionSheet.sheetPage}
+                            onChange={onChangeOption}
+                        />
+                    </div>
+
+                    <div className={cx('wrap-input')}>
+                        <label>Dòng bắt đầu</label>
+                        <input
+                            placeholder="Chọn dòng đầu tiên nhập..."
+                            name="header"
+                            value={optionSheet.header}
+                            onChange={onChangeOption}
+                        />
+                    </div>
                 </div>
 
                 <div className={cx('viewer')}>

@@ -1,4 +1,4 @@
-import { faEye, faPenToSquare, faRotateBack, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faRotateLeft, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DataTable from 'react-data-table-component';
 import classNames from 'classnames/bind';
@@ -6,7 +6,7 @@ import style from './Table.module.scss';
 
 const cx = classNames.bind(style);
 
-function InvoiceListTbDel({ data, method }) {
+function HisSaleDetailTbDel({ data, method }) {
     const handleSort = (obj, type, data) => {
         method.setSort({ sort_col: obj.col, sort_type: type });
     };
@@ -25,67 +25,73 @@ function InvoiceListTbDel({ data, method }) {
 
     const columns = [
         {
-            name: 'STT',
+            name: '',
             cell: (row, index) => index + 1,
+            width: '80px',
         },
         {
-            name: 'Số hóa đơn',
+            name: 'Tên dược',
+            col: 10,
+            selector: (row) => <div>{row.ten_duoc}</div>,
+            sortable: true,
+        },
+        {
+            name: 'Số lượng bán',
+            selector: (row) => row.so_luong_ban,
+            width: '140px',
+        },
+        {
+            name: 'Loại',
+            selector: (row) => row.dong_goi,
+            width: '180px',
+        },
+        {
+            name: 'Số lô',
+            selector: (row) => row.so_lo,
+            width: '180px',
+        },
+
+        {
+            name: 'Mã hóa đơn',
+            col: 8,
             selector: (row) => <div>{row.ma_hoa_don}</div>,
+            width: '140px',
             sortable: true,
-            col: 1,
-        },
-
-        {
-            name: 'Tổng tiền',
-            selector: (row) => Intl.NumberFormat().format(row.tong_phai_tra),
-        },
-        {
-            name: 'Ngày lập',
-            selector: (row) => {
-                let date = new Date(row.createdDate);
-                return <div>{date.toLocaleDateString()}</div>;
-            },
-            sortable: true,
-            col: 2,
-        },
-
-        {
-            name: 'Người lập',
-            selector: (row) => <div>{row.Name}</div>,
-            sortable: true,
-            col: 4,
         },
         {
             name: 'Thời gian xóa',
+            col: 16,
             selector: (row) => {
                 let date = new Date(row.deletedAt);
                 return <div>{date.toLocaleString()}</div>;
             },
-            sortable: true,
-            col: 2,
+            width: '230px',
+            // sortable: true,
         },
+
         {
             name: 'Người xóa',
-            selector: (row) => <div>{row.nguoi_xoa}</div>,
-            sortable: true,
-            col: 4,
+            col: 16,
+            selector: (row) => {
+                return <div>{row.Name}</div>;
+            },
+            width: '180px',
+            // sortable: true,
         },
 
         {
             name: '#',
             cell: (row) => (
                 <div>
-                    <button className={cx('btn')} onClick={() => method.toggleModalHardDel(row.id)}>
+                    <button className={cx('btn')} onClick={() => method.toggleModalSoftDel(row.id)}>
                         <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
                     </button>
                     <button className={cx('btn')} onClick={() => method.toggleModalView(row)}>
-                        <FontAwesomeIcon icon={faEye} className={cx('icon-eye')} />
-                    </button>
-                    <button className={cx('btn')} onClick={() => method.toggleModalRes(row)}>
-                        <FontAwesomeIcon icon={faRotateBack} className={cx('icon-view')} />
+                        <FontAwesomeIcon icon={faEye} className={cx('icon-view', 'icon-eye')} />
                     </button>
                 </div>
             ),
+            width: '140px',
         },
     ];
     return (
@@ -101,4 +107,4 @@ function InvoiceListTbDel({ data, method }) {
     );
 }
 
-export default InvoiceListTbDel;
+export default HisSaleDetailTbDel;

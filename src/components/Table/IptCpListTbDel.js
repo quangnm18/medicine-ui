@@ -33,57 +33,49 @@ function IptCpListTbDel({ data, method }) {
         {
             name: 'Số hóa đơn',
             selector: (row) => <div>{row.invoice_code}</div>,
-            width: '140px',
+            width: '120px',
             sortable: true,
             col: 1,
         },
         {
-            name: 'Ngày lập',
+            name: 'Thời gian lập',
             selector: (row) => {
                 let date = new Date(row.createdDate);
-                return <div>{date.toLocaleDateString()}</div>;
+                return <div>{date.toLocaleString()}</div>;
             },
-            width: '180px',
             sortable: true,
             col: 2,
         },
-        // {
-        //     name: 'Giá trị nhập',
-        //     selector: (row) => {
-        //         const VND = new Intl.NumberFormat('vi-VN', {
-        //             style: 'currency',
-        //             currency: 'VND',
-        //         });
 
-        //         return VND.format(row.giatri_nhap);
-        //     },
-        //     width: '160px',
-        // },
-        // {
-        //     name: 'Thành tiền',
-        //     selector: (row) => {
-        //         const VND = new Intl.NumberFormat('vi-VN', {
-        //             style: 'currency',
-        //             currency: 'VND',
-        //         });
-
-        //         return VND.format(row.thanh_tien);
-        //     },
-        //     width: '160px',
-        //     sortable: true,
-        //     col: 3,
-        // },
         {
             name: 'Người lập',
             selector: (row) => <div>{row.Name}</div>,
             sortable: true,
             col: 4,
+            width: '180px',
         },
         {
             name: 'Nhà cung cấp',
             selector: (row) => <div>{row.ten_ncc}</div>,
             sortable: true,
             col: 5,
+        },
+
+        {
+            name: 'Thời gian xóa',
+            selector: (row) => {
+                let date = new Date(row.deletedAt);
+                return <div>{date.toLocaleString()}</div>;
+            },
+            sortable: true,
+            col: 2,
+        },
+        {
+            name: 'Người xóa',
+            selector: (row) => <div>{row.nguoi_xoa}</div>,
+            sortable: true,
+            col: 4,
+            width: '180px',
         },
 
         {
@@ -102,6 +94,7 @@ function IptCpListTbDel({ data, method }) {
             ),
             sortable: true,
             col: 6,
+            width: '125px',
         },
 
         {
@@ -120,6 +113,7 @@ function IptCpListTbDel({ data, method }) {
                     </button>
                 </div>
             ),
+            width: '135px',
         },
     ];
     return (

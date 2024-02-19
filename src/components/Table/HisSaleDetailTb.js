@@ -37,30 +37,36 @@ function HisSaleDetailTb({ data, method }) {
             sortable: true,
         },
         {
-            name: 'Số lượng bán',
-            selector: (row) => row.so_luong_ban,
-            width: '140px',
+            name: 'Số lô',
+            selector: (row) => row.so_lo,
+            width: '160px',
         },
         {
-            name: 'Đơn vị',
-            selector: (row) => row.don_vi_ban,
+            name: 'SL',
+            selector: (row) => row.so_luong_ban,
             width: '100px',
         },
         {
-            name: 'Loại',
-            selector: (row) => row.description_unit,
+            name: 'ĐVT',
+            selector: (row) => row.don_vi_ban,
+            width: '100px',
         },
 
         {
             name: 'Đơn giá',
             selector: (row) => Intl.NumberFormat().format(row.don_gia_ban),
-            width: '180px',
+            width: '100px',
         },
 
         {
             name: 'Thành tiền',
             selector: (row) => Intl.NumberFormat().format(row.thanh_tien),
-            width: '180px',
+            width: '120px',
+        },
+        {
+            name: 'Loại',
+            selector: (row) => row.dong_goi,
+            center: true,
         },
 
         {
@@ -68,9 +74,9 @@ function HisSaleDetailTb({ data, method }) {
             col: 16,
             selector: (row) => {
                 let date = new Date(row.createdAt);
-                return <div>{date.toLocaleDateString()}</div>;
+                return <div>{date.toLocaleString()}</div>;
             },
-            width: '180px',
+            // width: '180px',
             sortable: true,
         },
 

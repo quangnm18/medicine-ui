@@ -13,6 +13,7 @@ function StaffTb({ data, method, user }) {
     const tableStyle = {
         rows: {
             style: {
+                minHeight: '60px',
                 fontSize: '16px',
             },
         },

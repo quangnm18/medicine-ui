@@ -13,11 +13,11 @@ export const search = async (q) => {
     }
 };
 
-export const searchWh = async (isDeleted, q) => {
+export const searchWh = async (branch_id, q) => {
     try {
         const res = await request.get('category/warehouse/sellsearch/', {
             params: {
-                isDeleted: isDeleted,
+                branch_id: branch_id,
                 q: q,
             },
         });

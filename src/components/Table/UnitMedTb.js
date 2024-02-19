@@ -17,6 +17,7 @@ function UnitMedTb({ data, method }) {
     const tableStyle = {
         rows: {
             style: {
+                minHeight: '60px',
                 fontSize: '16px',
             },
         },
@@ -58,13 +59,11 @@ function UnitMedTb({ data, method }) {
         {
             name: 'Đóng gói',
             selector: (row) => row.description_unit,
-            width: '280px',
             center: true,
         },
         {
             name: 'Mã đơn vị',
             selector: (row) => <div>{row.unit_code}</div>,
-            width: '200px',
             center: true,
             sortable: true,
             col: 3,
@@ -81,6 +80,7 @@ function UnitMedTb({ data, method }) {
                     </button>
                 </div>
             ),
+            width: '100px',
         },
     ];
     return (

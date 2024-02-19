@@ -24,6 +24,7 @@ function GroupMedTb({ data, method }) {
         rows: {
             style: {
                 fontSize: '16px',
+                minHeight: '60px',
             },
         },
         headCells: {
@@ -43,13 +44,12 @@ function GroupMedTb({ data, method }) {
             name: 'Tên nhóm thuốc',
             selector: (row) => <div>{row.ten_nhom_thuoc}</div>,
             sortable: true,
-            width: '360px',
+            width: '400px',
             col: 1,
         },
         {
             name: 'Mô tả',
             selector: (row) => row.description,
-            width: '500px',
         },
         {
             name: 'Mã nhóm thuốc',
@@ -85,6 +85,7 @@ function GroupMedTb({ data, method }) {
                 fixedHeaderScrollHeight="700px"
                 onSort={handleSort}
                 onSelectedRowsChange={handleSelectRow}
+                highlightOnHover
             ></DataTable>
         </div>
     );

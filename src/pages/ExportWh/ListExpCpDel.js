@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import style from './ImportWh.module.scss';
+import style from './CreateExpCp.module.scss';
 import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames/bind';
 
@@ -10,17 +10,16 @@ import axios from 'axios';
 import ModalAll from '~/components/ModalPage/ModalAll';
 import ModalIvDetail from '~/components/ModalPage/ModalIvDetail';
 import Pagination from '~/components/Pagination/Pagination';
-import IptCpListTb from '~/components/Table/IptCpListTb';
 import ModalAccept from '~/components/ModalPage/ModalAccept';
+import ExpCpListTbDel from '~/components/Table/ExpCpListTbDel';
 
 import * as toast from '~/utils/toast';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import ModalViewIptIvDetail from '~/components/ModalPage/ModalIptIvDetail';
 
 const cx = classNames.bind(style);
 
-function ListIptCp() {
+function ListExpCpDel() {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
     const [sort, setSort] = useState({ sort_col: 1, sort_type: 'desc' });
 
@@ -38,32 +37,27 @@ function ListIptCp() {
     const [idSelected, setIdSelected] = useState('');
     const [selectBranch, setSelectBranch] = useState(undefined);
 
-    const [showModalSoftDel, setShowModalSoftDel] = useState(false);
+    const [showModalRes, setShowModalRes] = useState(false);
+    // const [showModalHardDel, setShowModalHardDel] = useState(false);
     const [showModalView, setShowModalView] = useState(false);
-    const [showModalAccept, setShowModalAccept] = useState(false);
-    const [showModalReject, setShowModalReject] = useState(false);
+
     axios.defaults.withCredentials = true;
 
     //Method Toggle
-    const toggleModalSoftDel = (id) => {
-        setShowModalSoftDel(!showModalSoftDel);
-        setIdSelected(id);
-    };
-
     const toggleModalView = (item) => {
         setShowModalView(!showModalView);
         setIdSelected(item);
     };
 
-    const toggleModalAccept = (invoice_code) => {
-        setShowModalAccept(!showModalAccept);
+    const toggleModalRes = (invoice_code) => {
+        setShowModalRes(!showModalRes);
         setIdSelected(invoice_code);
     };
 
-    const toggleModalReject = (invoice_code) => {
-        setShowModalReject(!showModalReject);
-        setIdSelected(invoice_code);
-    };
+    // const toggleModalHardDel = (id) => {
+    //     setShowModalHardDel(!showModalHardDel);
+    //     setIdSelected(id);
+    // };
 
     const onchangeBranch = (e) => {
         setSelectBranch(e.target.value);
@@ -76,50 +70,17 @@ function ListIptCp() {
     };
 
     //Method handle
-
-    const handleSoftDel = (id) => {
+    const handleRes = (invoice_code) => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put(`${baseUrl}importlist/softdelete`, { id: id, user_id: user.userId })
+            .put(`${baseUrl}exportwh/restoreiv`, { ma_hoa_don: idSelected })
             .then((res) => {
-                setShowModalSoftDel(false);
+                setShowModalRes(false);
                 loadData();
                 if (res.data === 'fail') {
                     toast.notify('Bạn không có quyền thao tác', 'error');
                 } else {
-                    toast.notify('Xóa thành công', 'success');
-                }
-            })
-            .catch((e) => console.log(e));
-    };
-
-    const handleAcceptIv = (data) => {
-        let baseUrl = process.env.REACT_APP_BASE_URL;
-        axios
-            .put(`${baseUrl}importlist/acceptiv`, { ma_hoa_don: idSelected })
-            .then((res) => {
-                setShowModalAccept(false);
-                loadData();
-                if (res.data === 'fail') {
-                    toast.notify('Bạn không có quyền thao tác', 'error');
-                } else {
-                    toast.notify('Phê duyệt thành công', 'success');
-                }
-            })
-            .catch((e) => console.log(e));
-    };
-
-    const handleRejectIv = (data) => {
-        let baseUrl = process.env.REACT_APP_BASE_URL;
-        axios
-            .put(`${baseUrl}importlist/rejectiv`, { ma_hoa_don: idSelected })
-            .then((res) => {
-                setShowModalReject(false);
-                loadData();
-                if (res.data === 'fail') {
-                    toast.notify('Bạn không có quyền thao tác', 'error');
-                } else {
-                    toast.notify('Phê duyệt thành công', 'success');
+                    toast.notify('Khôi phục thành công', 'success');
                 }
             })
             .catch((e) => console.log(e));
@@ -146,7 +107,7 @@ function ListIptCp() {
     const loadData = () => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get(`${baseUrl}importlist/alllistpaginate/`, {
+            .get(`${baseUrl}exportwh/listexport`, {
                 params: {
                     sort_col: sort.sort_col,
                     sort_type: sort.sort_type,
@@ -154,7 +115,7 @@ function ListIptCp() {
                     date_start: dateStart,
                     date_to: dateTo,
                     search_value: valuesSearch,
-                    isDeleted: 0,
+                    isDeleted: 1,
                     numRecord: numRecord,
                     startRecord: startRecord,
                     totalRecord: 0,
@@ -194,11 +155,11 @@ function ListIptCp() {
         setStartRecord(e.selected * numRecord);
     };
 
-    if (user.role === 'ADM' || user.role === 'STFW' || user.role === 'ADMA') {
+    if (user.role === 'ADM' || user.role === 'ADMA') {
         return (
             <div className={cx('content')}>
                 <div className={cx('header-content')}>
-                    <DirectionHeader>Quản lý nhập kho</DirectionHeader>
+                    <DirectionHeader>Quản lý xuất kho</DirectionHeader>
                     <div>
                         <div className={cx('choose-medicine')}>
                             <div className={cx('wrap-date')}>
@@ -229,16 +190,18 @@ function ListIptCp() {
                             <div className={cx('btn-action')}>
                                 <button
                                     className={cx('btn-add')}
-                                    onClick={() => routeChange('/warehouse/importcreate')}
+                                    onClick={() => routeChange('/warehouse/exportcreate')}
                                 >
-                                    Nhập tồn
+                                    Tạo phiếu
                                 </button>
-                                <button
-                                    className={cx('btn-add', 'btn-delete')}
-                                    onClick={() => routeChange('/warehouse/importlist/deleted')}
-                                >
-                                    Đã xóa
-                                </button>
+                                {(user.role === 'ADM' || user.role === 'ADMA') && (
+                                    <button
+                                        className={cx('btn-add')}
+                                        onClick={() => routeChange('/warehouse/exportlist')}
+                                    >
+                                        Trở lại
+                                    </button>
+                                )}
                             </div>
                         </div>
                         <div className={cx('wrap-searchiptiv')}>
@@ -268,49 +231,30 @@ function ListIptCp() {
                 </div>
                 <ToastContainer />
 
-                {showModalSoftDel && (
+                {showModalRes && (
                     <ModalAll
                         label={'Bạn có muốn xóa?'}
-                        methodToggle={toggleModalSoftDel}
-                        methodHandle={handleSoftDel}
+                        methodToggle={toggleModalRes}
+                        methodHandle={handleRes}
                         data={idSelected}
                     />
                 )}
                 {showModalView && (
-                    <ModalViewIptIvDetail
-                        label={'Thông tin chi tiết hóa đơn nhập'}
+                    <ModalIvDetail
+                        label={'Thông tin chi tiết hóa đơn xuất'}
                         methodToggle={toggleModalView}
-                        data={idSelected}
-                    />
-                )}
-
-                {showModalAccept && (
-                    <ModalAccept
-                        label={'Xác nhận đơn nhập?'}
-                        methodToggle={toggleModalAccept}
-                        methodHandle={handleAcceptIv}
-                        data={idSelected}
-                    />
-                )}
-
-                {showModalReject && (
-                    <ModalAccept
-                        label={'Từ chối đơn nhập?'}
-                        methodToggle={toggleModalReject}
-                        methodHandle={handleRejectIv}
                         data={idSelected}
                     />
                 )}
 
                 <div className={cx('main-content')}>
                     <div className={cx('content-table')}>
-                        <IptCpListTb
+                        <ExpCpListTbDel
                             data={dataTb}
                             method={{
-                                toggleModalSoftDel,
+                                toggleModalRes,
                                 toggleModalView,
-                                toggleModalAccept,
-                                toggleModalReject,
+
                                 setSort,
                             }}
                         />
@@ -324,4 +268,4 @@ function ListIptCp() {
     } else return <div>Bạn không có quyền thao tác</div>;
 }
 
-export default ListIptCp;
+export default ListExpCpDel;

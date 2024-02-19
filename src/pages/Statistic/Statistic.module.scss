@@ -57,10 +57,10 @@
     padding: 12px 0;
     border-radius: 2px;
     min-width: 120px;
-
-    &:hover {
-        cursor: pointer;
-    }
+    cursor: pointer;
+    // &:hover {
+    //     cursor: pointer;
+    // }
 }
 
 .btn-list {
@@ -73,6 +73,15 @@
 
 .btn-search {
     min-width: 80px;
+}
+
+.btn-delete {
+    background-color: rgb(222, 64, 64);
+}
+
+.btn-hidden {
+    cursor: default;
+    opacity: 0;
 }
 
 //search cpn

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import style from './ImportWh.module.scss';
+import style from './CreateExpCp.module.scss';
 import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames/bind';
 
@@ -10,17 +10,16 @@ import axios from 'axios';
 import ModalAll from '~/components/ModalPage/ModalAll';
 import ModalIvDetail from '~/components/ModalPage/ModalIvDetail';
 import Pagination from '~/components/Pagination/Pagination';
-import IptCpListTb from '~/components/Table/IptCpListTb';
 import ModalAccept from '~/components/ModalPage/ModalAccept';
 
 import * as toast from '~/utils/toast';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import ModalViewIptIvDetail from '~/components/ModalPage/ModalIptIvDetail';
+import ExpCpListTb from '~/components/Table/ExpCpListTb';
 
 const cx = classNames.bind(style);
 
-function ListIptCp() {
+function ListExpCp() {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
     const [sort, setSort] = useState({ sort_col: 1, sort_type: 'desc' });
 
@@ -45,9 +44,9 @@ function ListIptCp() {
     axios.defaults.withCredentials = true;
 
     //Method Toggle
-    const toggleModalSoftDel = (id) => {
+    const toggleModalSoftDel = (invoice_code) => {
         setShowModalSoftDel(!showModalSoftDel);
-        setIdSelected(id);
+        setIdSelected(invoice_code);
     };
 
     const toggleModalView = (item) => {
@@ -77,10 +76,10 @@ function ListIptCp() {
 
     //Method handle
 
-    const handleSoftDel = (id) => {
+    const handleSoftDel = (invoice_code) => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put(`${baseUrl}importlist/softdelete`, { id: id, user_id: user.userId })
+            .put(`${baseUrl}exportwh/softdeleteiv`, { ma_hoa_don: idSelected, deleted_by: user.userId })
             .then((res) => {
                 setShowModalSoftDel(false);
                 loadData();
@@ -93,10 +92,10 @@ function ListIptCp() {
             .catch((e) => console.log(e));
     };
 
-    const handleAcceptIv = (data) => {
+    const handleAcceptIv = () => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put(`${baseUrl}importlist/acceptiv`, { ma_hoa_don: idSelected })
+            .put(`${baseUrl}exportwh/acceptcp`, { ma_hoa_don: idSelected })
             .then((res) => {
                 setShowModalAccept(false);
                 loadData();
@@ -109,10 +108,10 @@ function ListIptCp() {
             .catch((e) => console.log(e));
     };
 
-    const handleRejectIv = (data) => {
+    const handleRejectIv = () => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .put(`${baseUrl}importlist/rejectiv`, { ma_hoa_don: idSelected })
+            .put(`${baseUrl}exportwh/rejectcp`, { ma_hoa_don: idSelected })
             .then((res) => {
                 setShowModalReject(false);
                 loadData();
@@ -146,7 +145,7 @@ function ListIptCp() {
     const loadData = () => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get(`${baseUrl}importlist/alllistpaginate/`, {
+            .get(`${baseUrl}exportwh/listexport`, {
                 params: {
                     sort_col: sort.sort_col,
                     sort_type: sort.sort_type,
@@ -198,7 +197,7 @@ function ListIptCp() {
         return (
             <div className={cx('content')}>
                 <div className={cx('header-content')}>
-                    <DirectionHeader>Quản lý nhập kho</DirectionHeader>
+                    <DirectionHeader>Quản lý xuất kho</DirectionHeader>
                     <div>
                         <div className={cx('choose-medicine')}>
                             <div className={cx('wrap-date')}>
@@ -229,16 +228,18 @@ function ListIptCp() {
                             <div className={cx('btn-action')}>
                                 <button
                                     className={cx('btn-add')}
-                                    onClick={() => routeChange('/warehouse/importcreate')}
+                                    onClick={() => routeChange('/warehouse/exportcreate')}
                                 >
-                                    Nhập tồn
+                                    Tạo phiếu
                                 </button>
-                                <button
-                                    className={cx('btn-add', 'btn-delete')}
-                                    onClick={() => routeChange('/warehouse/importlist/deleted')}
-                                >
-                                    Đã xóa
-                                </button>
+                                {(user.role === 'ADM' || user.role === 'ADMA') && (
+                                    <button
+                                        className={cx('btn-add', 'btn-delete')}
+                                        onClick={() => routeChange('/warehouse/exportlist/deleted')}
+                                    >
+                                        Đã xóa
+                                    </button>
+                                )}
                             </div>
                         </div>
                         <div className={cx('wrap-searchiptiv')}>
@@ -277,8 +278,8 @@ function ListIptCp() {
                     />
                 )}
                 {showModalView && (
-                    <ModalViewIptIvDetail
-                        label={'Thông tin chi tiết hóa đơn nhập'}
+                    <ModalIvDetail
+                        label={'Thông tin chi tiết hóa đơn xuất'}
                         methodToggle={toggleModalView}
                         data={idSelected}
                     />
@@ -304,7 +305,7 @@ function ListIptCp() {
 
                 <div className={cx('main-content')}>
                     <div className={cx('content-table')}>
-                        <IptCpListTb
+                        <ExpCpListTb
                             data={dataTb}
                             method={{
                                 toggleModalSoftDel,
@@ -324,4 +325,4 @@ function ListIptCp() {
     } else return <div>Bạn không có quyền thao tác</div>;
 }
 
-export default ListIptCp;
+export default ListExpCp;

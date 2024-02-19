@@ -5,7 +5,21 @@
     // background-color: var(--backgr);
 }
 
-.header {
+.wrap-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.wrap-year {
+    // min-width: 80px;
+
+    select {
+        min-width: 80px;
+        outline: none;
+        border: solid 1px #d5cfcf;
+        height: 28px;
+    }
 }
 
 .header-hello {
@@ -28,7 +42,7 @@
     cursor: pointer;
     display: flex;
     color: var(--white);
-    width: 22%;
+    width: 25%;
     height: 92px;
     border-radius: 20px;
     padding: 16px;

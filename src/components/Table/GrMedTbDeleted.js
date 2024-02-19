@@ -13,6 +13,7 @@ function GrMedTbDeleted({ data, method }) {
     const tableStyle = {
         rows: {
             style: {
+                minHeight: '60px',
                 fontSize: '16px',
             },
         },

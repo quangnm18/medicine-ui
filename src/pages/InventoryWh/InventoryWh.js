@@ -4,11 +4,13 @@ import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
+import { CSVLink } from 'react-csv';
 
 import axios from 'axios';
 import InventoryWhTb from '~/components/Table/InventoryWhTb';
 import Modal from '~/components/Modal';
 import Pagination from '~/components/Pagination/Pagination';
+import { formatDate } from '~/utils/format';
 
 const cx = classNames.bind(style);
 
@@ -30,6 +32,7 @@ function InventoryWh() {
     const [valuesSearch, setValuesSearch] = useState('');
 
     const [dataWh, setDataWh] = useState([]);
+    const [dataExport, setDataExport] = useState([]);
 
     axios.defaults.withCredentials = true;
 
@@ -69,6 +72,49 @@ function InventoryWh() {
         setStartRecord(e.selected * numRecord);
     };
 
+    const handleExportData = (e, done) => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
+
+        axios
+            .get(`${baseUrl}warehouse/exportall`, {
+                params: {
+                    group_id: selectGrMed,
+                    branch_id: user.id_chi_nhanh ? user.id_chi_nhanh : selectBranch,
+                    search_value: valuesSearch,
+                },
+            })
+            .then((res) => {
+                let result = [];
+                let arr1 = res.data[0].map((item) => {
+                    return { ...item, so_luong_con: item.sl_tong - item.so_luong_ban - item.so_luong_xuat };
+                });
+
+                if (arr1 && arr1.length > 0) {
+                    arr1.map((item, index) => {
+                        let obj = {
+                            STT: index + 1,
+                            'Tên thuốc': item.ten,
+                            'SL(ĐVLN)': (item.so_luong_con - (item.so_luong_con % item.soluong_nho)) / item.soluong_nho,
+                            'SL(ĐVTB)':
+                                (item.so_luong_con * item.soluong_tb -
+                                    ((item.so_luong_con * item.soluong_tb) % item.soluong_nho)) /
+                                item.soluong_nho,
+                            'SL(ĐVNN)': item.so_luong_con,
+                            ĐVT: item.dvt,
+                            'Đóng gói': item.dong_goi,
+                            'Số lô': item.so_lo,
+                            'Hạn dùng': formatDate(item.han_dung),
+                        };
+                        result.push(obj);
+                    });
+
+                    setDataExport(result);
+                    done();
+                }
+            })
+            .catch((e) => console.log(e));
+    };
+
     const convertDate = (data) => {
         let date = new Date(data);
         return date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear();
@@ -94,7 +140,7 @@ function InventoryWh() {
                 setPageCount(Math.ceil(totalRecord / numRecord));
 
                 let arr1 = res.data[0].map((item) => {
-                    return { ...item, so_luong_con: item.sl_tong - item.so_luong_ban };
+                    return { ...item, so_luong_con: item.sl_tong - item.so_luong_ban - item.so_luong_xuat };
                 });
                 setDataWh(arr1);
             })
@@ -172,8 +218,15 @@ function InventoryWh() {
                                     <FontAwesomeIcon icon={faSearch} className={cx('search-icon')} />
                                 </button>
                             </div>
-
-                            <button className={cx('btn-addstaff')}>Xuất excel</button>
+                            <CSVLink
+                                data={dataExport}
+                                asyncOnClick={true}
+                                onClick={handleExportData}
+                                className={cx('btn-export')}
+                            >
+                                <span>Xuất excel</span>
+                            </CSVLink>
+                            {/* <button className={cx('btn-addstaff')}>Xuất excel</button> */}
                         </div>
                     </div>
                 </div>

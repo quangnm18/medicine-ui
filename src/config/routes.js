@@ -13,8 +13,10 @@ const routes = {
     importList: '/warehouse/importlist',
     importListDel: '/warehouse/importlist/deleted',
 
-    exportCreate: '/warehouse/export/create',
-    exportList: '/warehouse/export/list',
+    exportCreate: '/warehouse/exportcreate',
+    exportList: '/warehouse/exportlist',
+    exportListDel: '/warehouse/exportlist/deleted',
+
     checkInventory: '/warehouse/inventory',
 
     category: '/category',

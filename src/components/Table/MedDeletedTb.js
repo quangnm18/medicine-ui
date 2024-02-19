@@ -20,6 +20,7 @@ function MedDeletedTb({ data, method }) {
         headCells: {
             style: {
                 fontSize: '16px',
+                minHeight: '52px',
             },
         },
     };
@@ -28,6 +29,7 @@ function MedDeletedTb({ data, method }) {
         {
             name: 'STT',
             cell: (row, index) => index + 1,
+            width: '100px',
         },
         {
             name: 'Tên dược',
@@ -39,13 +41,14 @@ function MedDeletedTb({ data, method }) {
             name: 'Thời gian xóa',
             selector: (row) => {
                 let date = new Date(row.deletedAt);
-                return date.toLocaleDateString();
+                return date.toLocaleString();
             },
         },
         {
             name: 'Người xóa',
-            selector: (row) => row.ham_luong,
+            selector: (row) => row.Name,
         },
+
         {
             name: '',
             cell: (row) => (
@@ -53,21 +56,15 @@ function MedDeletedTb({ data, method }) {
                     <button className={cx('btn')} onClick={() => method.toggleModalHardDelete(row.id)}>
                         <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
                     </button>
-                </div>
-            ),
-        },
-        {
-            name: '',
-            cell: (row) => (
-                <div className={cx('action-item')}>
                     <button className={cx('btn')} onClick={() => method.toggleModalView(row)}>
                         <FontAwesomeIcon icon={faPenToSquare} className={cx('icon-view')} />
                     </button>
                     <button className={cx('btn')} onClick={() => method.toggleModalRes(row.id)}>
-                        <FontAwesomeIcon icon={faRotateLeft} className={cx('icon-view')} />
+                        <FontAwesomeIcon icon={faRotateLeft} className={cx('icon-eye')} />
                     </button>
                 </div>
             ),
+            width: '180px',
         },
     ];
     return (

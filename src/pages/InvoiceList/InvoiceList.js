@@ -67,6 +67,12 @@ function InvoiceList() {
         setSelectBranch(e.target.value);
     };
 
+    const handleKeyPress = (e) => {
+        if (e.code === 'Enter') {
+            handleSearch();
+        }
+    };
+
     const handleSearch = () => {
         loadData();
     };
@@ -152,11 +158,18 @@ function InvoiceList() {
                             className={cx('input-name')}
                             value={dateStart}
                             onChange={handleChooseDateStart}
+                            onKeyUp={handleKeyPress}
                         />
                     </div>
                     <div className={cx('medicine-option')}>
                         <label className={cx('label-option')}>Đến ngày</label>
-                        <input type="date" className={cx('input-name')} value={dateTo} onChange={handleChooseDateEnd} />
+                        <input
+                            type="date"
+                            className={cx('input-name')}
+                            value={dateTo}
+                            onChange={handleChooseDateEnd}
+                            onKeyUp={handleKeyPress}
+                        />
                     </div>
                     <button className={cx('btn-search')} onClick={handleSearch}>
                         <FontAwesomeIcon icon={faSearch} />
@@ -165,7 +178,10 @@ function InvoiceList() {
                         <button className={cx('btn-add')} onClick={() => routeChange('/sell/create')}>
                             Lập hóa đơn
                         </button>
-                        <button className={cx('btn-add')} onClick={() => routeChange('/sell/list/deleted')}>
+                        <button
+                            className={cx('btn-add', 'btn-delete')}
+                            onClick={() => routeChange('/sell/list/deleted')}
+                        >
                             Đã xóa
                         </button>
                     </div>
@@ -176,6 +192,7 @@ function InvoiceList() {
                             placeholder="Tìm kiếm theo tên, mã hóa đơn..."
                             value={valuesSearch}
                             onChange={onchangeSearch}
+                            onKeyUp={handleKeyPress}
                         />
                     </div>
                     {user.role === 'ADMA' && (

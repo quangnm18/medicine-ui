@@ -63,17 +63,18 @@ function SellInvoiceCreate() {
         setDataInvoice([
             ...dataInvoice,
             {
-                med_id: medicine.id,
+                med_id: medicine.med_id,
                 ten_duoc: medicine.ten,
                 sl_dvl: '',
                 sl_dvn: '',
-                dvl: medicine.description_unit,
+                dvl: medicine.dong_goi,
                 dvqd_nn: medicine.soluong_nho,
                 sl_tong: '',
                 gia_ban: medicine.giaban_daqd,
                 thanh_tien: '',
                 donvinho: medicine.donvi_nho,
                 so_lo_hang: medicine.so_lo,
+                ipt_detail_id: medicine.id,
             },
         ]);
     };
@@ -123,7 +124,11 @@ function SellInvoiceCreate() {
                         .then((res1) => {
                             const ma_hoa_don = newId;
                             axios
-                                .post(`${baseUrl}sell/ivdetail/create`, { dataInvoice, ma_hoa_don })
+                                .post(`${baseUrl}sell/ivdetail/create`, {
+                                    dataInvoice: dataInvoice,
+                                    ma_hoa_don: ma_hoa_don,
+                                    branch_id: user.id_chi_nhanh,
+                                })
                                 .then((res) => {
                                     setModalSave(false);
                                     setDataInvoice([]);
@@ -228,11 +233,11 @@ function SellInvoiceCreate() {
         }
 
         const fetchApi = async () => {
-            const result = await searchServices.searchWh(0, debounced);
+            const result = await searchServices.searchWh(user.id_chi_nhanh, debounced);
             setSearchResult(result ? result[0] : []);
         };
         fetchApi();
-    }, [debounced]);
+    }, [debounced, user.id_chi_nhanh]);
 
     return (
         <div className={cx('content')}>
@@ -285,7 +290,8 @@ function SellInvoiceCreate() {
                                             dataField !== 'dvqd_nn' &&
                                             dataField !== 'med_id' &&
                                             dataField !== 'donvinho' &&
-                                            dataField !== 'so_lo_hang'
+                                            dataField !== 'so_lo_hang' &&
+                                            dataField !== 'ipt_detail_id'
                                         ) {
                                             if (dataField === 'ten_duoc' || dataField === 'dvl') {
                                                 return (

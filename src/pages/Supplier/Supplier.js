@@ -290,7 +290,7 @@ function Supplier() {
 
                         {(user.role === 'ADM' || user.role === 'ADMA') && (
                             <button
-                                className={cx('btn-addstaff')}
+                                className={cx('btn-addstaff', 'btn-delete')}
                                 onClick={() => routeChange('/category/supplier/deleted')}
                             >
                                 Đã xóa

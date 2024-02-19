@@ -18,14 +18,20 @@ import 'react-toastify/dist/ReactToastify.css';
 const cx = classNames.bind(style);
 
 function HisIptDetailDel() {
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
+    const [selectBranch, setSelectBranch] = useState(undefined);
+    const [selectGrMed, setSelectGrMed] = useState();
+
     const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState(1);
 
     const [dataTb, setDataTb] = useState([]);
+    const [dataBranch, setDataBranch] = useState([]);
+    const [dataGrMed, setDataGrMed] = useState([]);
 
     const [dateStart, setDateStart] = useState('');
-    const [dateEnd, setDateEnd] = useState('');
+    const [dateTo, setDateTo] = useState('');
     const [sort, setSort] = useState({ sort_col: 17, sort_type: 'asc' });
     const [valuesSearch, setValuesSearch] = useState('');
 
@@ -52,16 +58,34 @@ function HisIptDetailDel() {
     const onchangeDateStart = (e) => {
         setDateStart(e.target.value);
     };
-    const onchangeDateEnd = (e) => {
-        setDateEnd(e.target.value);
+    const onchangeDateTo = (e) => {
+        setDateTo(e.target.value);
     };
 
     const onchangeSearch = (e) => {
         setValuesSearch(e.target.value);
     };
 
+    const onchangeBranch = (e) => {
+        setSelectBranch(e.target.value);
+    };
+
+    const onchangeGrMed = (e) => {
+        setSelectGrMed(e.target.value);
+    };
+
     const handleChangePage = (e) => {
         setStartRecord(e.selected * numRecord);
+    };
+
+    const handleSearch = () => {
+        loadData();
+    };
+
+    const handleKeyPress = (e) => {
+        if (e.code === 'Enter') {
+            handleSearch();
+        }
     };
 
     const VND = new Intl.NumberFormat('vi-VN', {
@@ -110,6 +134,11 @@ function HisIptDetailDel() {
                 params: {
                     sort_col: sort.sort_col,
                     sort_type: sort.sort_type,
+                    group_id: selectGrMed,
+                    branch_id: user.id_chi_nhanh ? user.id_chi_nhanh : selectBranch,
+                    date_start: dateStart,
+                    date_to: dateTo,
+                    search_value: valuesSearch,
                     isImported: 1,
                     isDeleted: 1,
                     numRecord: numRecord,
@@ -133,7 +162,26 @@ function HisIptDetailDel() {
     useEffect(() => {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord, sort]);
+    }, [startRecord, selectBranch, selectGrMed, sort]);
+
+    useEffect(() => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
+        axios
+            .get(`${baseUrl}branch`)
+            .then((res) => {
+                if (res.data === 'fail') {
+                    setDataBranch([]);
+                } else setDataBranch(res.data);
+            })
+            .catch((e) => console.log(e));
+
+        axios
+            .get(`${baseUrl}category/medicine/group`)
+            .then((res) => {
+                setDataGrMed(res.data);
+            })
+            .catch((e) => console.log(e));
+    }, []);
 
     return (
         <div className={cx('content')}>
@@ -143,13 +191,13 @@ function HisIptDetailDel() {
                     <div className={cx('choose-medicine')}>
                         <div className={cx('medicine-option')}>
                             <label className={cx('label-option')}>Từ ngày</label>
-                            <input type="date" onChange={onchangeDateStart} />
+                            <input type="date" onChange={onchangeDateStart} onKeyUp={handleKeyPress} />
                         </div>
                         <div className={cx('medicine-option')}>
                             <label className={cx('label-option')}>Đến ngày</label>
-                            <input type="date" onChange={onchangeDateEnd} />
+                            <input type="date" onChange={onchangeDateTo} onKeyUp={handleKeyPress} />
                         </div>
-                        <button className={cx('btn-search')}>
+                        <button className={cx('btn-search')} onClick={handleSearch}>
                             <FontAwesomeIcon icon={faSearch} />
                         </button>
                         <div className={cx('btn-action')}>
@@ -161,14 +209,43 @@ function HisIptDetailDel() {
                             </button>
                         </div>
                     </div>
-                    <ToastContainer />
-                    <div className={cx('medicine-option', 'search-statistic')}>
-                        <input
-                            placeholder="Tìm kiếm theo mã hóa đơn..."
-                            value={valuesSearch}
-                            onChange={onchangeSearch}
-                        />
+                    <div className={cx('wrap-searchBot')}>
+                        <div>
+                            <div className={cx('medicine-option', 'search-statistic')}>
+                                <input
+                                    placeholder="Tìm kiếm theo mã hóa đơn..."
+                                    value={valuesSearch}
+                                    onChange={onchangeSearch}
+                                    onKeyUp={handleKeyPress}
+                                />
+                            </div>
+                            {user.role === 'ADMA' && (
+                                <div className={cx('medicine-option', 'search-statistic')}>
+                                    <select value={selectBranch} onChange={onchangeBranch}>
+                                        <option value={0}>--Chọn cơ sở--</option>
+                                        {dataBranch.map((branch) => (
+                                            <option key={branch.id} value={branch.id}>
+                                                {branch.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            )}
+                        </div>
+                        <div>
+                            <div className={cx('medicine-option', 'search-statistic', 'wrap-select')}>
+                                <select value={selectGrMed} onChange={onchangeGrMed}>
+                                    <option value={0}>--Chọn nhóm thuốc--</option>
+                                    {dataGrMed.map((gr) => (
+                                        <option key={gr.id} value={gr.id}>
+                                            {gr.ten_nhom_thuoc}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
                     </div>
+                    <ToastContainer />
                 </div>
             </div>
 
@@ -246,7 +323,12 @@ function HisIptDetailDel() {
                         </div>
                         <div className={cx('view-detail')}>
                             <label>Hạn dùng: </label>
-                            <input disabled value={typeof idSelected === 'object' && idSelected.han_dung} />
+                            <input
+                                disabled
+                                value={
+                                    typeof idSelected === 'object' && new Date(idSelected.han_dung).toLocaleDateString()
+                                }
+                            />
                         </div>
                         <div className={cx('view-detail')}>
                             <label>Số lô: </label>

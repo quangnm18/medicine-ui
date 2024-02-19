@@ -11,11 +11,6 @@ function HisIptDetailTb({ data, method }) {
         method.setSort({ sort_col: obj.col, sort_type: type });
     };
 
-    const VND = new Intl.NumberFormat('vi-VN', {
-        style: 'currency',
-        currency: 'VND',
-    });
-
     const tableStyle = {
         rows: {
             style: {
@@ -53,15 +48,9 @@ function HisIptDetailTb({ data, method }) {
             width: '150px',
         },
         {
-            name: 'SL',
+            name: 'SL(ĐVL)',
             selector: (row) => row.soluong_lon,
-            width: '90px',
-        },
-
-        {
-            name: 'QĐ (NN)',
-            selector: (row) => row.soluong_nho,
-            width: '90px',
+            width: '100px',
         },
         {
             name: 'Tổng',
@@ -125,26 +114,20 @@ function HisIptDetailTb({ data, method }) {
             cell: (row) => {
                 const currDate = new Date();
                 const dueDate = new Date(row.han_dung);
-                const count_date =
-                    dueDate.getFullYear() * 12 * 30 +
-                    (dueDate.getMonth() + 1) * 30 +
-                    dueDate.getDate() -
-                    currDate.getFullYear() * 12 * 30 -
-                    (currDate.getMonth() + 1) * 30 -
-                    currDate.getDate();
+                const count_date = dueDate - currDate;
 
-                if (count_date > 2 && count_date < 20) {
+                if (count_date > 172800000 && count_date < 1728000000) {
                     return (
                         <div>
-                            <button className={cx('btn-status')}>Sắp hết hạn</button>
+                            <button className={cx('btn-status', 'btn-near')}>Sắp hết hạn</button>
                         </div>
                     );
                 }
 
-                if (count_date <= 2) {
+                if (count_date <= 172800000) {
                     return (
                         <div>
-                            <button className={cx('btn-near', 'btn-status')}>Đã hết hạn</button>
+                            <button className={cx('btn-due', 'btn-status')}>Đã hết hạn</button>
                         </div>
                     );
                 } else {

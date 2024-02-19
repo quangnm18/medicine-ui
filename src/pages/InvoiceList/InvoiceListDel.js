@@ -35,6 +35,7 @@ function InvoiceListDel() {
     const [valuesSearch, setValuesSearch] = useState('');
 
     const [dataTb, setDataTb] = useState([]);
+    const [dataBranch, setDataBranch] = useState([]);
     const [selectBranch, setSelectBranch] = useState(undefined);
 
     const [idSelected, setIdSelected] = useState();
@@ -55,7 +56,6 @@ function InvoiceListDel() {
     };
 
     const handleChooseDateStart = (e) => {
-        console.log(e.target.value);
         setDateStart(e.target.value);
     };
 
@@ -63,31 +63,22 @@ function InvoiceListDel() {
         setDateTo(e.target.value);
     };
 
+    const onchangeSearch = (e) => {
+        setValuesSearch(e.target.value);
+    };
+
+    const onchangeBranch = (e) => {
+        setSelectBranch(e.target.value);
+    };
+
+    const handleKeyPress = (e) => {
+        if (e.code === 'Enter') {
+            handleSearch();
+        }
+    };
+
     const handleSearch = () => {
-        // if (dateStart !== '' && dateTo !== '') {
-        //     let filtered = listIvSale.filter((invoice) => {
-        //         let invoiceDate = invoice.CreateDate;
-        //         return invoiceDate >= dateStart && invoiceDate <= dateTo;
-        //     });
-        //     setDataTb(filtered);
-        // }
-        // if (dateStart !== '' && dateTo === '') {
-        //     let filtered = listIvSale.filter((invoice) => {
-        //         let invoiceDate = invoice.CreateDate;
-        //         return invoiceDate >= dateStart;
-        //     });
-        //     setDataTb(filtered);
-        // }
-        // if (dateStart === '' && dateTo !== '') {
-        //     let filtered = listIvSale.filter((invoice) => {
-        //         let invoiceDate = invoice.CreateDate;
-        //         return invoiceDate <= dateTo;
-        //     });
-        //     setDataTb(filtered);
-        // }
-        // if (dateStart === '' && dateTo === '') {
-        //     setDataTb(listIvSale);
-        // }
+        loadData();
     };
 
     //method handle
@@ -127,7 +118,7 @@ function InvoiceListDel() {
         setStartRecord(e.selected * numRecord);
     };
 
-    const loadData = useCallback(() => {
+    const loadData = () => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
             .get(`${baseUrl}sell/ivlist/`, {
@@ -150,11 +141,24 @@ function InvoiceListDel() {
                 setPageCount(Math.ceil(totalRecord / numRecord));
             })
             .catch((err) => console.log(err));
-    }, [startRecord, sort]);
+    };
 
     useEffect(() => {
         loadData();
-    }, [loadData]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [startRecord, selectBranch, sort]);
+
+    useEffect(() => {
+        let baseUrl = process.env.REACT_APP_BASE_URL;
+        axios
+            .get(`${baseUrl}branch`)
+            .then((res) => {
+                if (res.data === 'fail') {
+                    setDataBranch([]);
+                } else setDataBranch(res.data);
+            })
+            .catch((e) => console.log(e));
+    }, []);
 
     const navigate = useNavigate();
     const routeChange = (path) => {
@@ -174,16 +178,23 @@ function InvoiceListDel() {
                             className={cx('input-name')}
                             value={dateStart}
                             onChange={handleChooseDateStart}
+                            onKeyUp={handleKeyPress}
                         />
                     </div>
                     <div className={cx('medicine-option')}>
                         <label className={cx('label-option')}>Đến ngày</label>
-                        <input type="date" className={cx('input-name')} value={dateTo} onChange={handleChooseDateEnd} />
+                        <input
+                            type="date"
+                            className={cx('input-name')}
+                            value={dateTo}
+                            onChange={handleChooseDateEnd}
+                            onKeyUp={handleKeyPress}
+                        />
                     </div>
                     <button className={cx('btn-search')} onClick={handleSearch}>
                         <FontAwesomeIcon icon={faSearch} />
                     </button>
-                    <div className={cx('btn-action')}>
+                    <div className={cx('btn-action', 'btnaction-listivsell')}>
                         <button className={cx('btn-add')} onClick={() => routeChange('/sell/create')}>
                             Lập hóa đơn
                         </button>
@@ -191,6 +202,29 @@ function InvoiceListDel() {
                             Trở về
                         </button>
                     </div>
+                </div>
+                <div className={cx('wrap-inputselect')}>
+                    <div className={cx('medicine-option', 'search-statistic')}>
+                        <input
+                            placeholder="Tìm kiếm theo tên, mã hóa đơn..."
+                            value={valuesSearch}
+                            onChange={onchangeSearch}
+                            onKeyUp={handleKeyPress}
+                        />
+                    </div>
+                    {user.role === 'ADMA' && (
+                        <div className={cx('medicine-option', 'search-statistic', 'select-statistic')}>
+                            <select value={selectBranch} onChange={onchangeBranch}>
+                                <option value={0}>--Chọn chi nhánh--</option>
+                                {dataBranch.length > 0 &&
+                                    dataBranch.map((branch) => (
+                                        <option key={branch.id} value={branch.id}>
+                                            {branch.name}
+                                        </option>
+                                    ))}
+                            </select>
+                        </div>
+                    )}
                 </div>
             </div>
             <ToastContainer />

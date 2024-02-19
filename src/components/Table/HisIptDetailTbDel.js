@@ -33,34 +33,24 @@ function HisIptDetailTbDel({ data, method }) {
         {
             name: '',
             cell: (row, index) => index + 1,
-            width: '60px',
+            width: '40px',
         },
         {
             name: 'Tên dược',
             selector: (row) => <div>{row.med}</div>,
-            width: '180px',
             col: 5,
             sortable: true,
         },
         {
-            name: 'Số lượng',
+            name: 'SL',
             selector: (row) => row.soluong_lon,
-            width: '100px',
+            width: '80px',
         },
-        {
-            name: 'QĐ (TB)',
-            selector: (row) => row.soluong_tb,
-            width: '90px',
-        },
-        {
-            name: 'QĐ (NN)',
-            selector: (row) => row.soluong_nho,
-            width: '90px',
-        },
+
         {
             name: 'Tổng',
             selector: (row) => row.sl_tong,
-            width: '100px',
+            width: '80px',
         },
         {
             name: 'ĐVT',
@@ -80,17 +70,36 @@ function HisIptDetailTbDel({ data, method }) {
             name: 'Ngày nhập',
             selector: (row) => {
                 let date = new Date(row.createdDt_at);
-                return <div>{date.toLocaleDateString()}</div>;
+                return <div>{date.toLocaleString()}</div>;
             },
             width: '140px',
             col: 23,
             sortable: true,
         },
+        // {
+        //     name: 'Hạn sử dụng',
+        //     selector: (row) => {
+        //         let date = new Date(row.han_dung);
+        //         return <div>{date.toLocaleDateString()}</div>;
+        //     },
+        //     width: '140px',
+        //     col: 17,
+        //     sortable: true,
+        // },
         {
-            name: 'Hạn sử dụng',
+            name: 'Thời gian xóa',
             selector: (row) => {
-                let date = new Date(row.han_dung);
-                return <div>{date.toLocaleDateString()}</div>;
+                let date = new Date(row.deletedAt);
+                return <div>{date.toLocaleString()}</div>;
+            },
+            width: '220px',
+            col: 17,
+            sortable: true,
+        },
+        {
+            name: 'Người xóa',
+            selector: (row) => {
+                return <div>{row.Name}</div>;
             },
             width: '140px',
             col: 17,
@@ -119,26 +128,20 @@ function HisIptDetailTbDel({ data, method }) {
             cell: (row) => {
                 const currDate = new Date();
                 const dueDate = new Date(row.han_dung);
-                const count_date =
-                    dueDate.getFullYear() * 12 * 30 +
-                    (dueDate.getMonth() + 1) * 30 +
-                    dueDate.getDate() -
-                    currDate.getFullYear() * 12 * 30 -
-                    (currDate.getMonth() + 1) * 30 -
-                    currDate.getDate();
+                const count_date = dueDate - currDate;
 
-                if (count_date > 2 && count_date < 20) {
+                if (count_date > 172800000 && count_date < 1728000000) {
                     return (
                         <div>
-                            <button className={cx('btn-status')}>Sắp hết hạn</button>
+                            <button className={cx('btn-status', 'btn-near')}>Sắp hết hạn</button>
                         </div>
                     );
                 }
 
-                if (count_date <= 2) {
+                if (count_date <= 172800000) {
                     return (
                         <div>
-                            <button className={cx('btn-near', 'btn-status')}>Đã hết hạn</button>
+                            <button className={cx('btn-due', 'btn-status')}>Đã hết hạn</button>
                         </div>
                     );
                 } else {
@@ -150,6 +153,7 @@ function HisIptDetailTbDel({ data, method }) {
                 }
             },
             sortable: true,
+            width: '130px',
         },
     ];
     return (

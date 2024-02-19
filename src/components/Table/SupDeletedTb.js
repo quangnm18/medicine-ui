@@ -14,6 +14,7 @@ function SupDeletedTb({ data, method }) {
     const tableStyle = {
         rows: {
             style: {
+                minHeight: '60px',
                 fontSize: '16px',
             },
         },
@@ -48,7 +49,7 @@ function SupDeletedTb({ data, method }) {
         },
         {
             name: 'Người xóa',
-            selector: (row) => row.ham_luong,
+            selector: (row) => row.Name,
         },
         {
             name: '',

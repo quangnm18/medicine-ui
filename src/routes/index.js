@@ -27,6 +27,10 @@ import HisIptDetailDel from '~/pages/Statistic/HisIptDetailDel';
 import InvoiceListDel from '~/pages/InvoiceList/InvoiceListDel';
 import Branch from '~/pages/Branch/Branch';
 import AllStaff from '~/pages/Branch/AllStaff';
+import HisSaleDetailDel from '~/pages/Statistic/HisSaleDetailDel';
+import CreateExpCp from '~/pages/ExportWh/CreateExpCp';
+import ListExpCp from '~/pages/ExportWh/ListExpCp';
+import ListExpCpDel from '~/pages/ExportWh/ListExpCpDel';
 
 const publicRoutes = [
     { path: routesConfig.login, component: Login, layout: LoginLayout },
@@ -48,8 +52,8 @@ const publicRoutes = [
     { path: routesConfig.importCreate, component: IptWhInvoice },
     { path: routesConfig.importList, component: ListIptCp },
     { path: routesConfig.checkInventory, component: InventoryWh },
-    { path: routesConfig.exportCreate, component: InventoryWh },
-    { path: routesConfig.exportList, component: InventoryWh },
+    { path: routesConfig.exportCreate, component: CreateExpCp },
+    { path: routesConfig.exportList, component: ListExpCp },
 
     { path: routesConfig.branchs, component: Branch },
     { path: routesConfig.users, component: AllStaff },
@@ -71,9 +75,10 @@ const publicRoutes = [
 
     { path: routesConfig.importListDel, component: ListIptCpDel },
     { path: routesConfig.sellListDel, component: InvoiceListDel },
+    { path: routesConfig.exportListDel, component: ListExpCpDel },
 
     { path: routesConfig.historyImportStatisticDel, component: HisIptDetailDel },
-    { path: routesConfig.historySaleStatisticDel, component: HisSaleDetail },
+    { path: routesConfig.historySaleStatisticDel, component: HisSaleDetailDel },
 ];
 
 const privateRoutes = [

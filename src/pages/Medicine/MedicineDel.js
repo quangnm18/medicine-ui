@@ -277,6 +277,12 @@ function MedicineDel() {
         setStartRecord(e.selected * numRecord);
     };
 
+    const handleKeyPress = (e) => {
+        if (e.code === 'Enter') {
+            handleSearch();
+        }
+    };
+
     //Call API Render
     const loadDataTbDel = () => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
@@ -341,6 +347,7 @@ function MedicineDel() {
                                     methodOnchangeInput={handleOnchangeInput}
                                     methodSelectedResult={handleSelectedMedicine}
                                     classWidth={'search-resultMed'}
+                                    methodHandleSearch={handleKeyPress}
                                 />
                             </div>
 
@@ -351,7 +358,10 @@ function MedicineDel() {
                     </div>
 
                     <div className={cx('action-bin')}>
-                        <button className={cx('btn-delete', 'btn')} onClick={() => routeChange('/category/medicine')}>
+                        <button
+                            className={cx('btn-delete', 'btn', 'btn-back')}
+                            onClick={() => routeChange('/category/medicine')}
+                        >
                             Trở lại
                         </button>
                     </div>
@@ -390,7 +400,7 @@ function MedicineDel() {
             <ToastContainer />
 
             <div className={cx('main-content')}>
-                <div className={cx('content-table')}>
+                <div className={cx('content-tableDel')}>
                     <MedDeletedTb
                         data={dataTbDel}
                         method={{ toggleModalView, toggleModalRes, toggleModalHardDelete, setSort }}

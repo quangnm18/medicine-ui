@@ -43,7 +43,6 @@ function ModalAddMed({
     };
 
     const onChangeSelected = (e) => {
-        console.log(typeof e.target.value);
         methodValueSelect({ ...dataValueInputs, [e.target.name]: e.target.value });
     };
 
