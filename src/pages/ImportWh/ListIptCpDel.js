@@ -8,22 +8,23 @@ import classNames from 'classnames/bind';
 import DirectionHeader from '~/components/DirectionHeader/DirectionHeader';
 import axios from 'axios';
 import ModalAll from '~/components/ModalPage/ModalAll';
-import ModalIvDetail from '~/components/ModalPage/ModalIvDetail';
 import Pagination from '~/components/Pagination/Pagination';
 import IptCpListTbDel from '~/components/Table/IptCpListTbDel';
 
 import * as toast from '~/utils/toast';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ModalViewIptIvDetail from '~/components/ModalPage/ModalIptIvDetail';
 
 const cx = classNames.bind(style);
 
 function ListIptCpDel() {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
 
-    const numRecord = 10;
+    // const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState(1);
+    const [numRecord, setNumRecord] = useState(10);
 
     const [dataTb, setDataTb] = useState([]);
     const [dataBranch, setDataBranch] = useState([]);
@@ -71,6 +72,10 @@ function ListIptCpDel() {
 
     const onchangeBranch = (e) => {
         setSelectBranch(e.target.value);
+    };
+
+    const onChangerNum = (e) => {
+        setNumRecord(e.target.value);
     };
 
     const handleSearch = () => {
@@ -155,7 +160,7 @@ function ListIptCpDel() {
 
     useEffect(() => {
         loadData();
-    }, [startRecord, sort, selectBranch]);
+    }, [startRecord, sort, selectBranch, numRecord]);
 
     useEffect(() => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
@@ -242,7 +247,7 @@ function ListIptCpDel() {
             <ToastContainer />
 
             {showModalView && (
-                <ModalIvDetail
+                <ModalViewIptIvDetail
                     label={'Thông tin chi tiết hóa đơn nhập'}
                     methodToggle={toggleModalView}
                     data={idSelected}
@@ -272,9 +277,16 @@ function ListIptCpDel() {
                     <IptCpListTbDel
                         data={dataTb}
                         method={{ toggleModalView, toggleModalRes, toggleModalHardDel, setSort }}
+                        role={user.role}
                     />
                 </div>
                 <div className={cx('wrap-paginate')}>
+                    <select value={numRecord} onChange={onChangerNum}>
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                        <option value={30}>30</option>
+                        <option value={40}>40</option>
+                    </select>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />
                 </div>
             </div>

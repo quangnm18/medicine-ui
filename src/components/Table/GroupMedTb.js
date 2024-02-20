@@ -24,7 +24,7 @@ function GroupMedTb({ data, method }) {
         rows: {
             style: {
                 fontSize: '16px',
-                minHeight: '60px',
+                minHeight: '56px',
             },
         },
         headCells: {
@@ -81,11 +81,12 @@ function GroupMedTb({ data, method }) {
                 data={data}
                 customStyles={tableStyle}
                 selectableRows
-                fixedHeader
-                fixedHeaderScrollHeight="700px"
                 onSort={handleSort}
                 onSelectedRowsChange={handleSelectRow}
                 highlightOnHover
+                fixedHeader
+                fixedHeaderScrollHeight="690px"
+                className={cx('wrapper-tb')}
             ></DataTable>
         </div>
     );

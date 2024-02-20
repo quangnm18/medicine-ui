@@ -6,7 +6,7 @@ import style from './Table.module.scss';
 
 const cx = classNames.bind(style);
 
-function HisIptDetailTbDel({ data, method }) {
+function HisIptDetailTbDel({ data, method, role }) {
     const handleSort = (obj, type, data) => {
         method.setSort({ sort_col: obj.col, sort_type: type });
     };
@@ -20,6 +20,7 @@ function HisIptDetailTbDel({ data, method }) {
         rows: {
             style: {
                 fontSize: '16px',
+                minHeight: '56px',
             },
         },
         headCells: {
@@ -76,16 +77,7 @@ function HisIptDetailTbDel({ data, method }) {
             col: 23,
             sortable: true,
         },
-        // {
-        //     name: 'Hạn sử dụng',
-        //     selector: (row) => {
-        //         let date = new Date(row.han_dung);
-        //         return <div>{date.toLocaleDateString()}</div>;
-        //     },
-        //     width: '140px',
-        //     col: 17,
-        //     sortable: true,
-        // },
+
         {
             name: 'Thời gian xóa',
             selector: (row) => {
@@ -110,15 +102,19 @@ function HisIptDetailTbDel({ data, method }) {
             name: '#',
             cell: (row) => (
                 <div>
-                    <button className={cx('btn')} onClick={() => method.toggleModalHardDel(row.id)}>
-                        <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
-                    </button>
+                    {role === 'ADMA' && (
+                        <button className={cx('btn')} onClick={() => method.toggleModalHardDel(row.id)}>
+                            <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
+                        </button>
+                    )}
                     <button className={cx('btn')} onClick={() => method.toggleModalView(row)}>
                         <FontAwesomeIcon icon={faEye} className={cx('icon-view', 'icon-eye')} />
                     </button>
-                    <button className={cx('btn')} onClick={() => method.toggleModalRes(row.id)}>
-                        <FontAwesomeIcon icon={faRotateBack} className={cx('icon-view', 'icon-res')} />
-                    </button>
+                    {(role === 'ADMA' || role === 'ADM') && (
+                        <button className={cx('btn')} onClick={() => method.toggleModalRes(row.id)}>
+                            <FontAwesomeIcon icon={faRotateBack} className={cx('icon-view', 'icon-res')} />
+                        </button>
+                    )}
                 </div>
             ),
             width: '140px',
@@ -164,6 +160,9 @@ function HisIptDetailTbDel({ data, method }) {
                 customStyles={tableStyle}
                 highlightOnHover
                 onSort={handleSort}
+                fixedHeader
+                fixedHeaderScrollHeight="620px"
+                className={cx('wrapper-tb')}
             ></DataTable>
         </div>
     );

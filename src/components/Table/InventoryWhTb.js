@@ -8,7 +8,6 @@ import style from './Table.module.scss';
 const cx = classNames.bind(style);
 
 function InventoryWhTb({ data, method }) {
-    console.log(data);
     const handleSort = (obj, type, data) => {
         method.setSort({ sort_col: obj.col, sort_type: type });
     };
@@ -150,6 +149,9 @@ function InventoryWhTb({ data, method }) {
                 highlightOnHover
                 onSort={handleSort}
                 responsive
+                fixedHeader
+                fixedHeaderScrollHeight="690px"
+                className={cx('wrapper-tb')}
             ></DataTable>
         </div>
     );

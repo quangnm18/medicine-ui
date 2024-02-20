@@ -172,6 +172,15 @@
     margin-right: 8px;
 }
 
+.btn-import {
+    width: 120px;
+}
+
+.btn-valid {
+    width: 140px;
+    background-color: rgb(247, 59, 59);
+}
+
 .form-control {
     font-size: 1.6rem;
     margin-left: 20px;
@@ -234,13 +243,7 @@
 }
 
 .alert-err {
-    background-color: rgb(231, 141, 141);
-    padding: 8px;
-    font-size: 1.6rem;
-    color: var(--white);
-    display: flex;
-    align-items: center;
-    border-radius: 4px;
+    color: red;
 }
 
 //choose Unit

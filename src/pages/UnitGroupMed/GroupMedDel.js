@@ -19,9 +19,11 @@ import { useNavigate } from 'react-router-dom';
 const cx = classNames.bind(style);
 
 function GroupMedDel() {
-    const numRecord = 10;
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
+
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState(1);
+    const [numRecord, setNumRecord] = useState(10);
 
     const [dataTbDel, setDataTbDel] = useState([]);
     const [sort, setSort] = useState({ sort_col: 1, sort_type: 'desc' });
@@ -81,6 +83,10 @@ function GroupMedDel() {
         setShowModalView(!showModalView);
 
         setValueInputs(gr);
+    };
+
+    const onChangerNum = (e) => {
+        setNumRecord(e.target.value);
     };
 
     //method handle
@@ -184,7 +190,7 @@ function GroupMedDel() {
     useEffect(() => {
         loadDataTbDel();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord, sort]);
+    }, [startRecord, sort, numRecord]);
 
     const navigate = useNavigate();
     const routeChange = (path) => {
@@ -253,9 +259,16 @@ function GroupMedDel() {
                     <GrMedTbDeleted
                         data={dataTbDel}
                         method={{ toggleModalRes, toggleModalView, toggleModalHardDel, setSort }}
+                        role={user.role}
                     />
                 </div>
-                <div className={cx('wrap-pagination')}>
+                <div className={cx('wrap-paginate')}>
+                    <select value={numRecord} onChange={onChangerNum}>
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                        <option value={30}>30</option>
+                        <option value={40}>40</option>
+                    </select>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />
                 </div>
             </div>

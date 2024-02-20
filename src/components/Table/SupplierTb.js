@@ -17,7 +17,7 @@ function SupplierTb({ data, method, role }) {
     const tableStyle = {
         rows: {
             style: {
-                minHeight: '60px',
+                minHeight: '56px',
                 fontSize: '16px',
             },
         },
@@ -79,6 +79,9 @@ function SupplierTb({ data, method, role }) {
                 onSort={handleSort}
                 selectableRows
                 onSelectedRowsChange={handleSelectRow}
+                fixedHeader
+                fixedHeaderScrollHeight="690px"
+                className={cx('wrapper-tb')}
             ></DataTable>
         </div>
     );

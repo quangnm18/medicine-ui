@@ -19,9 +19,9 @@ const cx = classNames.bind(style);
 function AllStaff() {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
 
-    const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState();
+    const [numRecord, setNumRecord] = useState(10);
 
     const [dataTb, setDataTb] = useState([]);
     const [valuesSearch, setValuesSearch] = useState('');
@@ -32,7 +32,7 @@ function AllStaff() {
 
     const [dataBranch, setDataBranch] = useState([]);
     const [selectBranch, setSelectBranch] = useState(undefined);
-    const [sort, setSort] = useState({ sort_col: 1, sort_type: 'asc' });
+    const [sort, setSort] = useState({ sort_col: 3, sort_type: 'asc' });
 
     axios.defaults.withCredentials = true;
 
@@ -150,6 +150,10 @@ function AllStaff() {
 
     const onchangeBranch = (e) => {
         setSelectBranch(e.target.value);
+    };
+
+    const onChangerNum = (e) => {
+        setNumRecord(e.target.value);
     };
 
     const toggleModalSoftDel = (id) => {
@@ -276,7 +280,7 @@ function AllStaff() {
     useEffect(() => {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord, selectBranch, sort]);
+    }, [startRecord, selectBranch, sort, numRecord]);
 
     useEffect(() => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
@@ -312,9 +316,12 @@ function AllStaff() {
                                 </button>
                             </div>
 
-                            <button className={cx('btn-addstaff')} onClick={toggleModalAdd}>
-                                Thêm thành viên
-                            </button>
+                            <div>
+                                <button className={cx('btn-addstaff')} onClick={toggleModalAdd}>
+                                    Thêm thành viên
+                                </button>
+                                <button className={cx('btn-addstaff', 'btn-delete')}>Đã xóa</button>
+                            </div>
                         </div>
                         <div className={cx('branch-option', 'search-statistic')}>
                             <label className={cx('search-label')}>Chi nhánh</label>
@@ -368,7 +375,13 @@ function AllStaff() {
                 <div className={cx('content-table')}>
                     <StaffTb data={dataTb} method={{ toggleModalView, toggleModalSoftDel, setSort }} user={user} />
                 </div>
-                <div className={cx('wrap-pagination')}>
+                <div className={cx('wrap-paginate')}>
+                    <select value={numRecord} onChange={onChangerNum}>
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                        <option value={30}>30</option>
+                        <option value={40}>40</option>
+                    </select>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />
                 </div>
             </div>

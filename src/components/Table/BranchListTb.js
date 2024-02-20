@@ -87,6 +87,9 @@ function BranchListTb({ data, method }) {
                 customStyles={tableStyle}
                 highlightOnHover
                 onSort={handleSort}
+                fixedHeader
+                fixedHeaderScrollHeight="620px"
+                className={cx('wrapper-tb')}
             ></DataTable>
         </div>
     );

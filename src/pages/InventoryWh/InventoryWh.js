@@ -16,15 +16,17 @@ const cx = classNames.bind(style);
 
 function InventoryWh() {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
+
     const [dataBranch, setDataBranch] = useState([]);
     const [dataGrMed, setDataGrMed] = useState([]);
     const [selectBranch, setSelectBranch] = useState(undefined);
     const [selectGrMed, setSelectGrMed] = useState();
     const [sort, setSort] = useState({ sort_col: 24, sort_type: 'asc' });
 
-    const numRecord = 10;
+    // const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState(1);
+    const [numRecord, setNumRecord] = useState(10);
 
     const [showModalView, setShowModalView] = useState(false);
     const [idSelected, setIdSelected] = useState();
@@ -56,6 +58,10 @@ function InventoryWh() {
 
     const onchangeGrMed = (e) => {
         setSelectGrMed(e.target.value);
+    };
+
+    const onChangerNum = (e) => {
+        setNumRecord(e.target.value);
     };
 
     const handleSearch = () => {
@@ -109,8 +115,8 @@ function InventoryWh() {
                     });
 
                     setDataExport(result);
-                    done();
                 }
+                done();
             })
             .catch((e) => console.log(e));
     };
@@ -150,7 +156,7 @@ function InventoryWh() {
     useEffect(() => {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord, selectBranch, selectGrMed, sort]);
+    }, [startRecord, selectBranch, selectGrMed, sort, numRecord]);
 
     useEffect(() => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
@@ -325,6 +331,12 @@ function InventoryWh() {
                     <InventoryWhTb data={dataWh} method={{ toggleModalView, setSort }} />
                 </div>
                 <div className={cx('wrap-paginate')}>
+                    <select value={numRecord} onChange={onChangerNum}>
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                        <option value={30}>30</option>
+                        <option value={40}>40</option>
+                    </select>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />
                 </div>
             </div>

@@ -254,9 +254,9 @@ function ListExpCpDel() {
                             method={{
                                 toggleModalRes,
                                 toggleModalView,
-
                                 setSort,
                             }}
+                            role={user.role}
                         />
                     </div>
                     <div className={cx('wrap-paginate')}>

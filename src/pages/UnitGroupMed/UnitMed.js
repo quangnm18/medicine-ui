@@ -21,9 +21,10 @@ const cx = classNames.bind(style);
 function UnitMed() {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
 
-    const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState(1);
+    const [numRecord, setNumRecord] = useState(10);
+
     const [dataTb, setDataTb] = useState([]);
     const [sort, setSort] = useState({ sort_col: 1, sort_type: 'asc' });
 
@@ -84,6 +85,10 @@ function UnitMed() {
 
     const onChangeInputs = (e) => {
         setValueInputs({ ...valueInputs, [e.target.name]: e.target.value });
+    };
+
+    const onChangerNum = (e) => {
+        setNumRecord(e.target.value);
     };
 
     const handleSearch = () => {
@@ -242,7 +247,7 @@ function UnitMed() {
     useEffect(() => {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord, sort]);
+    }, [startRecord, sort, numRecord]);
 
     return (
         <div className={cx('content')}>
@@ -334,7 +339,13 @@ function UnitMed() {
                         method={{ toggleModalSoftDel, toggleModalView, setListSelected, setSort }}
                     />
                 </div>
-                <div>
+                <div className={cx('wrap-paginate')}>
+                    <select value={numRecord} onChange={onChangerNum}>
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                        <option value={30}>30</option>
+                        <option value={40}>40</option>
+                    </select>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />
                 </div>
             </div>

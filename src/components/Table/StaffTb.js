@@ -13,7 +13,7 @@ function StaffTb({ data, method, user }) {
     const tableStyle = {
         rows: {
             style: {
-                minHeight: '60px',
+                minHeight: '56px',
                 fontSize: '16px',
             },
         },
@@ -87,6 +87,9 @@ function StaffTb({ data, method, user }) {
                 customStyles={tableStyle}
                 highlightOnHover
                 onSort={handleSort}
+                fixedHeader
+                fixedHeaderScrollHeight="690px"
+                className={cx('wrapper-tb')}
             ></DataTable>
         </div>
     );

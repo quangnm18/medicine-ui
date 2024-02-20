@@ -70,7 +70,22 @@
 }
 
 .content-table {
-    min-height: 690px;
+    min-height: 700px;
+}
+
+.wrap-paginate {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+
+    select {
+        outline: none;
+        margin: 16px 16px 0 0;
+        color: #747070;
+        font-size: 16px;
+        padding: 7px;
+        border-color: #d3c9c9;
+    }
 }
 
 // .modal {
@@ -142,8 +157,4 @@
     input {
         outline: 2px solid #e4e4e4;
     }
-}
-
-//pagination
-.wrap-pagination {
 }

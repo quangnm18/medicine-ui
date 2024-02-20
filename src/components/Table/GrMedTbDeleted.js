@@ -6,14 +6,14 @@ import style from './Table.module.scss';
 
 const cx = classNames.bind(style);
 
-function GrMedTbDeleted({ data, method }) {
+function GrMedTbDeleted({ data, method, role }) {
     const handleSort = (obj, type, data) => {
         method.setSort({ sort_col: obj.col, sort_type: type });
     };
     const tableStyle = {
         rows: {
             style: {
-                minHeight: '60px',
+                minHeight: '56px',
                 fontSize: '16px',
             },
         },
@@ -62,15 +62,19 @@ function GrMedTbDeleted({ data, method }) {
             name: '',
             cell: (row) => (
                 <div>
-                    <button className={cx('btn')} onClick={() => method.toggleModalHardDel(row.id)}>
-                        <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
-                    </button>
+                    {role === 'ADMA' && (
+                        <button className={cx('btn')} onClick={() => method.toggleModalHardDel(row.id)}>
+                            <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
+                        </button>
+                    )}
                     <button className={cx('btn')} onClick={() => method.toggleModalView(row)}>
                         <FontAwesomeIcon icon={faPenToSquare} className={cx('icon-view')} />
                     </button>
-                    <button className={cx('btn')} onClick={() => method.toggleModalRes(row.id)}>
-                        <FontAwesomeIcon icon={faRotateLeft} className={cx('icon-eye')} />
-                    </button>
+                    {(role === 'ADMA' || role === 'ADM') && (
+                        <button className={cx('btn')} onClick={() => method.toggleModalRes(row.id)}>
+                            <FontAwesomeIcon icon={faRotateLeft} className={cx('icon-eye')} />
+                        </button>
+                    )}
                 </div>
             ),
             center: true,
@@ -84,6 +88,9 @@ function GrMedTbDeleted({ data, method }) {
                 customStyles={tableStyle}
                 onSort={handleSort}
                 highlightOnHover
+                fixedHeader
+                fixedHeaderScrollHeight="690px"
+                className={cx('wrapper-tb')}
             ></DataTable>
         </div>
     );

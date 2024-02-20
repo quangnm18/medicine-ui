@@ -22,9 +22,9 @@ function InvoiceListDel() {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
     const [sort, setSort] = useState({ sort_col: 1, sort_type: 'desc' });
 
-    const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState(1);
+    const [numRecord, setNumRecord] = useState(10);
 
     const [showModalRes, setShowModalRes] = useState(false);
     const [showModalHardDel, setShowModalHardDel] = useState(false);
@@ -69,6 +69,10 @@ function InvoiceListDel() {
 
     const onchangeBranch = (e) => {
         setSelectBranch(e.target.value);
+    };
+
+    const onChangerNum = (e) => {
+        setNumRecord(e.target.value);
     };
 
     const handleKeyPress = (e) => {
@@ -146,7 +150,7 @@ function InvoiceListDel() {
     useEffect(() => {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord, selectBranch, sort]);
+    }, [startRecord, selectBranch, sort, numRecord]);
 
     useEffect(() => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
@@ -195,9 +199,11 @@ function InvoiceListDel() {
                         <FontAwesomeIcon icon={faSearch} />
                     </button>
                     <div className={cx('btn-action', 'btnaction-listivsell')}>
-                        <button className={cx('btn-add')} onClick={() => routeChange('/sell/create')}>
-                            Lập hóa đơn
-                        </button>
+                        {/* {user.role === 'STFS' && (
+                            <button className={cx('btn-add')} onClick={() => routeChange('/sell/create')}>
+                                Lập hóa đơn
+                            </button>
+                        )} */}
                         <button className={cx('btn-add')} onClick={() => routeChange('/sell/list')}>
                             Trở về
                         </button>
@@ -262,7 +268,13 @@ function InvoiceListDel() {
                     />
                 </div>
 
-                <div>
+                <div className={cx('wrap-paginate')}>
+                    <select value={numRecord} onChange={onChangerNum}>
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                        <option value={30}>30</option>
+                        <option value={40}>40</option>
+                    </select>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />
                 </div>
             </div>

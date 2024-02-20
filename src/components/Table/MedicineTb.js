@@ -18,7 +18,7 @@ function MedicineTb({ data, method }) {
         rows: {
             style: {
                 fontSize: '16px',
-                minHeight: '52px',
+                minHeight: '56px',
             },
         },
         headCells: {
@@ -90,7 +90,8 @@ function MedicineTb({ data, method }) {
                 onSort={handleSort}
                 highlightOnHover
                 fixedHeader
-                fixedHeaderScrollHeight="600px"
+                fixedHeaderScrollHeight="580px"
+                className={cx('wrapper-tb')}
             ></DataTable>
         </div>
     );

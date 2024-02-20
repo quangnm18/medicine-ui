@@ -24,9 +24,10 @@ function ListIptCp() {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
     const [sort, setSort] = useState({ sort_col: 1, sort_type: 'desc' });
 
-    const numRecord = 10;
+    // const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState(1);
+    const [numRecord, setNumRecord] = useState(10);
 
     const [dataTb, setDataTb] = useState([]);
     const [dataBranch, setDataBranch] = useState([]);
@@ -51,6 +52,7 @@ function ListIptCp() {
     };
 
     const toggleModalView = (item) => {
+        console.log(item);
         setShowModalView(!showModalView);
         setIdSelected(item);
     };
@@ -67,6 +69,10 @@ function ListIptCp() {
 
     const onchangeBranch = (e) => {
         setSelectBranch(e.target.value);
+    };
+
+    const onChangerNum = (e) => {
+        setNumRecord(e.target.value);
     };
 
     const handleKeyPress = (e) => {
@@ -176,7 +182,7 @@ function ListIptCp() {
     useEffect(() => {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord, selectBranch, sort]);
+    }, [startRecord, selectBranch, sort, numRecord]);
 
     useEffect(() => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
@@ -233,12 +239,14 @@ function ListIptCp() {
                                 >
                                     Nhập tồn
                                 </button>
-                                <button
-                                    className={cx('btn-add', 'btn-delete')}
-                                    onClick={() => routeChange('/warehouse/importlist/deleted')}
-                                >
-                                    Đã xóa
-                                </button>
+                                {(user.role === 'ADM' || user.role === 'ADMA') && (
+                                    <button
+                                        className={cx('btn-add', 'btn-delete')}
+                                        onClick={() => routeChange('/warehouse/importlist/deleted')}
+                                    >
+                                        Đã xóa
+                                    </button>
+                                )}
                             </div>
                         </div>
                         <div className={cx('wrap-searchiptiv')}>
@@ -316,6 +324,12 @@ function ListIptCp() {
                         />
                     </div>
                     <div className={cx('wrap-paginate')}>
+                        <select value={numRecord} onChange={onChangerNum}>
+                            <option value={10}>10</option>
+                            <option value={20}>20</option>
+                            <option value={30}>30</option>
+                            <option value={40}>40</option>
+                        </select>
                         <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />
                     </div>
                 </div>

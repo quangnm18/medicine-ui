@@ -19,9 +19,12 @@ import 'react-toastify/dist/ReactToastify.css';
 const cx = classNames.bind(style);
 
 function SupplierDel() {
-    const numRecord = 10;
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
+
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState(1);
+    const [numRecord, setNumRecord] = useState(10);
+
     const [dataTb, setDataTb] = useState([]);
 
     const [values, setValues] = useState({
@@ -86,6 +89,7 @@ function SupplierDel() {
     const [showModalRes, setShowModalRes] = useState(false);
 
     const [idSelected, setIdSelected] = useState();
+    axios.defaults.withCredentials = true;
 
     const onChangeInputSup = (e) => {
         setValues({ ...values, [e.target.name]: e.target.value });
@@ -93,6 +97,10 @@ function SupplierDel() {
 
     const onChangeInputSearch = (e) => {
         setValuesSearch(e.target.value);
+    };
+
+    const onChangerNum = (e) => {
+        setNumRecord(e.target.value);
     };
 
     //toggle method
@@ -216,7 +224,7 @@ function SupplierDel() {
     useEffect(() => {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord, sort]);
+    }, [startRecord, sort, numRecord]);
 
     return (
         <div className={cx('content')}>
@@ -279,9 +287,16 @@ function SupplierDel() {
                     <SupDeletedTb
                         data={dataTb}
                         method={{ toggleModalHardDel, toggleModalView, toggleModalRes, setSort }}
+                        role={user.role}
                     />
                 </div>
-                <div className={cx('wrap-pagination')}>
+                <div className={cx('wrap-paginate')}>
+                    <select value={numRecord} onChange={onChangerNum}>
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                        <option value={30}>30</option>
+                        <option value={40}>40</option>
+                    </select>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />
                 </div>
             </div>

@@ -15,13 +15,9 @@ function HisIptDetailTb({ data, method }) {
         rows: {
             style: {
                 fontSize: '16px',
+                minHeight: '56px',
             },
         },
-        // cells: {
-        //     style: {
-        //         height: '80px',
-        //     },
-        // },
         headCells: {
             style: {
                 fontSize: '16px',
@@ -149,6 +145,10 @@ function HisIptDetailTb({ data, method }) {
                 customStyles={tableStyle}
                 highlightOnHover
                 onSort={handleSort}
+                fixedHeader
+                fixedHeaderScrollHeight="620px"
+                className={cx('wrapper-tb')}
+
                 // selectableRows
             ></DataTable>
         </div>

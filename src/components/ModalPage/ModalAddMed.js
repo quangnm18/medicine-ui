@@ -75,7 +75,7 @@ function ModalAddMed({
                                     <div className={cx('label', input.name === 'ten' && 'required')}>{input.label}</div>
                                     <input
                                         name={input.name}
-                                        value={dataValueInputs[input.name]}
+                                        value={dataValueInputs[input.name] ? dataValueInputs[input.name] : ''}
                                         placeholder={input.placeholder}
                                         onChange={methodOnchange}
                                         type={input.type}

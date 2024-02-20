@@ -15,9 +15,10 @@ const cx = classNames.bind(style);
 
 function HisSaleDetail() {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
-    const numRecord = 10;
+
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState(1);
+    const [numRecord, setNumRecord] = useState(10);
 
     const [dataTb, setDataTb] = useState([]);
     const [dataBranch, setDataBranch] = useState([]);
@@ -65,6 +66,10 @@ function HisSaleDetail() {
         setSelectGrMed(e.target.value);
     };
 
+    const onChangerNum = (e) => {
+        setNumRecord(e.target.value);
+    };
+
     const handleSearch = () => {
         loadData();
     };
@@ -79,16 +84,6 @@ function HisSaleDetail() {
         style: 'currency',
         currency: 'VND',
     });
-
-    //method handle
-    // const handleSoftDel = () => {
-    //     axios
-    //         .put(`http://localhost:8081/importlist/alldetail/imported/softdelete/${idSelected}`)
-    //         .then((res) => {
-    //             setShowModalSoftDel(false);
-    //         })
-    //         .catch((e) => console.log(e));
-    // };
 
     const handleChangePage = (e) => {
         setStartRecord(e.selected * numRecord);
@@ -128,7 +123,7 @@ function HisSaleDetail() {
     useEffect(() => {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord, selectBranch, selectGrMed, sort]);
+    }, [startRecord, selectBranch, selectGrMed, sort, numRecord]);
 
     useEffect(() => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
@@ -167,15 +162,19 @@ function HisSaleDetail() {
                             <FontAwesomeIcon icon={faSearch} />
                         </button>
                         <div className={cx('btn-action')}>
-                            <button className={cx('btn-add')} onClick={() => routeChange('/sell/create')}>
-                                Lập hóa đơn
-                            </button>
-                            <button
-                                className={cx('btn-add', 'btn-delete')}
-                                onClick={() => routeChange('/statistic/historySale/deleted')}
-                            >
-                                Đã xóa
-                            </button>
+                            {user.role === 'STFS' && (
+                                <button className={cx('btn-add')} onClick={() => routeChange('/sell/create')}>
+                                    Lập hóa đơn
+                                </button>
+                            )}
+                            {(user.role === 'ADMA' || user.role === 'ADM') && (
+                                <button
+                                    className={cx('btn-add', 'btn-delete')}
+                                    onClick={() => routeChange('/statistic/historySale/deleted')}
+                                >
+                                    Đã xóa
+                                </button>
+                            )}
                         </div>
                     </div>
 
@@ -264,7 +263,13 @@ function HisSaleDetail() {
                 <div className={cx('content-table')}>
                     <HisSaleDetailTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView, setSort }} />
                 </div>
-                <div>
+                <div className={cx('wrap-paginate')}>
+                    <select value={numRecord} onChange={onChangerNum}>
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                        <option value={30}>30</option>
+                        <option value={40}>40</option>
+                    </select>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />
                 </div>
             </div>

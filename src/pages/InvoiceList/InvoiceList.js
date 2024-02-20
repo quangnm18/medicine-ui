@@ -22,9 +22,9 @@ function InvoiceList() {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
     const [sort, setSort] = useState({ sort_col: 1, sort_type: 'desc' });
 
-    const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState(1);
+    const [numRecord, setNumRecord] = useState(10);
 
     const [showModalSoftDel, setShowModalSoftDel] = useState(false);
     const [showModalView, setShowModalView] = useState(false);
@@ -65,6 +65,10 @@ function InvoiceList() {
 
     const onchangeBranch = (e) => {
         setSelectBranch(e.target.value);
+    };
+
+    const onChangerNum = (e) => {
+        setNumRecord(e.target.value);
     };
 
     const handleKeyPress = (e) => {
@@ -126,7 +130,7 @@ function InvoiceList() {
     useEffect(() => {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord, selectBranch, sort]);
+    }, [startRecord, selectBranch, sort, numRecord]);
 
     useEffect(() => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
@@ -175,15 +179,19 @@ function InvoiceList() {
                         <FontAwesomeIcon icon={faSearch} />
                     </button>
                     <div className={cx('btn-action', 'btnaction-listivsell')}>
-                        <button className={cx('btn-add')} onClick={() => routeChange('/sell/create')}>
-                            Lập hóa đơn
-                        </button>
-                        <button
-                            className={cx('btn-add', 'btn-delete')}
-                            onClick={() => routeChange('/sell/list/deleted')}
-                        >
-                            Đã xóa
-                        </button>
+                        {user.role === 'STFS' && (
+                            <button className={cx('btn-add')} onClick={() => routeChange('/sell/create')}>
+                                Lập hóa đơn
+                            </button>
+                        )}
+                        {(user.role === 'ADMA' || user.role === 'ADM') && (
+                            <button
+                                className={cx('btn-add', 'btn-delete')}
+                                onClick={() => routeChange('/sell/list/deleted')}
+                            >
+                                Đã xóa
+                            </button>
+                        )}
                     </div>
                 </div>
                 <div className={cx('wrap-inputselect')}>
@@ -233,7 +241,13 @@ function InvoiceList() {
                     <InvoiceListTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView, setSort }} />
                 </div>
 
-                <div>
+                <div className={cx('wrap-paginate')}>
+                    <select value={numRecord} onChange={onChangerNum}>
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                        <option value={30}>30</option>
+                        <option value={40}>40</option>
+                    </select>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />
                 </div>
             </div>

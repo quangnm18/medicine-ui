@@ -112,11 +112,26 @@
 }
 
 .content-table {
-    min-height: 580px;
+    min-height: 586px;
 }
 
 .content-tableDel {
-    min-height: 628px;
+    min-height: 642px;
+}
+
+.wrap-paginate {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+
+    select {
+        outline: none;
+        margin: 16px 16px 0 0;
+        color: #8d8a8a;
+        font-size: 16px;
+        padding: 7px;
+        border-color: #d3c9c9;
+    }
 }
 //modal
 

@@ -3,9 +3,10 @@ import Modal from '~/components/Modal';
 import classNames from 'classnames/bind';
 import style from './ModalPage.module.scss';
 import { useState } from 'react';
-import * as XLSX from 'xlsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload } from '@fortawesome/free-solid-svg-icons';
+import download from 'downloadjs';
+import { notify } from '~/utils/toast';
 
 const cx = classNames.bind(style);
 
@@ -17,6 +18,7 @@ function ModalAddExcel({ methodToggle }) {
 
     const [optionSheet, setOptionSheet] = useState({ sheetPage: '', header: '' });
     const [stateImport, setStateImport] = useState(0);
+    const [validStatus, setValidStatus] = useState(false);
 
     const handleFile = (e) => {
         let fileType = [
@@ -40,6 +42,10 @@ function ModalAddExcel({ methodToggle }) {
         }
     };
 
+    console.log(process.env.REACT_APP_BASE_URL);
+    console.log(process.env.REACT_APP_INVOICE_URL);
+    console.log(process.env.REACT_APP_BASE_URL1);
+
     // const handleFilePreview = () => {
     //     if (excelFile !== null) {
     //         const workbook = XLSX.read(excelFile, { type: 'buffer' });
@@ -55,7 +61,7 @@ function ModalAddExcel({ methodToggle }) {
     };
 
     const getTemplate = () => {
-        let url = process.env.REACT_SERVER_INVOICE_URL + 'import/template?catalog=1';
+        let url = process.env.REACT_APP_INVOICE_URL + 'import/template?catalog=1';
         window.open(url);
     };
 
@@ -66,37 +72,50 @@ function ModalAddExcel({ methodToggle }) {
         formData.append('file', file);
         let path =
             stateImport === 0
-                ? `import/validate?sheetName=Sheet${optionSheet.sheetPage}&header=${optionSheet.header - 1}&catalog=1`
-                : `import/save?sheetName=Sheet${optionSheet.sheetPage}&header=${optionSheet.header - 1}&catalog=1`;
-        let url = 'http://localhost:5000/' + path;
+                ? `import/validate?sheetName=${optionSheet.sheetPage}&header=${optionSheet.header - 1}&catalog=1`
+                : `import/save?sheetName=${optionSheet.sheetPage}&header=${optionSheet.header - 1}&catalog=1`;
+        let url = process.env.REACT_APP_INVOICE_URL + path;
         try {
             const response = await fetch(url, {
                 method: 'POST',
                 body: formData,
             });
             const result = await response.json();
-            console.log('Success:', result);
+            console.log(result);
 
             if (stateImport === 0) {
-                // const response = await fetch(url, {
-                //     method: 'GET',
-                // });
-                // const result = await response.blob();
-                // var fileValid = window.URL.createObjectURL(result);
-                // window.location.assign(fileValid);
-                fetch(url, { mode: 'cors' })
-                    .then((res) => res.blob())
-                    .then((blob) => {
-                        // const file = new File([blob], 'validateMedicine');
-                        var fileValid = window.URL.createObjectURL(blob);
-                        window.location.assign(fileValid);
-                    });
-
+                if (!result.valid) {
+                    setValidStatus(true);
+                    setTypeError(
+                        'Có dòng không hợp lệ. Tải file validate về để xem lỗi. Chọn "Nhập khẩu" nếu muốn tiếp tục nhập những dòng hợp lệ.',
+                    );
+                } else {
+                    setValidStatus(false);
+                }
                 setStateImport(1);
+            } else {
+                notify(`Nhập khẩu thành công ${result.valid}/${result.total} dòng`, 'success');
+                methodToggle();
             }
         } catch (error) {
             console.error('Error:', error);
         }
+    };
+
+    const downloadFileValid = async (e) => {
+        e.preventDefault();
+        var fileInput = document.getElementById('file-upload');
+        const file = fileInput.files[0];
+        const formData = new FormData();
+        formData.append('file', file);
+        let path = `import/download/validate?sheetName=Sheet${optionSheet.sheetPage}&header=${
+            optionSheet.header - 1
+        }&catalog=1`;
+        let url = process.env.REACT_APP_INVOICE_URL + path;
+        let response = await fetch(url, { method: 'POST', body: formData });
+        const result = await response.blob();
+
+        download(result);
     };
 
     return (
@@ -107,7 +126,7 @@ function ModalAddExcel({ methodToggle }) {
                 <div className={cx('custom-form')}>
                     <div className={cx('direct-action')}>
                         <label htmlFor="file-upload" className={cx('btn-excel', 'btn-label')}>
-                            Upload File
+                            Tải lên
                         </label>
                         <form encType="multipart/form-data">
                             <input
@@ -119,7 +138,7 @@ function ModalAddExcel({ methodToggle }) {
                                 onChange={handleFile}
                             />
                             <button
-                                className={cx('btn-modal')}
+                                className={cx('btn-excel', 'btn-import')}
                                 type="button"
                                 onClick={async () => {
                                     await test();
@@ -127,6 +146,16 @@ function ModalAddExcel({ methodToggle }) {
                             >
                                 {stateImport === 0 ? 'Kiểm tra' : 'Nhập khẩu'}
                             </button>
+                            {validStatus && (
+                                <button
+                                    className={cx('btn-excel', 'btn-valid')}
+                                    onClick={async (e) => {
+                                        await downloadFileValid(e);
+                                    }}
+                                >
+                                    Tải File Validate
+                                </button>
+                            )}
                         </form>
 
                         <div>
@@ -138,8 +167,8 @@ function ModalAddExcel({ methodToggle }) {
                             </button> */}
                         </div>
                     </div>
-                    {typeErrorr && <div className={cx('alert-err')}>{typeErrorr}</div>}
                 </div>
+                {typeErrorr && <div className={cx('alert-err')}>{typeErrorr}</div>}
 
                 <div className={cx('wrap-option')}>
                     <div className={cx('wrap-input')}>
@@ -192,14 +221,6 @@ function ModalAddExcel({ methodToggle }) {
                 </div>
 
                 <div className={cx('modalEx-action')}>
-                    <button
-                        className={cx('btn-modal')}
-                        onClick={async () => {
-                            await test();
-                        }}
-                    >
-                        Nhập
-                    </button>
                     <button className={cx('btn-modal')} onClick={methodToggle}>
                         Trở lại
                     </button>

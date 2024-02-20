@@ -88,6 +88,16 @@ function Sidebar() {
                                                             { active2: nav.isActive },
                                                             'sub-hidden',
                                                         );
+                                                    } else if (
+                                                        item.id === 2 &&
+                                                        subItem.title === 'Lập hóa đơn' &&
+                                                        user.role !== 'STFS'
+                                                    ) {
+                                                        return cx(
+                                                            'subMenu-item',
+                                                            { active2: nav.isActive },
+                                                            'sub-hidden',
+                                                        );
                                                     } else {
                                                         return cx('subMenu-item', { active2: nav.isActive });
                                                     }

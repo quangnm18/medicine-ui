@@ -34,6 +34,8 @@ function SellInvoiceCreate() {
     const [modalSave, setModalSave] = useState(false);
     const [modalSaveExport, setModalSaveExport] = useState(false);
 
+    axios.defaults.withCredentials = true;
+
     //method toggle
     const toggleModalSave = () => {
         setModalSave(!modalSave);
@@ -58,25 +60,28 @@ function SellInvoiceCreate() {
 
     const handleSelectedMedicine = (medicine) => {
         console.log(medicine);
-        setNameSearchInput('');
-
-        setDataInvoice([
-            ...dataInvoice,
-            {
-                med_id: medicine.med_id,
-                ten_duoc: medicine.ten,
-                sl_dvl: '',
-                sl_dvn: '',
-                dvl: medicine.dong_goi,
-                dvqd_nn: medicine.soluong_nho,
-                sl_tong: '',
-                gia_ban: medicine.giaban_daqd,
-                thanh_tien: '',
-                donvinho: medicine.donvi_nho,
-                so_lo_hang: medicine.so_lo,
-                ipt_detail_id: medicine.id,
-            },
-        ]);
+        if (medicine.sl_tong - medicine.so_luong_ban > 0) {
+            setDataInvoice([
+                ...dataInvoice,
+                {
+                    med_id: medicine.med_id,
+                    ten_duoc: medicine.ten,
+                    sl_dvl: '',
+                    sl_dvn: '',
+                    dvl: medicine.dong_goi,
+                    dvqd_nn: medicine.soluong_nho,
+                    sl_tong: '',
+                    gia_ban: medicine.giaban_daqd,
+                    thanh_tien: '',
+                    donvinho: medicine.donvi_nho,
+                    so_lo_hang: medicine.so_lo,
+                    ipt_detail_id: medicine.id,
+                },
+            ]);
+            setNameSearchInput('');
+        } else {
+            toast.notify('Không còn thuốc trong kho', 'error');
+        }
     };
 
     const onchangeFormatInput = (e, index, prop) => {
@@ -131,11 +136,12 @@ function SellInvoiceCreate() {
                                 })
                                 .then((res) => {
                                     setModalSave(false);
-                                    setDataInvoice([]);
+
                                     if (res.data === 'fail') {
                                         toast.notify('Bạn không có quyền thao tác', 'error');
                                     } else {
                                         toast.notify('Tạo thành công', 'success');
+                                        setDataInvoice([]);
                                     }
                                 })
                                 .catch((e) => console.log(e));

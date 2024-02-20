@@ -14,9 +14,9 @@ function ModalViewIptIvDetail({ label, data, methodToggle, methodHandle }) {
         currency: 'VND',
     });
     const date = new Date(data.createdDate);
+    console.log(data.invoice_code);
 
     const [dataDetails, setDataDetails] = useState([]);
-    console.log(dataDetails);
     const tableStyle = {
         // table: {
         //     style: {
@@ -87,7 +87,7 @@ function ModalViewIptIvDetail({ label, data, methodToggle, methodHandle }) {
 
         {
             name: 'Tổng giá trị',
-            selector: (row) => VND.format(row.gianhap_daqd),
+            selector: (row) => VND.format(row.thanh_tien),
             sortable: true,
             width: '200px',
             center: true,
@@ -115,7 +115,10 @@ function ModalViewIptIvDetail({ label, data, methodToggle, methodHandle }) {
                     <div>Mã hóa đơn : {data.invoice_code}</div>
                     <div>Nhân viên : {data.Name}</div>
                     <div>Ngày tạo : {date.toLocaleString()}</div>
-                    <div>Tổng giá trị : {VND.format(data.totalPrice)}</div>
+                    <div>Tổng giá trị : {VND.format(data.giatri_nhap)}</div>
+                    <div>Tổng CK : {VND.format(data.tong_ck)}</div>
+                    <div>Tổng VAT : {VND.format(data.tong_vat)}</div>
+                    <div>Thành tiền : {VND.format(data.thanh_tien)}</div>
                 </div>
                 <div className={cx('table-details')}>
                     <DataTable data={dataDetails} columns={columns} customStyles={tableStyle} />

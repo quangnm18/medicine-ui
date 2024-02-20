@@ -72,7 +72,22 @@
 }
 
 .content-table {
-    min-height: 580px;
+    min-height: 700px;
+}
+
+.wrap-paginate {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+
+    select {
+        outline: none;
+        margin: 16px 16px 0 0;
+        color: #747070;
+        font-size: 16px;
+        padding: 7px;
+        border-color: #d3c9c9;
+    }
 }
 
 //Modal view

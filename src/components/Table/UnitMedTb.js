@@ -17,7 +17,7 @@ function UnitMedTb({ data, method }) {
     const tableStyle = {
         rows: {
             style: {
-                minHeight: '60px',
+                minHeight: '56px',
                 fontSize: '16px',
             },
         },
@@ -93,6 +93,9 @@ function UnitMedTb({ data, method }) {
                 onSelectedRowsChange={handleSelectRow}
                 onSort={handleSort}
                 highlightOnHover
+                fixedHeader
+                fixedHeaderScrollHeight="690px"
+                className={cx('wrapper-tb')}
             ></DataTable>
         </div>
     );

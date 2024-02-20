@@ -18,9 +18,9 @@ const cx = classNames.bind(style);
 function Staff() {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
 
-    const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState();
+    const [numRecord, setNumRecord] = useState(10);
 
     const [dataTb, setDataTb] = useState([]);
     const [valuesSearch, setValuesSearch] = useState('');
@@ -149,6 +149,10 @@ function Staff() {
         } else {
             setValues({ ...values, [e.target.name]: e.target.value });
         }
+    };
+
+    const onChangerNum = (e) => {
+        setNumRecord(e.target.value);
     };
 
     const notify = (data, type) => {
@@ -298,7 +302,7 @@ function Staff() {
     useEffect(() => {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord, sort]);
+    }, [startRecord, sort, numRecord]);
     return (
         <div className={cx('content')}>
             <div className={cx('header-content')}>
@@ -317,11 +321,19 @@ function Staff() {
                                 <FontAwesomeIcon icon={faSearch} className={cx('search-icon')} />
                             </button>
                         </div>
-                        {user.role === 'ADM' && (
-                            <button className={cx('btn-addstaff')} onClick={toggleModalAdd}>
-                                Thêm thành viên
-                            </button>
-                        )}
+
+                        <div>
+                            {user.role === 'ADM' && (
+                                <button className={cx('btn-addstaff')} onClick={toggleModalAdd}>
+                                    Thêm thành viên
+                                </button>
+                            )}
+                            {/* {user.role === 'ADMA' && (
+                                <button className={cx('btn-addstaff')} onClick={toggleModalAdd}>
+                                    Đã xóa
+                                </button>
+                            )} */}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -362,7 +374,13 @@ function Staff() {
                 <div className={cx('content-table')}>
                     <StaffTb data={dataTb} method={{ toggleModalView, toggleModalSoftDel, setSort }} user={user} />
                 </div>
-                <div className={cx('wrap-pagination')}>
+                <div className={cx('wrap-paginate')}>
+                    <select value={numRecord} onChange={onChangerNum}>
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                        <option value={30}>30</option>
+                        <option value={40}>40</option>
+                    </select>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />
                 </div>
             </div>

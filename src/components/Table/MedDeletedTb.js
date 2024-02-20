@@ -7,7 +7,7 @@ import { memo } from 'react';
 
 const cx = classNames.bind(style);
 
-function MedDeletedTb({ data, method }) {
+function MedDeletedTb({ data, method, role }) {
     const handleSort = (obj, type, data) => {
         method.setSort({ sort_col: obj.col, sort_type: type });
     };
@@ -20,7 +20,7 @@ function MedDeletedTb({ data, method }) {
         headCells: {
             style: {
                 fontSize: '16px',
-                minHeight: '52px',
+                minHeight: '56px',
             },
         },
     };
@@ -53,15 +53,19 @@ function MedDeletedTb({ data, method }) {
             name: '',
             cell: (row) => (
                 <div className={cx('action-item')}>
-                    <button className={cx('btn')} onClick={() => method.toggleModalHardDelete(row.id)}>
-                        <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
-                    </button>
+                    {role === 'ADMA' && (
+                        <button className={cx('btn')} onClick={() => method.toggleModalHardDelete(row.id)}>
+                            <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
+                        </button>
+                    )}
                     <button className={cx('btn')} onClick={() => method.toggleModalView(row)}>
                         <FontAwesomeIcon icon={faPenToSquare} className={cx('icon-view')} />
                     </button>
-                    <button className={cx('btn')} onClick={() => method.toggleModalRes(row.id)}>
-                        <FontAwesomeIcon icon={faRotateLeft} className={cx('icon-eye')} />
-                    </button>
+                    {(role === 'ADMA' || role === 'ADM') && (
+                        <button className={cx('btn')} onClick={() => method.toggleModalRes(row.id)}>
+                            <FontAwesomeIcon icon={faRotateLeft} className={cx('icon-eye')} />
+                        </button>
+                    )}
                 </div>
             ),
             width: '180px',
@@ -73,10 +77,12 @@ function MedDeletedTb({ data, method }) {
                 columns={columns}
                 data={data}
                 customStyles={tableStyle}
-                fixedHeader={true}
                 selectableRows
                 highlightOnHover
                 onSort={handleSort}
+                fixedHeader
+                fixedHeaderScrollHeight="620px"
+                className={cx('wrapper-tb')}
             ></DataTable>
         </div>
     );

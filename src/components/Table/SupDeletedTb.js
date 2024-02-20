@@ -7,14 +7,14 @@ import { memo } from 'react';
 
 const cx = classNames.bind(style);
 
-function SupDeletedTb({ data, method }) {
+function SupDeletedTb({ data, method, role }) {
     const handleSort = (obj, type, data) => {
         method.setSort({ sort_col: obj.col, sort_type: type });
     };
     const tableStyle = {
         rows: {
             style: {
-                minHeight: '60px',
+                minHeight: '56px',
                 fontSize: '16px',
             },
         },
@@ -51,26 +51,24 @@ function SupDeletedTb({ data, method }) {
             name: 'Người xóa',
             selector: (row) => row.Name,
         },
+
         {
             name: '',
             cell: (row) => (
                 <div className={cx('action-item')}>
-                    <button className={cx('btn')} onClick={() => method.toggleModalHardDel(row.ID)}>
-                        <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
-                    </button>
+                    {role === 'ADMA' && (
+                        <button className={cx('btn')} onClick={() => method.toggleModalHardDel(row.ID)}>
+                            <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
+                        </button>
+                    )}
                     <button className={cx('btn')} onClick={() => method.toggleModalView(row.ID)}>
                         <FontAwesomeIcon icon={faPenToSquare} className={cx('icon-view')} />
                     </button>
-                </div>
-            ),
-        },
-        {
-            name: '',
-            cell: (row) => (
-                <div className={cx('action-item')}>
-                    <button className={cx('btn')} onClick={() => method.toggleModalRes(row.ID)}>
-                        <FontAwesomeIcon icon={faRotateLeft} className={cx('icon-view')} />
-                    </button>
+                    {(role === 'ADMA' || role === 'ADM') && (
+                        <button className={cx('btn')} onClick={() => method.toggleModalRes(row.ID)}>
+                            <FontAwesomeIcon icon={faRotateLeft} className={cx('icon-eye')} />
+                        </button>
+                    )}
                 </div>
             ),
         },
@@ -81,9 +79,11 @@ function SupDeletedTb({ data, method }) {
                 columns={columns}
                 data={data}
                 customStyles={tableStyle}
-                fixedHeader={true}
                 highlightOnHover
                 onSort={handleSort}
+                fixedHeader
+                fixedHeaderScrollHeight="690px"
+                className={cx('wrapper-tb')}
             ></DataTable>
         </div>
     );

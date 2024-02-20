@@ -22,9 +22,9 @@ const cx = classNames.bind(style);
 function Supplier() {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
 
-    const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState(1);
+    const [numRecord, setNumRecord] = useState(10);
 
     const [dataTb, setDataTb] = useState([]);
 
@@ -102,6 +102,10 @@ function Supplier() {
 
     const onChangeInputSearch = (e) => {
         setValuesSearch(e.target.value);
+    };
+
+    const onChangerNum = (e) => {
+        setNumRecord(e.target.value);
     };
 
     const handleSearch = () => {
@@ -248,7 +252,7 @@ function Supplier() {
     useEffect(() => {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord, sort]);
+    }, [startRecord, sort, numRecord]);
 
     return (
         <div className={cx('content')}>
@@ -357,7 +361,13 @@ function Supplier() {
                         role={user.role}
                     />
                 </div>
-                <div className={cx('wrap-pagination')}>
+                <div className={cx('wrap-paginate')}>
+                    <select value={numRecord} onChange={onChangerNum}>
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                        <option value={30}>30</option>
+                        <option value={40}>40</option>
+                    </select>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />
                 </div>
             </div>

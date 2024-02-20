@@ -20,9 +20,9 @@ function Branch() {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
     const [sort, setSort] = useState({ sort_col: 16, sort_type: 'desc' });
 
-    const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState();
+    const [numRecord, setNumRecord] = useState(10);
 
     const [dataTb, setDataTb] = useState([]);
     const [valuesSearch, setValuesSearch] = useState('');
@@ -95,24 +95,7 @@ function Branch() {
             type: 'text',
             placeholder: 'Đống Đa, Hà Nội,...',
         },
-        // {
-        //     id: 3,
-        //     label: 'Mã chi nhánh',
-        //     name: 'branch_code',
-        //     type: 'text',
-        //     placeholder: 'CS1',
-        // },
     ];
-
-    const getBirth = (data) => {
-        const date = new Date(data);
-        const year = date.getFullYear();
-        const month = date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1;
-        const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
-
-        const dateFormat = year + '-' + month + '-' + day;
-        return dateFormat;
-    };
 
     const onChangeInputUser = (e) => {
         if (e.target.name === 'Role') {
@@ -124,13 +107,16 @@ function Branch() {
         }
     };
 
+    const onChangerNum = (e) => {
+        setNumRecord(e.target.value);
+    };
+
     const toggleModalHardDel = (id) => {
         setShowModalHardDel(!showModalHardDel);
         setIdSelected(id);
     };
 
     const toggleModalView = (data) => {
-        console.log(data);
         setShowModalView(!showModalView);
         setIdSelected(data);
         setValues({
@@ -159,7 +145,7 @@ function Branch() {
             .then((res1) => {
                 const newId = res1.data[0].max_id + 1;
                 axios
-                    .post(`${baseUrl}branch/create`, { ...values, branch_code: `CS${newId}` })
+                    .post(`${baseUrl}branch/create`, { ...values, branch_code: `CS${newId}`, newId: newId })
                     .then((res) => {
                         setShowModalAdd(false);
                         loadData();
@@ -190,10 +176,10 @@ function Branch() {
             .catch((e) => console.log(e));
     };
 
-    const handleDelete = () => {
+    const handleSoftDelete = () => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .delete(`${baseUrl}branch/delete/${idSelected}`)
+            .put(`${baseUrl}branch/softdelete/${idSelected}`)
             .then((res) => {
                 setShowModalHardDel(false);
                 loadData();
@@ -244,7 +230,7 @@ function Branch() {
     useEffect(() => {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord, sort]);
+    }, [startRecord, sort, numRecord]);
     return (
         <div className={cx('content')}>
             <div className={cx('header-content')}>
@@ -274,7 +260,7 @@ function Branch() {
                 <ModalAll1
                     label={'Bạn có muốn xóa vĩnh viễn?'}
                     methodToggle={toggleModalHardDel}
-                    methodHandle={handleDelete}
+                    methodHandle={handleSoftDelete}
                     data={idSelected}
                 />
             )}
@@ -306,7 +292,13 @@ function Branch() {
                 <div className={cx('content-table')}>
                     <BranchListTb data={dataTb} method={{ toggleModalView, toggleModalHardDel, setSort }} user={user} />
                 </div>
-                <div className={cx('wrap-pagination')}>
+                <div className={cx('wrap-paginate')}>
+                    <select value={numRecord} onChange={onChangerNum}>
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                        <option value={30}>30</option>
+                        <option value={40}>40</option>
+                    </select>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />
                 </div>
             </div>

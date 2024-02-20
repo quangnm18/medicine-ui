@@ -6,7 +6,7 @@ import style from './Table.module.scss';
 
 const cx = classNames.bind(style);
 
-function HisSaleDetailTbDel({ data, method }) {
+function HisSaleDetailTbDel({ data, method, role }) {
     const handleSort = (obj, type, data) => {
         method.setSort({ sort_col: obj.col, sort_type: type });
     };
@@ -14,6 +14,7 @@ function HisSaleDetailTbDel({ data, method }) {
         rows: {
             style: {
                 fontSize: '16px',
+                minHeight: '56px',
             },
         },
         headCells: {
@@ -83,9 +84,11 @@ function HisSaleDetailTbDel({ data, method }) {
             name: '#',
             cell: (row) => (
                 <div>
-                    <button className={cx('btn')} onClick={() => method.toggleModalSoftDel(row.id)}>
-                        <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
-                    </button>
+                    {role === 'ADMA' && (
+                        <button className={cx('btn')} onClick={() => method.toggleModalHardDel(row.id)}>
+                            <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
+                        </button>
+                    )}
                     <button className={cx('btn')} onClick={() => method.toggleModalView(row)}>
                         <FontAwesomeIcon icon={faEye} className={cx('icon-view', 'icon-eye')} />
                     </button>
@@ -102,6 +105,9 @@ function HisSaleDetailTbDel({ data, method }) {
                 customStyles={tableStyle}
                 highlightOnHover
                 onSort={handleSort}
+                fixedHeader
+                fixedHeaderScrollHeight="620px"
+                className={cx('wrapper-tb')}
             ></DataTable>
         </div>
     );

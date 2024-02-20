@@ -15,6 +15,7 @@ function HisSaleDetailTb({ data, method }) {
         rows: {
             style: {
                 fontSize: '16px',
+                minHeight: '56px',
             },
         },
         headCells: {
@@ -111,6 +112,9 @@ function HisSaleDetailTb({ data, method }) {
                 customStyles={tableStyle}
                 highlightOnHover
                 onSort={handleSort}
+                fixedHeader
+                fixedHeaderScrollHeight="620px"
+                className={cx('wrapper-tb')}
             ></DataTable>
         </div>
     );

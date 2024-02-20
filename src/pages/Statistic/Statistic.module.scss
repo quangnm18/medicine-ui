@@ -46,7 +46,9 @@
 }
 
 .btn-action {
-    margin-left: 240px;
+    flex: 1;
+    text-align: end;
+    margin-right: 36px;
 }
 
 .btn-add,
@@ -106,14 +108,6 @@
     justify-content: space-between;
 }
 
-.content-table {
-    margin-left: 28px;
-
-    select {
-        outline: none;
-    }
-}
-
 //modalView
 .wrap-modalview {
     width: 500px;
@@ -164,8 +158,25 @@
 
 //main content
 .main-content {
+    padding-top: 6px;
     background-color: var(--white);
 }
 .content-table {
-    height: 570px;
+    margin-left: 14px;
+    height: 626px;
+}
+
+.wrap-paginate {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+
+    select {
+        outline: none;
+        margin: 16px 16px 0 0;
+        color: #747070;
+        font-size: 16px;
+        padding: 7px;
+        border-color: #d3c9c9;
+    }
 }

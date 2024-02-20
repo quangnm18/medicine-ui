@@ -22,9 +22,9 @@ function HisIptDetailDel() {
     const [selectBranch, setSelectBranch] = useState(undefined);
     const [selectGrMed, setSelectGrMed] = useState();
 
-    const numRecord = 10;
     const [startRecord, setStartRecord] = useState(0);
     const [pageCount, setPageCount] = useState(1);
+    const [numRecord, setNumRecord] = useState(10);
 
     const [dataTb, setDataTb] = useState([]);
     const [dataBranch, setDataBranch] = useState([]);
@@ -76,6 +76,10 @@ function HisIptDetailDel() {
 
     const handleChangePage = (e) => {
         setStartRecord(e.selected * numRecord);
+    };
+
+    const onChangerNum = (e) => {
+        setNumRecord(e.target.value);
     };
 
     const handleSearch = () => {
@@ -162,7 +166,7 @@ function HisIptDetailDel() {
     useEffect(() => {
         loadData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startRecord, selectBranch, selectGrMed, sort]);
+    }, [startRecord, selectBranch, selectGrMed, sort, numRecord]);
 
     useEffect(() => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
@@ -201,9 +205,14 @@ function HisIptDetailDel() {
                             <FontAwesomeIcon icon={faSearch} />
                         </button>
                         <div className={cx('btn-action')}>
-                            <button className={cx('btn-add')} onClick={() => routeChange('/warehouse/importcreate')}>
-                                Nhập tồn
-                            </button>
+                            {(user.role === 'ADM' || user.role === 'STFW') && (
+                                <button
+                                    className={cx('btn-add')}
+                                    onClick={() => routeChange('/warehouse/importcreate')}
+                                >
+                                    Nhập tồn
+                                </button>
+                            )}
                             <button className={cx('btn-add')} onClick={() => routeChange('/statistic/historyImport')}>
                                 Trở lại
                             </button>
@@ -349,10 +358,17 @@ function HisIptDetailDel() {
                     <HisIptDetailTbDel
                         data={dataTb}
                         method={{ toggleModalRes, toggleModalHardDel, toggleModalView, setSort }}
+                        role={user.role}
                     />
                 </div>
 
-                <div>
+                <div className={cx('wrap-paginate')}>
+                    <select value={numRecord} onChange={onChangerNum}>
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                        <option value={30}>30</option>
+                        <option value={40}>40</option>
+                    </select>
                     <Pagination pageCount={pageCount} methodOnchange={handleChangePage} />
                 </div>
             </div>

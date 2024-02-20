@@ -15,6 +15,7 @@ function InvoiceListTb({ data, method }) {
         rows: {
             style: {
                 fontSize: '16px',
+                minHeight: '56px',
             },
         },
         headCells: {
@@ -90,6 +91,9 @@ function InvoiceListTb({ data, method }) {
                 customStyles={tableStyle}
                 highlightOnHover
                 onSort={handleSort}
+                fixedHeader
+                fixedHeaderScrollHeight="580px"
+                className={cx('wrapper-tb')}
             ></DataTable>
         </div>
     );

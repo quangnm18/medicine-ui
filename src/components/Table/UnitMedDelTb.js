@@ -10,7 +10,7 @@ function UnitMedDelTb({ data, method, role }) {
     const tableStyle = {
         rows: {
             style: {
-                minHeight: '60px',
+                minHeight: '56px',
                 fontSize: '16px',
             },
         },
@@ -78,7 +78,7 @@ function UnitMedDelTb({ data, method, role }) {
             name: '',
             cell: (row) => (
                 <div>
-                    {(role === 'ADM' || role === 'ADMA') && (
+                    {role === 'ADMA' && (
                         <button className={cx('btn')} onClick={() => method.toggleModalHardDel(row.id)}>
                             <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
                         </button>
@@ -103,6 +103,9 @@ function UnitMedDelTb({ data, method, role }) {
                 customStyles={tableStyle}
                 onSort={handleSort}
                 highlightOnHover
+                fixedHeader
+                fixedHeaderScrollHeight="690px"
+                className={cx('wrapper-tb')}
             ></DataTable>
         </div>
     );

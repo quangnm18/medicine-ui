@@ -6,7 +6,7 @@ import style from './Table.module.scss';
 
 const cx = classNames.bind(style);
 
-function ExpCpListTbDel({ data, method }) {
+function ExpCpListTbDel({ data, method, role }) {
     const handleSort = (obj, type, data) => {
         method.setSort({ sort_col: obj.col, sort_type: type });
     };
@@ -85,15 +85,19 @@ function ExpCpListTbDel({ data, method }) {
             name: '#',
             cell: (row) => (
                 <div>
-                    {/* <button className={cx('btn')} onClick={() => method.toggleModalHardDel(row.invoice_code)}>
-                        <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
-                    </button> */}
+                    {role === 'ADMA' && (
+                        <button className={cx('btn')} onClick={() => method.toggleModalHardDel(row.invoice_code)}>
+                            <FontAwesomeIcon icon={faTrashCan} className={cx('icon-delete')} />
+                        </button>
+                    )}
                     <button className={cx('btn')} onClick={() => method.toggleModalView(row)}>
                         <FontAwesomeIcon icon={faEye} className={cx('icon-view', 'icon-eye')} />
                     </button>
-                    <button className={cx('btn')} onClick={() => method.toggleModalRes(row.invoice_code)}>
-                        <FontAwesomeIcon icon={faRotateBack} className={cx('icon-res', 'icon-view')} />
-                    </button>
+                    {(role === 'ADMA' || role === 'ADM') && (
+                        <button className={cx('btn')} onClick={() => method.toggleModalRes(row.invoice_code)}>
+                            <FontAwesomeIcon icon={faRotateBack} className={cx('icon-res', 'icon-view')} />
+                        </button>
+                    )}
                 </div>
             ),
             width: '140px',

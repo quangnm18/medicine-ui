@@ -60,7 +60,6 @@ function Home() {
             .then((res) => {
                 let arr_ban = res.data[1];
                 let arr_nhap = res.data[2];
-                console.log(arr_nhap);
 
                 const ban_quy_1 = arr_ban.reduce((total, current) => {
                     if (
@@ -134,6 +133,262 @@ function Home() {
                     }
                 }, 0);
 
+                const ban_thang_1 = arr_ban.reduce((total, current) => {
+                    if (
+                        new Date(`${year}-01-01`) <= new Date(current.createdAt) &&
+                        new Date(current.createdAt).getTime() <= new Date(`${year}-01-31`)
+                    ) {
+                        return total + current.thanh_tien_ban;
+                    } else return total + 0;
+                }, 0);
+
+                const ban_thang_2 = arr_ban.reduce((total, current) => {
+                    if (
+                        year % 4 === 0 &&
+                        new Date(`${year}-02-01`) <= new Date(current.createdAt) &&
+                        new Date(current.createdAt).getTime() <= new Date(`${year}-02-29`)
+                    ) {
+                        return current.thanh_tien_ban ? total + current.thanh_tien_ban : total + 0;
+                    } else if (
+                        year % 4 !== 0 &&
+                        new Date(`${year}-02-01`) <= new Date(current.createdAt) &&
+                        new Date(current.createdAt).getTime() <= new Date(`${year}-02-28`)
+                    ) {
+                        return current.thanh_tien_ban ? total + current.thanh_tien_ban : total + 0;
+                    } else return total + 0;
+                }, 0);
+
+                const ban_thang_3 = arr_ban.reduce((total, current) => {
+                    if (
+                        new Date(`${year}-03-01`) <= new Date(current.createdAt) &&
+                        new Date(current.createdAt).getTime() <= new Date(`${year}-03-31`)
+                    ) {
+                        return current.thanh_tien_ban ? total + current.thanh_tien_ban : total + 0;
+                    } else return total + 0;
+                }, 0);
+
+                const ban_thang_4 = arr_ban.reduce((total, current) => {
+                    if (
+                        new Date(`${year}-04-01`) <= new Date(current.createdAt) &&
+                        new Date(current.createdAt).getTime() <= new Date(`${year}-04-30`)
+                    ) {
+                        return current.thanh_tien_ban ? total + current.thanh_tien_ban : total + 0;
+                    } else return total + 0;
+                }, 0);
+
+                const ban_thang_5 = arr_ban.reduce((total, current) => {
+                    if (
+                        new Date(`${year}-05-01`) <= new Date(current.createdAt) &&
+                        new Date(current.createdAt).getTime() <= new Date(`${year}-05-31`)
+                    ) {
+                        return current.thanh_tien_ban ? total + current.thanh_tien_ban : total + 0;
+                    } else return total + 0;
+                }, 0);
+
+                const ban_thang_6 = arr_ban.reduce((total, current) => {
+                    if (
+                        new Date(`${year}-06-01`) <= new Date(current.createdAt) &&
+                        new Date(current.createdAt).getTime() <= new Date(`${year}-06-30`)
+                    ) {
+                        return current.thanh_tien_ban ? total + current.thanh_tien_ban : total + 0;
+                    } else return total + 0;
+                }, 0);
+
+                const ban_thang_7 = arr_ban.reduce((total, current) => {
+                    if (
+                        new Date(`${year}-07-01`) <= new Date(current.createdAt) &&
+                        new Date(current.createdAt).getTime() <= new Date(`${year}-07-31`)
+                    ) {
+                        return current.thanh_tien_ban ? total + current.thanh_tien_ban : total + 0;
+                    } else return total + 0;
+                }, 0);
+
+                const ban_thang_8 = arr_ban.reduce((total, current) => {
+                    if (
+                        new Date(`${year}-08-01`) <= new Date(current.createdAt) &&
+                        new Date(current.createdAt).getTime() <= new Date(`${year}-08-31`)
+                    ) {
+                        return current.thanh_tien_ban ? total + current.thanh_tien_ban : total + 0;
+                    } else return total + 0;
+                }, 0);
+
+                const ban_thang_9 = arr_ban.reduce((total, current) => {
+                    if (
+                        new Date(`${year}-09-01`) <= new Date(current.createdAt) &&
+                        new Date(current.createdAt).getTime() <= new Date(`${year}-09-30`)
+                    ) {
+                        return current.thanh_tien_ban ? total + current.thanh_tien_ban : total + 0;
+                    } else return total + 0;
+                }, 0);
+
+                const ban_thang_10 = arr_ban.reduce((total, current) => {
+                    if (
+                        new Date(`${year}-10-01`) <= new Date(current.createdAt) &&
+                        new Date(current.createdAt).getTime() <= new Date(`${year}-10-31`)
+                    ) {
+                        return current.thanh_tien_ban ? total + current.thanh_tien_ban : total + 0;
+                    } else return total + 0;
+                }, 0);
+
+                const ban_thang_11 = arr_ban.reduce((total, current) => {
+                    if (
+                        new Date(`${year}-11-01`) <= new Date(current.createdAt) &&
+                        new Date(current.createdAt).getTime() <= new Date(`${year}-11-30`)
+                    ) {
+                        return current.thanh_tien_ban ? total + current.thanh_tien_ban : total + 0;
+                    } else return total + 0;
+                }, 0);
+
+                const ban_thang_12 = arr_ban.reduce((total, current) => {
+                    if (
+                        new Date(`${year}-12-01`) <= new Date(current.createdAt) &&
+                        new Date(current.createdAt).getTime() <= new Date(`${year}-12-31`)
+                    ) {
+                        return current.thanh_tien_ban ? total + current.thanh_tien_ban : total + 0;
+                    } else return total + 0;
+                }, 0);
+
+                console.log(arr_ban);
+
+                const dt_thang_1 = arr_ban.reduce((total, current) => {
+                    if (
+                        new Date(`${year}-01-01`) <= new Date(current.createdAt) &&
+                        new Date(current.createdAt).getTime() <= new Date(`${year}-01-31`)
+                    ) {
+                        return total + current.thanh_tien_ban - current.so_luong_ban * current.gianhap_daqd;
+                    } else return total + 0;
+                }, 0);
+
+                const dt_thang_2 = arr_ban.reduce((total, current) => {
+                    if (
+                        year % 4 === 0 &&
+                        new Date(`${year}-02-01`) <= new Date(current.createdAt) &&
+                        new Date(current.createdAt).getTime() <= new Date(`${year}-02-29`)
+                    ) {
+                        return current.thanh_tien_ban
+                            ? total + current.thanh_tien_ban - current.so_luong_ban * current.gianhap_daqd
+                            : total + 0;
+                    } else if (
+                        year % 4 !== 0 &&
+                        new Date(`${year}-02-01`) <= new Date(current.createdAt) &&
+                        new Date(current.createdAt).getTime() <= new Date(`${year}-02-28`)
+                    ) {
+                        return current.thanh_tien_ban
+                            ? total + current.thanh_tien_ban - current.so_luong_ban * current.gianhap_daqd
+                            : total + 0;
+                    } else return total + 0;
+                }, 0);
+
+                const dt_thang_3 = arr_ban.reduce((total, current) => {
+                    if (
+                        new Date(`${year}-03-01`) <= new Date(current.createdAt) &&
+                        new Date(current.createdAt).getTime() <= new Date(`${year}-03-31`)
+                    ) {
+                        return current.thanh_tien_ban
+                            ? total + current.thanh_tien_ban - current.so_luong_ban * current.gianhap_daqd
+                            : total + 0;
+                    } else return total + 0;
+                }, 0);
+
+                const dt_thang_4 = arr_ban.reduce((total, current) => {
+                    if (
+                        new Date(`${year}-04-01`) <= new Date(current.createdAt) &&
+                        new Date(current.createdAt).getTime() <= new Date(`${year}-04-30`)
+                    ) {
+                        return current.thanh_tien_ban
+                            ? total + current.thanh_tien_ban - current.so_luong_ban * current.gianhap_daqd
+                            : total + 0;
+                    } else return total + 0;
+                }, 0);
+
+                const dt_thang_5 = arr_ban.reduce((total, current) => {
+                    if (
+                        new Date(`${year}-05-01`) <= new Date(current.createdAt) &&
+                        new Date(current.createdAt).getTime() <= new Date(`${year}-05-31`)
+                    ) {
+                        return current.thanh_tien_ban
+                            ? total + current.thanh_tien_ban - current.so_luong_ban * current.gianhap_daqd
+                            : total + 0;
+                    } else return total + 0;
+                }, 0);
+
+                const dt_thang_6 = arr_ban.reduce((total, current) => {
+                    if (
+                        new Date(`${year}-06-01`) <= new Date(current.createdAt) &&
+                        new Date(current.createdAt).getTime() <= new Date(`${year}-06-30`)
+                    ) {
+                        return current.thanh_tien_ban
+                            ? total + current.thanh_tien_ban - current.so_luong_ban * current.gianhap_daqd
+                            : total + 0;
+                    } else return total + 0;
+                }, 0);
+
+                const dt_thang_7 = arr_ban.reduce((total, current) => {
+                    if (
+                        new Date(`${year}-07-01`) <= new Date(current.createdAt) &&
+                        new Date(current.createdAt).getTime() <= new Date(`${year}-07-31`)
+                    ) {
+                        return current.thanh_tien_ban
+                            ? total + current.thanh_tien_ban - current.so_luong_ban * current.gianhap_daqd
+                            : total + 0;
+                    } else return total + 0;
+                }, 0);
+
+                const dt_thang_8 = arr_ban.reduce((total, current) => {
+                    if (
+                        new Date(`${year}-08-01`) <= new Date(current.createdAt) &&
+                        new Date(current.createdAt).getTime() <= new Date(`${year}-08-31`)
+                    ) {
+                        return current.thanh_tien_ban
+                            ? total + current.thanh_tien_ban - current.so_luong_ban * current.gianhap_daqd
+                            : total + 0;
+                    } else return total + 0;
+                }, 0);
+
+                const dt_thang_9 = arr_ban.reduce((total, current) => {
+                    if (
+                        new Date(`${year}-09-01`) <= new Date(current.createdAt) &&
+                        new Date(current.createdAt).getTime() <= new Date(`${year}-09-30`)
+                    ) {
+                        return current.thanh_tien_ban
+                            ? total + current.thanh_tien_ban - current.so_luong_ban * current.gianhap_daqd
+                            : total + 0;
+                    } else return total + 0;
+                }, 0);
+
+                const dt_thang_10 = arr_ban.reduce((total, current) => {
+                    if (
+                        new Date(`${year}-10-01`) <= new Date(current.createdAt) &&
+                        new Date(current.createdAt).getTime() <= new Date(`${year}-10-31`)
+                    ) {
+                        return current.thanh_tien_ban
+                            ? total + current.thanh_tien_ban - current.so_luong_ban * current.gianhap_daqd
+                            : total + 0;
+                    } else return total + 0;
+                }, 0);
+
+                const dt_thang_11 = arr_ban.reduce((total, current) => {
+                    if (
+                        new Date(`${year}-11-01`) <= new Date(current.createdAt) &&
+                        new Date(current.createdAt).getTime() <= new Date(`${year}-11-30`)
+                    ) {
+                        return current.thanh_tien_ban
+                            ? total + current.thanh_tien_ban - current.so_luong_ban * current.gianhap_daqd
+                            : total + 0;
+                    } else return total + 0;
+                }, 0);
+
+                const dt_thang_12 = arr_ban.reduce((total, current) => {
+                    if (
+                        new Date(`${year}-12-01`) <= new Date(current.createdAt) &&
+                        new Date(current.createdAt).getTime() <= new Date(`${year}-12-31`)
+                    ) {
+                        return current.thanh_tien_ban
+                            ? total + current.thanh_tien_ban - current.so_luong_ban * current.gianhap_daqd
+                            : total + 0;
+                    } else return total + 0;
+                }, 0);
+
                 setDataHome({
                     ...dataHome,
                     count_ok: res.data[0][0].count_ok,
@@ -149,11 +404,39 @@ function Home() {
                     nhap_q2: nhap_quy_2 ? nhap_quy_2 : 0,
                     nhap_q3: nhap_quy_3 ? nhap_quy_3 : 0,
                     nhap_q4: nhap_quy_4 ? nhap_quy_4 : 0,
+                    ban_t: [
+                        ban_thang_1 ? ban_thang_1 : 0,
+                        ban_thang_2 ? ban_thang_2 : 0,
+                        ban_thang_3 ? ban_thang_3 : 0,
+                        ban_thang_4 ? ban_thang_4 : 0,
+                        ban_thang_5 ? ban_thang_5 : 0,
+                        ban_thang_6 ? ban_thang_6 : 0,
+                        ban_thang_7 ? ban_thang_7 : 0,
+                        ban_thang_8 ? ban_thang_8 : 0,
+                        ban_thang_9 ? ban_thang_9 : 0,
+                        ban_thang_10 ? ban_thang_10 : 0,
+                        ban_thang_11 ? ban_thang_11 : 0,
+                        ban_thang_12 ? ban_thang_12 : 0,
+                    ],
+                    dt_t: [
+                        dt_thang_1 ? dt_thang_1 : 0,
+                        dt_thang_2 ? dt_thang_2 : 0,
+                        dt_thang_3 ? dt_thang_3 : 0,
+                        dt_thang_4 ? dt_thang_4 : 0,
+                        dt_thang_5 ? dt_thang_5 : 0,
+                        dt_thang_6 ? dt_thang_6 : 0,
+                        dt_thang_7 ? dt_thang_7 : 0,
+                        dt_thang_8 ? dt_thang_8 : 0,
+                        dt_thang_9 ? dt_thang_9 : 0,
+                        dt_thang_10 ? dt_thang_10 : 0,
+                        dt_thang_11 ? dt_thang_11 : 0,
+                        dt_thang_12 ? dt_thang_12 : 0,
+                    ],
                 });
             })
             .catch((e) => console.log(e));
     }, [year]);
-
+    console.log(dataHome.ban_t);
     return (
         <div className={cx('wrapper')}>
             <div className={cx('header')}>
@@ -239,7 +522,7 @@ function Home() {
                                                 dataHome.nhap_q3,
                                                 dataHome.nhap_q4,
                                             ],
-                                            // backgroundColor: '',
+                                            // backgroundColor: 'rgba(0, 215, 232, 0.5)',
                                             borderRadius: 5,
                                         },
                                         {
@@ -298,19 +581,19 @@ function Home() {
 
                             datasets: [
                                 {
-                                    label: 'Giá trị bán',
-                                    data: dataLine.map((data) => data.revenue),
+                                    label: 'Doanh thu',
+                                    data: dataHome.ban_t && dataHome.ban_t.map((data) => data),
                                 },
                                 {
-                                    label: 'Giá trị nhập',
-                                    data: dataLine.map((data) => data.cost),
+                                    label: 'Lợi nhuận',
+                                    data: dataHome.dt_t && dataHome.dt_t.map((data) => data),
                                 },
                             ],
                         }}
                         options={{
                             plugins: {
                                 title: {
-                                    text: 'Thống kê theo tháng',
+                                    text: 'Thống kê doanh thu',
                                     color: '#333',
                                 },
                             },
