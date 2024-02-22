@@ -54,24 +54,28 @@ function CreateExpCp() {
     };
 
     const handleSelectedResult = (data) => {
-        setSearchInput('');
-        setDataDetails([
-            ...dataDetails,
-            {
-                ten: data.ten,
-                sl_dvl: '',
-                quydoi_dvn: data.soluong_nho,
-                sl_tongxuat: '',
-                dvt: data.donvi_nho,
-                dong_goi: data.dong_goi,
-                don_gia_nhap: data.gianhap_chuaqd,
-                tong_gia_tri: '',
-                han_dung: format.formatDate(data.han_dung),
-                so_lo: data.so_lo,
-                sendTo: chooseSup,
-                importDetailId: data.id,
-            },
-        ]);
+        if (data.sl_tong - data.so_luong_ban - data.so_luong_xuat > 0) {
+            setDataDetails([
+                ...dataDetails,
+                {
+                    ten: data.ten,
+                    sl_dvl: '',
+                    quydoi_dvn: data.soluong_nho,
+                    sl_tongxuat: '',
+                    dvt: data.donvi_nho,
+                    dong_goi: data.dong_goi,
+                    don_gia_nhap: data.gianhap_chuaqd,
+                    tong_gia_tri: '',
+                    han_dung: format.formatDate(data.han_dung),
+                    so_lo: data.so_lo,
+                    sendTo: chooseSup,
+                    importDetailId: data.id,
+                },
+            ]);
+            setSearchInput('');
+        } else {
+            toast.notify('Không còn thuốc trong kho', 'error');
+        }
     };
 
     const onchangeInputs = (e, index, prop) => {

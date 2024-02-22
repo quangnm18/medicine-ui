@@ -82,6 +82,11 @@ function InvoiceList() {
     };
 
     //method handle
+    const exportCp = (id) => {
+        let invoiceUrl = process.env.REACT_APP_INVOICE_URL;
+        window.open(`${invoiceUrl}invoice?id=${id}`);
+    };
+
     const handleSoftDel = (id) => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
@@ -238,7 +243,7 @@ function InvoiceList() {
             )}
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>
-                    <InvoiceListTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView, setSort }} />
+                    <InvoiceListTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView, setSort, exportCp }} />
                 </div>
 
                 <div className={cx('wrap-paginate')}>

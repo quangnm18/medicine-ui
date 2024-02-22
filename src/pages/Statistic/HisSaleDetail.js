@@ -227,6 +227,28 @@ function HisSaleDetail() {
                             <input disabled value={typeof idSelected === 'object' && idSelected.ten_duoc} />
                         </div>
                         <div className={cx('view-detail')}>
+                            <label>Hàm lượng - Hoạt chất: </label>
+                            <input
+                                disabled
+                                value={
+                                    typeof idSelected === 'object' &&
+                                    (idSelected.ham_luong ? idSelected.ham_luong + ' - ' : '') +
+                                        (idSelected.hoat_chat ? idSelected.hoat_chat : '')
+                                }
+                            />
+                        </div>
+
+                        <div className={cx('view-detail')}>
+                            <label>Đóng gói: </label>
+                            <input disabled value={typeof idSelected === 'object' && idSelected.dong_goi} />
+                        </div>
+
+                        <div className={cx('view-detail')}>
+                            <label>Số lô: </label>
+                            <input disabled value={typeof idSelected === 'object' && idSelected.so_lo} />
+                        </div>
+
+                        <div className={cx('view-detail')}>
                             <label>Số lượng bán:</label>
                             <input disabled value={typeof idSelected === 'object' && idSelected.so_luong_ban} />
                         </div>

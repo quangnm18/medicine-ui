@@ -59,8 +59,7 @@ function SellInvoiceCreate() {
     }, []);
 
     const handleSelectedMedicine = (medicine) => {
-        console.log(medicine);
-        if (medicine.sl_tong - medicine.so_luong_ban > 0) {
+        if (medicine.sl_tong - medicine.so_luong_ban - medicine.so_luong_xuat > 0) {
             setDataInvoice([
                 ...dataInvoice,
                 {
@@ -154,7 +153,7 @@ function SellInvoiceCreate() {
 
     const handleSaveIvExport = () => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
-        let invoiceUrl = process.env.REACT_SERVER_INVOICE_URL;
+        let invoiceUrl = process.env.REACT_APP_INVOICE_URL;
         axios
             .get(`${baseUrl}sell/getmaxid`)
             .then((res) => {

@@ -34,7 +34,6 @@ function Home() {
 
     const onChangeYear = (e) => {
         setYear(e.target.value);
-        console.log(e.target.value);
     };
 
     const navigate = useNavigate();
@@ -55,6 +54,7 @@ function Home() {
                     count_ok: 0,
                     tonggt_nhap: 0,
                     tong_ban: 0,
+                    count_rp: 0,
                 },
             })
             .then((res) => {
@@ -248,8 +248,6 @@ function Home() {
                     } else return total + 0;
                 }, 0);
 
-                console.log(arr_ban);
-
                 const dt_thang_1 = arr_ban.reduce((total, current) => {
                     if (
                         new Date(`${year}-01-01`) <= new Date(current.createdAt) &&
@@ -394,6 +392,8 @@ function Home() {
                     count_ok: res.data[0][0].count_ok,
                     count_due: res.data[0][0].count_due,
                     count_neardue: res.data[0][0].count_neardue,
+                    count_rp: res.data[0][0].count_rp,
+
                     tonggt_nhap: res.data[0][0].tonggt_nhap,
                     tong_ban: res.data[0][0].tong_ban,
                     ban_q1: ban_quy_1 ? ban_quy_1 : 0,
@@ -436,7 +436,7 @@ function Home() {
             })
             .catch((e) => console.log(e));
     }, [year]);
-    console.log(dataHome.ban_t);
+
     return (
         <div className={cx('wrapper')}>
             <div className={cx('header')}>
@@ -486,7 +486,7 @@ function Home() {
                         </div>
                         <div className={cx('wrap-if')}>
                             <span>Báo cáo</span>
-                            <span className={cx('if-count')}>{3}</span>
+                            <span className={cx('if-count')}>{dataHome.count_rp ? dataHome.count_rp : 0}</span>
                         </div>
                     </div>
                     <div

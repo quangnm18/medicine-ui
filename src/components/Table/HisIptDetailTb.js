@@ -135,6 +135,7 @@ function HisIptDetailTb({ data, method }) {
                 }
             },
             sortable: true,
+            width: '150px',
         },
     ];
     return (

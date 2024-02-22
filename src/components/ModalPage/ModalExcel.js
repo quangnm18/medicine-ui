@@ -10,7 +10,7 @@ import { notify } from '~/utils/toast';
 
 const cx = classNames.bind(style);
 
-function ModalAddExcel({ methodToggle }) {
+function ModalAddExcel({ methodToggle, methodLoad }) {
     const [excelFile, setExcelFile] = useState(null);
     const [typeErrorr, setTypeError] = useState(null);
 
@@ -41,10 +41,6 @@ function ModalAddExcel({ methodToggle }) {
             }
         }
     };
-
-    console.log(process.env.REACT_APP_BASE_URL);
-    console.log(process.env.REACT_APP_INVOICE_URL);
-    console.log(process.env.REACT_APP_BASE_URL1);
 
     // const handleFilePreview = () => {
     //     if (excelFile !== null) {
@@ -81,7 +77,6 @@ function ModalAddExcel({ methodToggle }) {
                 body: formData,
             });
             const result = await response.json();
-            console.log(result);
 
             if (stateImport === 0) {
                 if (!result.valid) {
@@ -96,6 +91,7 @@ function ModalAddExcel({ methodToggle }) {
             } else {
                 notify(`Nhập khẩu thành công ${result.valid}/${result.total} dòng`, 'success');
                 methodToggle();
+                methodLoad();
             }
         } catch (error) {
             console.error('Error:', error);
@@ -108,7 +104,7 @@ function ModalAddExcel({ methodToggle }) {
         const file = fileInput.files[0];
         const formData = new FormData();
         formData.append('file', file);
-        let path = `import/download/validate?sheetName=Sheet${optionSheet.sheetPage}&header=${
+        let path = `import/download/validate?sheetName=${optionSheet.sheetPage}&header=${
             optionSheet.header - 1
         }&catalog=1`;
         let url = process.env.REACT_APP_INVOICE_URL + path;

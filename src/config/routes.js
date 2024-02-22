@@ -35,10 +35,12 @@ const routes = {
     branchs: '/management/branchs',
 
     report: '/report',
+    reportAdm: '/reportsingle',
 
     statistic: '/statistic',
     historyImportStatistic: '/statistic/historyImport',
     historyImportStatisticDel: '/statistic/historyImport/deleted',
+    statisticRemove: '/statistic/medremove',
 
     historySaleStatistic: '/statistic/historySale',
     historySaleStatisticDel: '/statistic/historySale/deleted',

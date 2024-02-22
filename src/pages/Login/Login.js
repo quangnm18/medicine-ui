@@ -110,9 +110,9 @@ function Login() {
                 Quên mật khẩu? <span>Click Here!</span>
             </div>
 
-            <div className={cx('forgot-password')}>
+            {/* <div className={cx('forgot-password')}>
                 Nếu bạn chưa có tài khoản? <span onClick={() => routeChange('/register')}>Đăng ký</span>
-            </div>
+            </div> */}
 
             <div className={cx('submit-container')}>
                 <div className={cx('submit')} onClick={handleLogin}>

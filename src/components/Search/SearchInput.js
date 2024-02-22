@@ -56,18 +56,39 @@ function SearchInput({
                                             <div>{item.ten}</div>
                                             <div className={cx('result-span')}>
                                                 <span className={cx('result-itemmore')}>
-                                                    {item.ten_nhom_thuoc} || {'   '} Đóng gói: {item.dong_goi} || Tồn
-                                                    kho:{' '}
-                                                    {item.so_luong_ban
+                                                    Hàm lượng: {item.ham_luong + ' - ' + item.hoat_chat} || {'   '} Đóng
+                                                    gói: {item.dong_goi} || Tồn kho:{' '}
+                                                    {item.so_luong_xuat
+                                                        ? item.so_luong_ban
+                                                            ? (item.sl_tong -
+                                                                  item.so_luong_ban -
+                                                                  item.so_luong_xuat -
+                                                                  ((item.sl_tong -
+                                                                      item.so_luong_ban -
+                                                                      item.so_luong_xuat) %
+                                                                      item.soluong_nho)) /
+                                                              item.soluong_nho
+                                                            : item.soluong_lon - item.soluonglon_xuat
+                                                        : item.so_luong_ban
                                                         ? (item.sl_tong -
                                                               item.so_luong_ban -
                                                               ((item.sl_tong - item.so_luong_ban) % item.soluong_nho)) /
                                                           item.soluong_nho
                                                         : item.soluong_lon}{' '}
                                                     {item.donvi_lon},{' '}
-                                                    {(item.sl_tong - item.so_luong_ban) % item.soluong_nho}{' '}
+                                                    {item.so_luong_xuat
+                                                        ? (item.so_luong_ban
+                                                              ? item.sl_tong - item.so_luong_ban - item.so_luong_xuat
+                                                              : item.sl_tong - item.so_luong_xuat) % item.soluong_nho
+                                                        : (item.so_luong_ban
+                                                              ? item.sl_tong - item.so_luong_ban
+                                                              : item.sl_tong) % item.soluong_nho}{' '}
                                                     {item.donvi_nho} --{' '}
-                                                    {item.so_luong_ban
+                                                    {item.so_luong_xuat
+                                                        ? item.so_luong_ban
+                                                            ? item.sl_tong - item.so_luong_ban - item.so_luong_xuat
+                                                            : item.sl_tong - item.so_luong_xuat
+                                                        : item.so_luong_ban
                                                         ? item.sl_tong - item.so_luong_ban
                                                         : item.sl_tong}{' '}
                                                     {item.donvi_nho}
@@ -86,9 +107,16 @@ function SearchInput({
                                             onClick={() => handleSelectedResult(item)}
                                         >
                                             <div>{item.ten}</div>
-                                            <span className={cx('result-itemmore')}>
-                                                {item.ten} -- {item.description_unit} --
-                                            </span>
+                                            <div className={cx('result-detail')}>
+                                                <span className={cx('result-itemmore')}>
+                                                    {item.ten_nhom_thuoc} || Hàm lượng:
+                                                    {item.ham_luong ? ` ${item.ham_luong}` : ''}
+                                                    {item.hoat_chat ? ` -- ${item.hoat_chat}` : ''}
+                                                </span>
+                                                <span className={cx('result-itemmore')}>
+                                                    Đóng gói: {item.description_unit}
+                                                </span>
+                                            </div>
                                         </div>
                                     );
                             })}

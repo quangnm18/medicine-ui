@@ -283,7 +283,15 @@ function HisIptDetailDel() {
 
                         <div className={cx('view-detail')}>
                             <label>Tên dược: </label>
-                            <input disabled value={typeof idSelected === 'object' && idSelected.med} />
+                            <input
+                                disabled
+                                value={
+                                    typeof idSelected === 'object' &&
+                                    `${idSelected.med}${idSelected.ham_luong ? ' - ' + idSelected.ham_luong : ''}${
+                                        idSelected.hoat_chat ? ' - ' + idSelected.hoat_chat : ''
+                                    }`
+                                }
+                            />
                         </div>
                         <div className={cx('view-detail')}>
                             <label>Số lượng nhập(ĐVL):</label>

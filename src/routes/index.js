@@ -31,6 +31,8 @@ import HisSaleDetailDel from '~/pages/Statistic/HisSaleDetailDel';
 import CreateExpCp from '~/pages/ExportWh/CreateExpCp';
 import ListExpCp from '~/pages/ExportWh/ListExpCp';
 import ListExpCpDel from '~/pages/ExportWh/ListExpCpDel';
+import ReportAdm from '~/pages/Report/ReportAdmin';
+import WhRemoved from '~/pages/InventoryWh/WhRemoved';
 
 const publicRoutes = [
     { path: routesConfig.login, component: Login, layout: LoginLayout },
@@ -59,10 +61,12 @@ const publicRoutes = [
     { path: routesConfig.users, component: AllStaff },
 
     { path: routesConfig.report, component: Report },
+    { path: routesConfig.reportAdm, component: ReportAdm },
 
     { path: routesConfig.statistic, component: HisIptDetail },
     { path: routesConfig.historyImportStatistic, component: HisIptDetail },
     { path: routesConfig.historySaleStatistic, component: HisSaleDetail },
+    { path: routesConfig.statisticRemove, component: WhRemoved },
 
     { path: routesConfig.account, component: Account },
 

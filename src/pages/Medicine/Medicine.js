@@ -516,7 +516,7 @@ function Medicine() {
                 </div>
             )}
 
-            {showModalExcel && <ModalAddExcel methodToggle={toggleModalExcel} />}
+            {showModalExcel && <ModalAddExcel methodLoad={loadData} methodToggle={toggleModalExcel} />}
             <ToastContainer />
 
             <div className={cx('main-content')}>

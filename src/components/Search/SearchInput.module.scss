@@ -24,6 +24,11 @@
     }
 }
 
+.result-detail {
+    display: flex;
+    justify-content: space-between;
+}
+
 .result-itemmore {
     color: #8a8686;
 }

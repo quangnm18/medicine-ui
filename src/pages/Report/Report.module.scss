@@ -56,8 +56,96 @@
 
 //Main Content
 .main-content {
-    height: 100%;
     background-color: var(--white);
     padding: 8px 12px 0 12px;
-    height: 100vh;
+}
+
+.content-table {
+    min-height: 700px;
+}
+
+.wrap-paginate {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+
+    select {
+        outline: none;
+        margin: 16px 16px 0 0;
+        color: #8d8a8a;
+        font-size: 16px;
+        padding: 7px;
+        border-color: #d3c9c9;
+    }
+}
+
+//modal
+.wrap-modalview {
+    min-width: 560px;
+    padding: 8px;
+
+    span {
+        display: block;
+        padding: 24px;
+        text-align: center;
+    }
+}
+
+.title-modalView {
+    padding: 8px;
+    font-size: 2rem;
+    border-bottom: 1px solid #e4e4e4;
+}
+
+.view-detail {
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    margin: 24px 0 12px 0;
+
+    label {
+        font-size: 1.6rem;
+        min-width: 120px;
+    }
+
+    input,
+    textarea {
+        font-family: 'Roboto', sans-serif;
+        font-size: 1.6rem;
+        padding: 8px;
+        color: var(--text-color);
+        border: solid 1px #e0d9d9;
+        border-radius: 4px;
+        outline: none;
+        width: 100%;
+    }
+}
+
+.detail-content {
+    margin-top: 24px;
+}
+
+.view-detailbtn {
+    text-align: right;
+    padding: 16px 8px 8px 8px;
+}
+
+.btn-add {
+    background-color: var(--primary);
+    color: var(--white);
+    font-size: 1.6rem;
+    padding: 8px 0;
+    border-radius: 2px;
+    min-width: 120px;
+    cursor: pointer;
+}
+
+.btn-close {
+    margin-left: 8px;
+}
+
+.required::after {
+    content: ' *';
+    color: red;
+    font-size: 1.6rem;
 }

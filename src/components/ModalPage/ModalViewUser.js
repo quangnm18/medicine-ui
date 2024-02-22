@@ -98,11 +98,15 @@ function ModalViewUser({ label, dataInputs, dataValueInputs, methodOnchange, met
                                 onChange={methodOnchange}
                             >
                                 <option>--Chọn vai trò--</option>
-                                {allRole.map((role) => (
-                                    <option key={role.id} className={cx('role-option')} value={role.id}>
-                                        {role.ten_vai_tro}
-                                    </option>
-                                ))}
+                                {allRole.map((role) => {
+                                    if (role.id !== 1) {
+                                        return (
+                                            <option key={role.id} className={cx('role-option')} value={role.id}>
+                                                {role.ten_vai_tro}
+                                            </option>
+                                        );
+                                    }
+                                })}
                             </select>
                             {error['Role'] && <div className={cx('error-validate')}>{error['Role']}</div>}
                         </div>

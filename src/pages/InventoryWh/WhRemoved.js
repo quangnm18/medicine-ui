@@ -14,7 +14,7 @@ import { formatDate } from '~/utils/format';
 
 const cx = classNames.bind(style);
 
-function InventoryWh() {
+function WhRemoved() {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
 
     const [dataBranch, setDataBranch] = useState([]);
@@ -129,7 +129,7 @@ function InventoryWh() {
     const loadData = () => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
-            .get(`${baseUrl}warehouse`, {
+            .get(`${baseUrl}warehouse/removed`, {
                 params: {
                     sort_col: sort.sort_col,
                     sort_type: sort.sort_type,
@@ -356,4 +356,4 @@ function InventoryWh() {
     );
 }
 
-export default InventoryWh;
+export default WhRemoved;

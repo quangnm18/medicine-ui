@@ -16,7 +16,7 @@ import Pagination from '~/components/Pagination/Pagination';
 
 const cx = classNames.bind(style);
 
-function Report() {
+function ReportAdm() {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('data_user')));
 
     const [showModalAdd, setShowModalAdd] = useState(false);
@@ -44,8 +44,8 @@ function Report() {
         setFormRp({ ...formRp, [e.target.name]: e.target.value });
     };
 
-    const onchangeBranch = (e) => {
-        setSelectBranch(e.target.value);
+    const onChangerNum = (e) => {
+        setNumRecord(e.target.value);
     };
 
     const handleSearch = () => {
@@ -56,10 +56,6 @@ function Report() {
         if (e.code === 'Enter') {
             handleSearch();
         }
-    };
-
-    const onChangerNum = (e) => {
-        setNumRecord(e.target.value);
     };
 
     const handleChangePage = (e) => {
@@ -87,7 +83,6 @@ function Report() {
     const routeChange = (path) => {
         navigate(path);
     };
-
     // const validator = () => {
     //     const validationError = {};
     //     if (dataValueInputs.donvi_lon === '' && !dataValueInputs.donvi_lon.trim()) {
@@ -135,18 +130,6 @@ function Report() {
             .catch((e) => console.log(e));
     };
 
-    const handleApprove = () => {
-        let baseUrl = process.env.REACT_APP_BASE_URL;
-        axios
-            .put(`${baseUrl}report/approve`, { id: idSelected.id, updateNote: formRp.updateNote })
-            .then((res) => {
-                setShowModalView(false);
-                loadData();
-                notify('Phê duyệt thành công', 'success');
-            })
-            .catch((e) => console.log(e));
-    };
-
     const loadData = () => {
         let baseUrl = process.env.REACT_APP_BASE_URL;
         axios
@@ -157,7 +140,7 @@ function Report() {
                     search_value: valuesSearch,
                     user_id: user.userId,
                     branch_id: user.id_chi_nhanh,
-                    myself: 0,
+                    myself: 1,
                     isDeleted: 0,
                     numRecord: numRecord,
                     startRecord: startRecord,
@@ -182,7 +165,7 @@ function Report() {
             <div className={cx('header-content')}>
                 <DirectionHeader>Báo cáo</DirectionHeader>
                 <div className={cx('choose-medicine')}>
-                    <h4 className={cx('header-title')}>Danh sách báo cáo</h4>
+                    <h4 className={cx('header-title')}>Báo cáo đã tạo</h4>
                     <div className={cx('header-action')}>
                         <div className={cx('header-search')}>
                             <input
@@ -199,11 +182,9 @@ function Report() {
                             Tạo báo cáo
                         </button>
 
-                        {user.role === 'ADM' && (
-                            <button className={cx('btn-addstaff')} onClick={() => routeChange('/reportsingle')}>
-                                Đã tạo
-                            </button>
-                        )}
+                        <button className={cx('btn-addstaff')} onClick={() => routeChange('/report')}>
+                            Báo cáo nhân viên
+                        </button>
                     </div>
                 </div>
             </div>
@@ -268,25 +249,17 @@ function Report() {
                             <div className={cx('view-detail', 'detail-content')}>
                                 <label>Ghi chú:</label>
 
-                                {user.role === 'ADMA' || user.role === 'ADM' ? (
-                                    <textarea
-                                        name="updateNote"
-                                        cols={40}
-                                        rows={4}
-                                        value={formRp.updateNote}
-                                        onChange={onchangeForm}
-                                    />
-                                ) : (
-                                    <textarea name="updateNote" cols={40} rows={4} value={formRp.updateNote} disabled />
-                                )}
+                                <textarea
+                                    name="updateNote"
+                                    cols={40}
+                                    rows={4}
+                                    value={formRp.updateNote}
+                                    onChange={onchangeForm}
+                                    disabled
+                                />
                             </div>
 
                             <div className={cx('view-detailbtn')}>
-                                {(user.role === 'ADM' || user.role === 'ADMA') && (
-                                    <button className={cx('btn-add')} onClick={handleApprove}>
-                                        Phê duyệt
-                                    </button>
-                                )}
                                 <button className={cx('btn-add', 'btn-close')} onClick={toggleModalView}>
                                     Đóng
                                 </button>
@@ -302,7 +275,7 @@ function Report() {
 
             <div className={cx('main-content')}>
                 <div className={cx('content-table')}>
-                    <ReportTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView, setSort }} />
+                    <ReportTb data={dataTb} method={{ toggleModalSoftDel, toggleModalView }} />
                 </div>
                 <div className={cx('wrap-paginate')}>
                     <select value={numRecord} onChange={onChangerNum}>
@@ -318,4 +291,4 @@ function Report() {
     );
 }
 
-export default Report;
+export default ReportAdm;
