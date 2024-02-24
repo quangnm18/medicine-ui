@@ -75,29 +75,6 @@ function CreateInvoiceIpt() {
 
     const handleSelectedResult = (data) => {
         setSearchInput('');
-        // setValuesRow({
-        //     ...valuesRow,
-        //     dong_goi: data.description_unit,
-        //     dvt: data.donvi_nho,
-        //     ten: data.ten,
-        //     med_id: data.id,
-        //     ma_ncc: chooseSup,
-        // });
-
-        // setDataDetails([
-        //     ...dataDetails,
-        //     {
-        //         ...valuesRow,
-        //         dong_goi: `${data.donvi_lon} ${data.donvi_tb ? `x ${data.donvi_tb} ` : ''}${
-        //             data.donvi_nho ? `x ${data.donvi_nho}` : ''
-        //         }`,
-        //         dvt: data.donvi_nho,
-        //         ten: data.ten,
-        //         med_id: data.id,
-        //         ma_ncc: chooseSup,
-        //     },
-        // ]);
-
         setDataDetails([
             ...dataDetails,
             {
@@ -110,9 +87,7 @@ function CreateInvoiceIpt() {
                 dvt: data.donvi_nho,
                 dvtb: data.donvi_tb,
                 dvl: data.donvi_lon,
-                dong_goi: `${data.donvi_lon} ${data.donvi_tb ? `x ${data.donvi_tb} ` : ''}${
-                    data.donvi_nho ? `x ${data.donvi_nho}` : ''
-                }`,
+                dong_goi: data.description_unit,
                 gianhap_chuaqd: '',
                 gianhap_daqd: '',
                 giaban_daqd: '',
@@ -184,13 +159,13 @@ function CreateInvoiceIpt() {
         if (temp[index].soluong_lon && temp[index].soluong_nho) {
             temp[index].sl_tong = temp[index].soluong_nho * temp[index].soluong_lon;
 
-            temp[index].dong_goi = `${temp[index].dvl ? temp[index].dvl + ' x ' : ''}${
-                temp[index].dvtb && temp[index].soluong_tb && temp[index].soluong_tb !== '0'
-                    ? `${temp[index].soluong_tb} ${temp[index].dvtb} x ${
-                          temp[index].soluong_nho / temp[index].soluong_tb
-                      } ${temp[index].dvt}`
-                    : `${temp[index].dvl && temp[index].soluong_nho + ' '}${temp[index].dvt}`
-            }`;
+            // temp[index].dong_goi = `${temp[index].dvl ? temp[index].dvl + ' x ' : ''}${
+            //     temp[index].dvtb && temp[index].soluong_tb && temp[index].soluong_tb !== '0'
+            //         ? `${temp[index].soluong_tb} ${temp[index].dvtb} x ${
+            //               temp[index].soluong_nho / temp[index].soluong_tb
+            //           } ${temp[index].dvt}`
+            //         : `${temp[index].dvl && temp[index].soluong_nho + ' '}${temp[index].dvt}`
+            // }`;
         }
 
         if (temp[index].gianhap_chuaqd && temp[index].soluong_nho) {
@@ -290,7 +265,10 @@ function CreateInvoiceIpt() {
         axios
             .get(`${baseUrl}importlist/getmaxid`)
             .then((res) => {
-                const newId = res.data[0].max_id + 1;
+                let newId;
+                if (res.data[0].max_id) {
+                    newId = res.data[0].max_id + 1;
+                } else newId = 1;
                 const userId = user.userId;
                 axios
                     .post(`${baseUrl}importlist/create`, { dataDetails, total, tong_ck, tong_vat, newId, userId })

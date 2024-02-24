@@ -59,6 +59,7 @@ function SellInvoiceCreate() {
     }, []);
 
     const handleSelectedMedicine = (medicine) => {
+        console.log(medicine);
         if (medicine.sl_tong - medicine.so_luong_ban - medicine.so_luong_xuat > 0) {
             setDataInvoice([
                 ...dataInvoice,
@@ -72,7 +73,7 @@ function SellInvoiceCreate() {
                     sl_tong: '',
                     gia_ban: medicine.giaban_daqd,
                     thanh_tien: '',
-                    donvinho: medicine.donvi_nho,
+                    donvinho: medicine.dvt,
                     so_lo_hang: medicine.so_lo,
                     ipt_detail_id: medicine.id,
                 },
@@ -113,7 +114,11 @@ function SellInvoiceCreate() {
             axios
                 .get(`${baseUrl}sell/getmaxid`)
                 .then((res) => {
-                    const newId = res.data[0].max_id + 1;
+                    let newId = 1;
+                    if (res.data[0].max_id) {
+                        newId = res.data[0].max_id + 1;
+                    }
+
                     axios
                         .post(`${baseUrl}sell/ivcreate`, {
                             user_id: user.userId,

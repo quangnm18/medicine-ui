@@ -10,9 +10,6 @@ function ModalGr({ label, dataInputs, dataValueInputs, methodOnchange, methodTog
     const [error, setError] = useState({});
     const validator = () => {
         const validationError = {};
-        if (dataValueInputs.donvi_lon === '' && !dataValueInputs.donvi_lon.trim()) {
-            validationError.donvi_lon = 'Phải nhập đơn vị lớn nhất';
-        }
 
         if (dataValueInputs.donvi_nho === '' && !dataValueInputs.donvi_nho.trim()) {
             validationError.donvi_nho = 'Phải nhập đơn vị nhỏ nhất';
@@ -46,7 +43,6 @@ function ModalGr({ label, dataInputs, dataValueInputs, methodOnchange, methodTog
                                         className={cx(
                                             'label-gr',
                                             (input.name === 'Name' ||
-                                                input.name === 'donvi_lon' ||
                                                 input.name === 'donvi_nho' ||
                                                 input.name === 'description_unit' ||
                                                 input.name === 'ten_nhom_thuoc' ||

@@ -7,14 +7,6 @@ import Modal from '../Modal';
 const cx = classNames.bind(style);
 
 function ModalAccept({ methodToggle, methodHandle, label, data }) {
-    // const [dataDetail, setDataDetail] = useState([]);
-    // useEffect(() => {
-    //     let baseUrl = process.env.REACT_APP_BASE_URL;
-    //     axios(`${baseUrl}importlist/alldetail/`, { params: { q: data } }).then((res) => {
-    //         setDataDetail(res.data);
-    //     });
-    // }, []);
-
     return (
         <Modal>
             <div className={cx('modalAll')}>

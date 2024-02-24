@@ -36,7 +36,7 @@ function HisIptDetail() {
     const [selectGrMed, setSelectGrMed] = useState();
     const [sort, setSort] = useState({ sort_col: 17, sort_type: 'asc' });
 
-    const [infoNum, setInfoNum] = useState({ han_dung: '', so_lo: '' });
+    const [infoNum, setInfoNum] = useState({ han_dung: '', so_lo: '', dong_goi: '' });
     const [giaban, setGiaBan] = useState();
 
     const [idSelected, setIdSelected] = useState('');
@@ -63,7 +63,7 @@ function HisIptDetail() {
     const toggleModalView = (data) => {
         setShowModalView(!showModalView);
         setIdSelected(data);
-        setInfoNum({ han_dung: formatDate(data.han_dung), so_lo: data.so_lo });
+        setInfoNum({ han_dung: formatDate(data.han_dung), so_lo: data.so_lo, dong_goi: data.dong_goi });
         setGiaBan(data.giaban_daqd);
     };
 
@@ -295,6 +295,7 @@ function HisIptDetail() {
                         <div className={cx('view-detail')}>
                             <label>Tên dược: </label>
                             <input
+                                className={cx('infoNum-input')}
                                 disabled
                                 value={
                                     typeof idSelected === 'object' &&
@@ -306,27 +307,41 @@ function HisIptDetail() {
                         </div>
                         <div className={cx('view-detail')}>
                             <label>Số lượng nhập(ĐVL):</label>
-                            <input disabled value={typeof idSelected === 'object' && idSelected.soluong_lon} />
+                            <input
+                                className={cx('infoNum-input')}
+                                disabled
+                                value={typeof idSelected === 'object' && idSelected.soluong_lon}
+                            />
                         </div>
                         <div className={cx('view-detail')}>
                             <label>Giá trị quy đổi(ĐVTB):</label>
-                            <input disabled value={typeof idSelected === 'object' && idSelected.soluong_tb} />
+                            <input
+                                className={cx('infoNum-input')}
+                                disabled
+                                value={typeof idSelected === 'object' && idSelected.soluong_tb}
+                            />
                         </div>
                         <div className={cx('view-detail')}>
                             <label>Giá trị quy đổi(ĐVNN):</label>
-                            <input disabled value={typeof idSelected === 'object' && idSelected.soluong_nho} />
+                            <input
+                                className={cx('infoNum-input')}
+                                disabled
+                                value={typeof idSelected === 'object' && idSelected.soluong_nho}
+                            />
                         </div>
                         <div className={cx('view-detail')}>
                             <label>Số lượng tổng (ĐVNN): </label>
-                            <input disabled value={typeof idSelected === 'object' && idSelected.sl_tong} />
+                            <input
+                                className={cx('infoNum-input')}
+                                disabled
+                                value={typeof idSelected === 'object' && idSelected.sl_tong}
+                            />
                         </div>
-                        <div className={cx('view-detail')}>
-                            <label>Đóng gói: </label>
-                            <input disabled value={typeof idSelected === 'object' && idSelected.dong_goi} />
-                        </div>
+
                         <div className={cx('view-detail')}>
                             <label>Giá nhập đơn: </label>
                             <input
+                                className={cx('infoNum-input')}
                                 disabled
                                 value={typeof idSelected === 'object' && VND.format(idSelected.gianhap_chuaqd)}
                             />
@@ -335,28 +350,55 @@ function HisIptDetail() {
                         <div className={cx('view-detail')}>
                             <label>Giá nhập đã quy đổi:</label>
                             <input
+                                className={cx('infoNum-input')}
                                 disabled
                                 value={typeof idSelected === 'object' && VND.format(idSelected.gianhap_daqd)}
                             />
                         </div>
-                        <div className={cx('view-detail')}>
-                            <label>Giá bán tạm: </label>
-                            <FormatInput name={'gia_ban_tam'} value={giaban} methodOnchange={onchangePrice} />
-                        </div>
+
                         <div className={cx('view-detail')}>
                             <label>Tổng giá trị: </label>
                             <input
                                 disabled
                                 value={typeof idSelected === 'object' && VND.format(idSelected.thanh_tien)}
+                                className={cx('infoNum-input')}
                             />
                         </div>
                         <div className={cx('view-detail')}>
                             <label>CK: </label>
-                            <input disabled value={typeof idSelected === 'object' && idSelected.ck} />
+                            <input
+                                className={cx('infoNum-input')}
+                                disabled
+                                value={typeof idSelected === 'object' && idSelected.ck}
+                            />
                         </div>
                         <div className={cx('view-detail')}>
                             <label>VAT: </label>
-                            <input disabled value={typeof idSelected === 'object' && idSelected.vat} />
+                            <input
+                                className={cx('infoNum-input')}
+                                disabled
+                                value={typeof idSelected === 'object' && idSelected.vat}
+                            />
+                        </div>
+
+                        <div className={cx('view-detail')}>
+                            <label>Giá bán tạm: </label>
+                            <FormatInput
+                                className={'infoNum-input'}
+                                name={'gia_ban_tam'}
+                                value={giaban}
+                                methodOnchange={onchangePrice}
+                            />
+                        </div>
+
+                        <div className={cx('view-detail')}>
+                            <label>Đóng gói: </label>
+                            <input
+                                className={cx('infoNum-input')}
+                                name="dong_goi"
+                                value={infoNum.dong_goi}
+                                onChange={changeInfo}
+                            />
                         </div>
                         <div className={cx('view-detail')}>
                             <label>Hạn dùng: </label>
